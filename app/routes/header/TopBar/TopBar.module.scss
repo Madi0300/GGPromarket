@@ -1,0 +1,46 @@
+.City {
+  display: flex;
+  align-items: center;
+  :first-child {
+    margin-right: 8px;
+  }
+  &__text {
+  }
+}
+
+.Call {
+  display: flex;
+  align-items: center;
+  :not(:last-child) {
+    margin-right: 12px;
+  }
+  &__number {
+    color: rgba(0, 0, 0, 1);
+
+    font-family: Montserrat;
+    font-size: 21px;
+    font-weight: 500;
+    line-height: 100%;
+    letter-spacing: 0%;
+    text-align: left;
+  }
+}
+
+.Navigation {
+  :not(:last-child) {
+    margin-right: 20px;
+  }
+}
+
+.TopBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.underlined {
+  border-bottom: 1px dashed var(--blue-3, rgba(43, 123, 198, 1));
+}
+
+@media (max-width: 1200px) {
+}
