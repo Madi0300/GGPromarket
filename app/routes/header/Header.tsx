@@ -1,4 +1,4 @@
-import { Container } from "../headerBoard/headerBoard";
+import { Container } from "../headerBoard/ui";
 import Style from "./Header.module.scss";
 import TopBar from "./TopBar/TopBar";
 import HeaderMiddle from "./HeaderMiddle/HeaderMiddle";
