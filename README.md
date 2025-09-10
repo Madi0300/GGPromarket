@@ -1,87 +1,87 @@
-# Welcome to React Router!
+# GGPromarket 🛁🚽
 
-A modern, production-ready template for building full-stack React applications using React Router.
+> **Single-page e-commerce demo for bathroom & sanitary ware**  
+> Built as a portfolio project to showcase modern React + TypeScript skills.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+## ✨ Features
 
-## Features
+- **Responsive UI** — desktop / tablet / mobile / any sizes
+- **Product catalogue** with category filtering (baths, toilets, sinks, …)
+- **Cart & mini-cart** powered by Redux Toolkit
+- **Client-side routing & SSR-ready build** (React Router v7 CLI)
+- **Lazy-loaded images** (IntersectionObserver)
+- **Default images** applies a default image if there is an error loading the required image
 
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+## 🛠️ Tech stack (2025-09-10)
 
-## Getting Started
+| Layer                | Tech & version                             |
+| -------------------- | ------------------------------------------ |
+| **Framework**        | React **19.1.1** + TypeScript 5.9          |
+| **Router / Build**   | React Router CLI **7.8.x** (Vite 7)        |
+| **State management** | Redux Toolkit **2.9** + RTK Query          |
+| **Styling**          | Tailwind CSS **4.1** + CSS/SCSS Modules    |
+| **Tooling**          | Vite **7.1** · ESLint · Prettier           |
+| **Testing**          | Vitest + React Testing Library _(planned)_ |
 
-### Installation
+## 📸 Screenshots
 
-Install the dependencies:
+| Home                             |
+| -------------------------------- |
+| ![Home](./docs/screens/home.png) |
 
-```bash
-npm install
-```
-
-### Development
-
-Start the development server with HMR:
-
-```bash
-npm run dev
-```
-
-Your application will be available at `http://localhost:5173`.
-
-## Building for Production
-
-Create a production build:
+## 🚀 Quick start
 
 ```bash
-npm run build
+# 1. Clone repo & install deps
+git clone https://github.com/Madi0300/GGPromarket.git
+cd GGPromarket
+npm install          # or pnpm / yarn
+
+# 2. Start dev server (HMR)
+npm run dev              # http://localhost:5173
+
+# 3. Production build
+npm run build            # creates build/ & server/ bundles
+npm run preview          # SSR-preview on port 3000
 ```
 
-## Deployment
+> **Node ≥ 18.18 required.**
 
-### Docker Deployment
+## 📂 Project structure (trimmed)
 
-To build and run using Docker:
-
-```bash
-docker build -t my-app .
-
-# Run the container
-docker run -p 3000:3000 my-app
+```text
+client/
+  app/
+    header/
+    home/
+    goods/
+    collections/
+  store/
+    appSlice.ts
+    index.ts
+  routes.ts
 ```
 
-The containerized application can be deployed to any platform that supports Docker, including:
+## 🗺️ Roadmap
 
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
+- [ ] Finish **ProductCatalog** (filters, empty-state, skeletons)
+- [ ] Build **PopularBrands** carousel
+- [ ] Build **Articles / Blog preview**
+- [ ] Add **SEOTextBlock** (rich text + internal links)
+- [ ] Layout **Footer** with adaptive grid
+- [ ] Set up minimal **backend** (Node + Express or Fastify)
+- [ ] Expose `/api/products` & `/api/brands` endpoints (static JSON)
+- [ ] Wire frontend to API via RTK Query
+- [ ] Deploy full stack (Vercel / Render / Railway)
 
-### DIY Deployment
+## 🤝 Contributing
 
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
+Personal portfolio project, but PRs and suggestions are welcome.
 
-Make sure to deploy the output of `npm run build`
+## 📄 License
 
-```
-├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
-```
+MIT
 
-## Styling
+—
 
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
-
----
-
-Built with ❤️ using React Router.
+Made with ❤️ by **Madi Aitbai** — aspiring Frontend / React developer.
