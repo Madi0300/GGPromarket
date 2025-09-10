@@ -1,0 +1,127 @@
+.TopBar {
+  /* Глобальные типо-переменные для блока шапки */
+  --ff: "Montserrat", sans-serif;
+  --ls: 0; /* отслеживание (letter-spacing) */
+  --scale: 1; /* базовый масштаб шрифтов */
+
+  /* База размеров шрифтов */
+  --fs-city: 16px;
+  --lh-city: 100%;
+
+  --fs-call-number: 21px;
+  --lh-call-number: 100%;
+
+  --fs-nav: 16px; /* если в навигации есть текстовые ссылки */
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--ff);
+
+  /* Масштабируем шрифты на брейкпоинтах */
+  @media (max-width: 1200px) {
+    --scale: 0.8; /* ~−20% */
+  }
+  @media (max-width: 800px) {
+    --scale: 0.7; /* ~−30% */
+  }
+}
+
+/* Город */
+.City {
+  display: flex;
+  align-items: center;
+  @media (max-width: 515px) {
+    display: none;
+  }
+
+  :first-child {
+    margin-right: 8px;
+  }
+
+  &__text {
+    font-size: calc(var(--fs-city) * var(--scale));
+    line-height: var(--lh-city);
+    letter-spacing: var(--ls);
+    font-family: var(--ff);
+  }
+}
+
+/* Звонок / номер */
+.Call {
+  display: flex;
+  align-items: center;
+
+  :not(:last-child) {
+    margin-right: 12px;
+  }
+
+  &__number {
+    color: rgba(0, 0, 0, 1);
+    font-family: var(--ff);
+    font-size: calc(var(--fs-call-number) * var(--scale));
+    font-weight: 500;
+    line-height: var(--lh-call-number);
+    letter-spacing: var(--ls);
+    text-align: left;
+  }
+
+  &__link {
+    @media (max-width: 800px) {
+      display: none;
+    }
+  }
+
+  &__icon {
+    @media (max-width: 800px) {
+      display: none;
+    }
+  }
+}
+
+/* Навигация / бургер */
+.Navigation {
+  &__Nav {
+    /* Если в навигации текстовые пункты, применяем общий размер */
+    font-size: calc(var(--fs-nav) * var(--scale));
+
+    :not(:last-child) {
+      margin-right: 20px;
+    }
+
+    @media (max-width: 1200px) {
+      display: none;
+    }
+  }
+
+  &__Burger {
+    display: none;
+
+    @media (max-width: 1200px) {
+      display: block;
+      position: relative;
+      width: 24px;
+      height: 18px;
+
+      > :not(:last-child) {
+        margin-bottom: 6px;
+      }
+
+      span {
+        width: 100%;
+        height: 2px;
+        background-color: rgba(43, 123, 198, 1);
+        display: block;
+      }
+    }
+  }
+}
+
+/* Нижнее подчёркивание */
+.underlined {
+  border-bottom: 1px dashed var(--blue-3, rgba(43, 123, 198, 1));
+}
+
+/* пустой медиа-контейнер сохранил как в твоём коде */
+@media (max-width: 1200px) {
+}
