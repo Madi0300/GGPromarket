@@ -64,7 +64,7 @@ client/
 
 ## 🗺️ Roadmap
 
-- [ ] Finish **ProductCatalog** (filters, empty-state, skeletons)
+- [x] Finish **ProductCatalog** (filters, empty-state, skeletons)
 - [ ] Build **PopularBrands** carousel
 - [ ] Build **Articles / Blog preview**
 - [ ] Add **SEOTextBlock** (rich text + internal links)

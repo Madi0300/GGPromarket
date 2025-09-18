@@ -1,29 +1,26 @@
 .TopBar {
-  /* Глобальные типо-переменные для блока шапки */
   --ff: "Montserrat", sans-serif;
-  --ls: 0; /* отслеживание (letter-spacing) */
-  --scale: 1; /* базовый масштаб шрифтов */
+  --ls: 0;
+  --scale: 1;
 
-  /* База размеров шрифтов */
   --fs-city: 16px;
   --lh-city: 100%;
 
   --fs-call-number: 21px;
   --lh-call-number: 100%;
 
-  --fs-nav: 16px; /* если в навигации есть текстовые ссылки */
+  --fs-nav: 16px;
 
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-family: var(--ff);
 
-  /* Масштабируем шрифты на брейкпоинтах */
   @media (max-width: 1200px) {
-    --scale: 0.8; /* ~−20% */
+    --scale: 0.8;
   }
   @media (max-width: 800px) {
-    --scale: 0.7; /* ~−30% */
+    --scale: 0.7;
   }
 }
 
@@ -79,10 +76,8 @@
   }
 }
 
-/* Навигация / бургер */
 .Navigation {
   &__Nav {
-    /* Если в навигации текстовые пункты, применяем общий размер */
     font-size: calc(var(--fs-nav) * var(--scale));
 
     :not(:last-child) {
@@ -117,11 +112,9 @@
   }
 }
 
-/* Нижнее подчёркивание */
 .underlined {
   border-bottom: 1px dashed var(--blue-3, rgba(43, 123, 198, 1));
 }
 
-/* пустой медиа-контейнер сохранил как в твоём коде */
 @media (max-width: 1200px) {
 }

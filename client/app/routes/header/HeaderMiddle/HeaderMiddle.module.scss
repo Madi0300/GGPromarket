@@ -32,6 +32,9 @@
   @media (max-width: 800px) {
     --scale: 0.7;
   }
+  @media (max-width: 380px) {
+    flex-wrap: wrap;
+  }
 
   &__title {
     color: var(--lg-1, rgba(251, 250, 249, 1));
@@ -193,11 +196,16 @@
   }
   .Categories {
     order: 1;
-    flex: 1 0 auto;
+    flex: 1 1 auto;
     > * {
       flex: 1 0 auto;
       justify-content: center;
       justify-content: left;
+    }
+    &__one {
+      @media (max-width: 380px) {
+        flex: 1 1 100%;
+      }
     }
   }
   .Search {

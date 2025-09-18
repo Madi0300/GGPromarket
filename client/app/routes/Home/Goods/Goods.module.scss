@@ -1,3 +1,61 @@
+.GoodsSlider {
+  position: relative;
+  > :first-child {
+    padding-bottom: 30px;
+  }
+  &__categories {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    overflow: auto;
+    overflow: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  &__category {
+    padding: 6px 16px;
+    color: rgba(43, 123, 198, 1);
+    background-color: #fff;
+    border-radius: 4px;
+    text-wrap: nowrap;
+  }
+  &__category.selected {
+    background-color: rgba(59, 185, 184, 1);
+    color: #fff;
+  }
+  &__items {
+    &__wrapper {
+      scroll-snap-type: x mandatory;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, 308px);
+      grid-auto-flow: column;
+      overflow: auto;
+      scrollbar-width: none;
+    }
+
+    &__buttons {
+    }
+    &__buttonLeft {
+      position: absolute;
+      top: 50%;
+      left: -20px;
+      transform: translateY(-50%);
+      padding: 20px 24px;
+      background: rgba(213, 224, 230, 0.5);
+      border-radius: 5px;
+    }
+    &__buttonRight {
+      position: absolute;
+      top: 50%;
+      right: -20px;
+      transform: translateY(-50%) rotate(180deg);
+      padding: 20px 24px;
+      background: rgba(213, 224, 230, 0.5);
+      border-radius: 5px;
+    }
+  }
+}
+
 .GoodsItem {
   position: relative;
   font-size: 14px;
@@ -5,11 +63,20 @@
   line-height: 20px;
   letter-spacing: 0.15em;
   background-color: #fff;
-  display: block;
+  display: flex;
+  flex-direction: column;
 
   width: 308px;
   height: 540px;
-  padding: 10px;
+  padding: 20px 20px 22px 20px;
+
+  &__snapItem {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    @media (max-width: 425px) {
+      scroll-snap-align: center;
+    }
+  }
 
   > :first-child {
     margin-bottom: 20px;
@@ -45,12 +112,16 @@
 
   &__content {
     padding: 0 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 1 1 auto;
 
     > :nth-child(1) {
       margin-bottom: 16px;
     }
     > :nth-child(2) {
-      margin-bottom: 35px;
+      flex: 1 1 auto;
     }
     > :nth-child(3) {
       margin-bottom: 10px;
@@ -89,6 +160,10 @@
     letter-spacing: 0%;
     text-align: left;
     text-decoration-line: line-through;
+  }
+  &__nullItem {
+    width: 100%;
+    height: 24px;
   }
 
   &__info {

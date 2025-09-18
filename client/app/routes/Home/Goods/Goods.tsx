@@ -48,7 +48,7 @@ const items: GoodsItemData[] = [
     href: "#",
     country: "Германия",
     price: 26990,
-    discount: 28601,
+    discount: 25641,
     imgUrl: "/Goods/2.png",
     rate: 4.5,
     commentsSum: 2,
@@ -159,6 +159,7 @@ const items: GoodsItemData[] = [
     imgUrl: "/Goods/11.png",
     rate: 4.1,
     commentsSum: 3,
+    isHit: true,
     category: "Heaters",
   },
   {
@@ -204,6 +205,7 @@ const items: GoodsItemData[] = [
     imgUrl: "/Goods/15.png",
     rate: 4.2,
     commentsSum: 6,
+    isHit: true,
     category: "Sinks",
   },
   {
@@ -213,7 +215,7 @@ const items: GoodsItemData[] = [
     price: 12490,
     discount: null,
     imgUrl: "/Goods/16.png",
-    rate: 4.0,
+    rate: 4,
     commentsSum: 4,
     isHit: true,
     category: "Baths",
@@ -234,7 +236,7 @@ const items: GoodsItemData[] = [
     href: "#",
     country: "Польша",
     price: 12850,
-    discount: null,
+    discount: 11565,
     imgUrl: "/Goods/18.png",
     rate: 4.3,
     commentsSum: 8,
@@ -271,6 +273,7 @@ const items: GoodsItemData[] = [
     imgUrl: "/Goods/21.png",
     rate: 4.8,
     commentsSum: 17,
+    isHit: true,
     category: "Towel dryers",
   },
   {
@@ -291,8 +294,9 @@ const items: GoodsItemData[] = [
     price: 4890,
     discount: null,
     imgUrl: "/Goods/23.png",
-    rate: 4.0,
+    rate: 4,
     commentsSum: 2,
+    isHit: true,
     category: "Heaters",
   },
   {
@@ -323,7 +327,7 @@ const items: GoodsItemData[] = [
     href: "#",
     country: "Китай",
     price: 11200,
-    discount: null,
+    discount: 10080,
     imgUrl: "/Goods/26.png",
     rate: 4.3,
     commentsSum: 9,
@@ -345,7 +349,7 @@ const items: GoodsItemData[] = [
     href: "#",
     country: "Россия",
     price: 15800,
-    discount: null,
+    discount: 14220,
     imgUrl: "/Goods/28.png",
     rate: 4.2,
     commentsSum: 7,
@@ -370,7 +374,7 @@ const items: GoodsItemData[] = [
     price: 6200,
     discount: null,
     imgUrl: "/Goods/30.png",
-    rate: 4.0,
+    rate: 4,
     commentsSum: 4,
     isHit: true,
     category: "Mirrors",
@@ -410,6 +414,10 @@ const dataCategories: CategoriesListData = {
   ],
 } as const;
 
+type Signs = string[];
+
+const signs: Signs = ["hit", "discount"];
+
 export default function Goods({
   data = items,
   categoriesList = dataCategories,
@@ -421,7 +429,17 @@ export default function Goods({
     <>
       <Title description="Хиты продаж" />
       <div className={Style.Goods}>
-        <GoodsSlider categories={categoriesList.hits} data={data} />
+        <GoodsSlider
+          categories={categoriesList.hits}
+          data={data}
+          sign={signs[0]}
+        />
+        <Title description="Акции" />
+        <GoodsSlider
+          categories={categoriesList.discounts}
+          data={data}
+          sign={signs[1]}
+        />
       </div>
     </>
   );
@@ -430,29 +448,116 @@ export default function Goods({
 function GoodsSlider({
   data,
   categories,
+  sign,
 }: {
   data: GoodsItemData[];
   categories: CategoryItem[];
+  sign: string;
 }) {
-  const [selectedCategory, setSelectedCategory] = useState("Любые товары");
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const items = data.filter((item) => {
+    if (sign == "hit" && item.isHit) {
+      if (selectedCategory == "All") return true;
+      if (item.category == selectedCategory) return true;
+      return false;
+    }
+    if (
+      sign == "discount" &&
+      item.discount != null &&
+      item.discount != undefined &&
+      item.price >= item?.discount
+    ) {
+      if (selectedCategory == "All") return true;
+      if (item.category == selectedCategory) return true;
+      return false;
+    }
+  });
+
+  const scrollEl = useRef<HTMLDivElement | null>(null);
+
+  function scrollBy(direction: string, el: HTMLElement | null) {
+    if (!el) return;
+    if (direction == "right") {
+      el.scrollBy({
+        left: 308,
+        behavior: "smooth",
+      });
+    }
+    if (direction == "left") {
+      el.scrollBy({
+        left: -308,
+        behavior: "smooth",
+      });
+    }
+  }
+  let firstPos = 0;
 
   return (
     <>
       <div className={Style.GoodsSlider}>
         <div className={Style.GoodsSlider__categories}>
-          <div className={Style.GoodsSlider__category}>Любые товары</div>
+          <div
+            onClick={() => {
+              setSelectedCategory("All");
+            }}
+            className={
+              Style.GoodsSlider__category +
+              " " +
+              (selectedCategory == "All" ? Style.selected : "")
+            }
+          >
+            Любые товары
+          </div>
           {categories.map((item) => {
             return (
-              <div key={item.tag} className={Style.GoodsSlider__category}>
+              <div
+                onClick={() => {
+                  setSelectedCategory(item.tag);
+                }}
+                key={item.tag}
+                className={
+                  Style.GoodsSlider__category +
+                  " " +
+                  (selectedCategory == item.tag ? Style.selected : "")
+                }
+              >
                 {item.text}
               </div>
             );
           })}
         </div>
         <div className={Style.GoodsSlider__items}>
-          {data.map((item) => (
-            <GoodsItem key={item.name} {...item} />
-          ))}
+          <div ref={scrollEl} className={Style.GoodsSlider__items__wrapper}>
+            {items.map((item) => (
+              <GoodsItem key={item.name} {...item} />
+            ))}
+          </div>
+          <div className={Style.GoodsSlider__items__buttons}>
+            <button
+              onClick={() =>
+                scrollBy("left", scrollEl.current as HTMLElement | null)
+              }
+              className={Style.GoodsSlider__items__buttonLeft}
+            >
+              <img
+                className={Style.GoodsSlider__items__button__img}
+                src="/Goods/arrow.svg"
+                alt="arrow"
+              />
+            </button>
+            <button
+              onClick={() =>
+                scrollBy("right", scrollEl.current as HTMLElement | null)
+              }
+              className={Style.GoodsSlider__items__buttonRight}
+            >
+              <img
+                className={Style.GoodsSlider__items__button__img}
+                src="/Goods/arrow.svg"
+                alt="arrow"
+              />
+            </button>
+          </div>
         </div>
       </div>
     </>
@@ -496,6 +601,7 @@ function GoodsItem(props: GoodsItemData) {
   const discountItem = (
     <p className={Style.GoodsItem__discount}>{discount + " " + "₽"}</p>
   );
+  const nullItem = <div className={Style.GoodsItem__nullItem}></div>;
   const discountSign = (
     <div className={Style.GoodsItem__discountSign}>АКЦИЯ</div>
   );
@@ -556,14 +662,16 @@ function GoodsItem(props: GoodsItemData) {
           }}
         />
       ) : null}
-      <div className={Style.GoodsItem__content}>
+      <div
+        className={Style.GoodsItem__content + " " + Style.GoodsItem__snapItem}
+      >
         <Rate rateSum={props.rate} commentsSum={props.commentsSum} />
         <h4 className={Style.GoodsItem__title}>{props.name}</h4>
         <p className={Style.GoodsItem__country}>{props.country}</p>
         <div className={Style.GoodsItem__info}>
           <p className={Style.GoodsItem__price}>{price + " ₽"}</p>
           <button className={Style.GoodsItem__button}>В корзину</button>
-          {Number.isFinite(props.discount) ? discountItem : null}
+          {Number.isFinite(props.discount) ? discountItem : nullItem}
         </div>
       </div>
       <div className={Style.GoodsItem__hoverBanner}>Быстрый просмотр</div>
