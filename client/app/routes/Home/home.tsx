@@ -6,6 +6,7 @@ import { Container } from "../headerBoard/ui";
 import Goods from "./Goods/Goods";
 import Brands from "./Brands/Brands";
 import Style from "./home.module.scss";
+import Articles from "./Articles/Articles";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -23,6 +24,7 @@ export default function Home() {
         <Collections />
         <Goods />
         <Brands />
+        <Articles />
       </Container>
     </>
   );

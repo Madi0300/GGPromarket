@@ -82,7 +82,9 @@ export default function Brands({ items = brandsList }: { items: Brand[] }) {
     const el = scrollEl.current;
     if (!el) return;
 
-    const brandCard = el.querySelector(`.${Style.BrandsCard}`) as HTMLElement | null;
+    const brandCard = el.querySelector(
+      `.${Style.BrandsCard}`
+    ) as HTMLElement | null;
     const gap = 20;
     const defaultCardWidth = 240;
     const cardWidth = brandCard ? brandCard.offsetWidth : defaultCardWidth;
@@ -159,7 +161,7 @@ function BrandsCard({ item }: { item: Brand }) {
     observer.observe(elem);
 
     return () => {
-      observer.unobserve(elem);
+      observer.disconnect();
     };
   });
 
