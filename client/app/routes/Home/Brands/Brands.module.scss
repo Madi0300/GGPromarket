@@ -1,3 +1,48 @@
+.BrandsSlider {
+  position: relative;
+
+  &__buttons {
+    display: none;
+    pointer-events: none;
+  }
+
+  &__buttonLeft,
+  &__buttonRight {
+    position: absolute;
+    top: 50%;
+    padding: 20px 24px;
+    background: rgba(213, 224, 230, 0.5);
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: auto;
+    z-index: 1;
+  }
+
+  &__buttonLeft {
+    left: -20px;
+    transform: translateY(-50%);
+  }
+
+  &__buttonRight {
+    right: -20px;
+    transform: translateY(-50%) rotate(180deg);
+  }
+
+  &__buttonImg {
+    display: block;
+  }
+
+  @media (max-width: 770px) {
+    &__buttons {
+      display: block;
+    }
+  }
+}
+
 .Brands {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -44,9 +89,11 @@
   width: 100%;
   aspect-ratio: 240 / 132;
   background-color: #fff;
+
   &__img {
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
   }
 }
+

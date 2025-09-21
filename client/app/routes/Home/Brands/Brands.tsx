@@ -1,6 +1,6 @@
 import { Title } from "../home";
 import Style from "./Brands.module.scss";
-import { use, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Brand = {
   name: string;
@@ -76,13 +76,56 @@ export const brandsList: Brand[] = [
 ];
 
 export default function Brands({ items = brandsList }: { items: Brand[] }) {
+  const scrollEl = useRef<HTMLDivElement | null>(null);
+
+  const scrollBy = (direction: "left" | "right") => {
+    const el = scrollEl.current;
+    if (!el) return;
+
+    const brandCard = el.querySelector(`.${Style.BrandsCard}`) as HTMLElement | null;
+    const gap = 20;
+    const defaultCardWidth = 240;
+    const cardWidth = brandCard ? brandCard.offsetWidth : defaultCardWidth;
+
+    el.scrollBy({
+      left: direction === "right" ? cardWidth + gap : -(cardWidth + gap),
+      behavior: "smooth",
+    });
+  };
+
   return (
     <>
       <Title description="Популярные бренды"></Title>
-      <div className={Style.Brands}>
-        {items.map((item) => {
-          return <BrandsCard key={item.name} item={item} />;
-        })}
+      <div className={Style.BrandsSlider}>
+        <div ref={scrollEl} className={Style.Brands}>
+          {items.map((item) => {
+            return <BrandsCard key={item.name} item={item} />;
+          })}
+        </div>
+        <div className={Style.BrandsSlider__buttons}>
+          <button
+            type="button"
+            onClick={() => scrollBy("left")}
+            className={Style.BrandsSlider__buttonLeft}
+          >
+            <img
+              className={Style.BrandsSlider__buttonImg}
+              src="/Goods/arrow.svg"
+              alt="arrow"
+            />
+          </button>
+          <button
+            type="button"
+            onClick={() => scrollBy("right")}
+            className={Style.BrandsSlider__buttonRight}
+          >
+            <img
+              className={Style.BrandsSlider__buttonImg}
+              src="/Goods/arrow.svg"
+              alt="arrow"
+            />
+          </button>
+        </div>
       </div>
     </>
   );
