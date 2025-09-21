@@ -71,8 +71,7 @@ client/
 
 - [x] Finish **ProductCatalog** (filters, empty-state, skeletons)
 - [x] Build **PopularBrands** carousel
-- [ ] Build **Articles / Blog preview**
-- [ ] Add **SEOTextBlock** (rich text + internal links)
+- [x] Add **SEOTextBlock** (rich text + internal links)
 - [ ] Layout **Footer** with adaptive grid
 - [ ] Set up minimal **backend** (Node + Express or Fastify)
 - [ ] Expose `/api/products` & `/api/brands` endpoints (static JSON)
