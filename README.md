@@ -70,7 +70,7 @@ client/
 ## 🗺️ Roadmap
 
 - [x] Finish **ProductCatalog** (filters, empty-state, skeletons)
-- [ ] Build **PopularBrands** carousel
+- [x] Build **PopularBrands** carousel
 - [ ] Build **Articles / Blog preview**
 - [ ] Add **SEOTextBlock** (rich text + internal links)
 - [ ] Layout **Footer** with adaptive grid
