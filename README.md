@@ -20,7 +20,7 @@
 | **Router / Build**   | React Router CLI **7.8.x** (Vite 7)        |
 | **State management** | Redux Toolkit **2.9** + RTK Query          |
 | **Styling**          | Tailwind CSS **4.1** + CSS/SCSS Modules    |
-| **Tooling**          | Vite **7.1** · ESLint · Prettier           |
+| **Tooling**          | Vite **7.1**                               |
 | **Testing**          | Vitest + React Testing Library _(planned)_ |
 
 ## 📸 Screenshots
@@ -52,10 +52,15 @@ npm run preview          # SSR-preview on port 3000
 ```text
 client/
   app/
-    header/
-    home/
-    goods/
-    collections/
+    routes/
+      headerBoard/
+      header/
+      home/
+        home.tsx
+        Collections/
+        Goods/
+        Hero/
+        Icons/
   store/
     appSlice.ts
     index.ts
