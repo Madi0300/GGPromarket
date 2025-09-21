@@ -4,6 +4,7 @@ import Icons from "./Icons/Icons";
 import Collections from "./Collections/Collections";
 import { Container } from "../headerBoard/ui";
 import Goods from "./Goods/Goods";
+import Brands from "./Brands/Brands";
 import Style from "./home.module.scss";
 
 export function meta({}: Route.MetaArgs) {
@@ -21,6 +22,7 @@ export default function Home() {
         <Icons />
         <Collections />
         <Goods />
+        <Brands />
       </Container>
     </>
   );
