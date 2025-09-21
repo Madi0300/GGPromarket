@@ -52,14 +52,57 @@ const articles: Article[] = [
 ];
 
 export default function Articles() {
+  const scrollEl = useRef<HTMLDivElement | null>(null);
+
+  const scrollBy = (direction: "left" | "right") => {
+    const el = scrollEl.current;
+    if (!el) return;
+
+    const card = el.querySelector(
+      `.${Style.ArticleCard}`
+    ) as HTMLElement | null;
+    const gap = 20;
+    const defaultCardWidth = 370;
+    const cardWidth = card ? card.offsetWidth : defaultCardWidth;
+
+    el.scrollBy({
+      left: direction === "right" ? cardWidth + gap : -(cardWidth + gap),
+      behavior: "smooth",
+    });
+  };
+
   return (
     <>
       <Title description="Статьи" />
       <div className={Style.Articles}>
-        <div className={Style.Articles__slider}>
+        <div ref={scrollEl} className={Style.Articles__slider}>
           {articles.map((item) => {
-            return <ArticleCard item={item} />;
+            return <ArticleCard key={item.title} item={item} />;
           })}
+        </div>
+        <div className={Style.Articles__buttons}>
+          <button
+            type="button"
+            onClick={() => scrollBy("left")}
+            className={Style.Articles__buttonLeft}
+          >
+            <img
+              className={Style.Articles__buttonImg}
+              src="/Goods/arrow.svg"
+              alt="arrow"
+            />
+          </button>
+          <button
+            type="button"
+            onClick={() => scrollBy("right")}
+            className={Style.Articles__buttonRight}
+          >
+            <img
+              className={Style.Articles__buttonImg}
+              src="/Goods/arrow.svg"
+              alt="arrow"
+            />
+          </button>
         </div>
       </div>
     </>
