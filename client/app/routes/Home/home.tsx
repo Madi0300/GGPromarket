@@ -7,6 +7,7 @@ import Goods from "./Goods/Goods";
 import Brands from "./Brands/Brands";
 import Style from "./home.module.scss";
 import Articles from "./Articles/Articles";
+import SEO from "./SEO/SEO";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -25,6 +26,7 @@ export default function Home() {
         <Goods />
         <Brands />
         <Articles />
+        <SEO />
       </Container>
     </>
   );
