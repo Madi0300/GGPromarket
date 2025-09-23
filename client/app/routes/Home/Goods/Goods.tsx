@@ -529,7 +529,7 @@ function GoodsSlider({
         <div className={Style.GoodsSlider__items}>
           <div ref={scrollEl} className={Style.GoodsSlider__items__wrapper}>
             {items.map((item) => (
-              <GoodsItem key={item.name} {...item} />
+              <GoodsItem key={item.name} props={item} scrollEl={scrollEl} />
             ))}
           </div>
           <div className={Style.GoodsSlider__items__buttons}>
@@ -564,7 +564,13 @@ function GoodsSlider({
   );
 }
 
-function GoodsItem(props: GoodsItemData) {
+function GoodsItem({
+  props,
+  scrollEl,
+}: {
+  props: GoodsItemData;
+  scrollEl: React.RefObject<HTMLDivElement | null>;
+}) {
   const [isDefaultImg, setIsDefaultImg] = useState(false);
   const [isHover, setIsHover] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
@@ -629,8 +635,8 @@ function GoodsItem(props: GoodsItemData) {
         }
       },
       {
-        root: null,
-        rootMargin: "100px",
+        root: scrollEl.current,
+        rootMargin: "300px",
         threshold: 0.1,
       }
     );

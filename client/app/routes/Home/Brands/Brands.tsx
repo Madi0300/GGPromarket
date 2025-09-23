@@ -101,7 +101,9 @@ export default function Brands({ items = brandsList }: { items: Brand[] }) {
       <div className={Style.BrandsSlider}>
         <div ref={scrollEl} className={Style.Brands}>
           {items.map((item) => {
-            return <BrandsCard key={item.name} item={item} />;
+            return (
+              <BrandsCard key={item.name} item={item} scrollEl={scrollEl} />
+            );
           })}
         </div>
         <div className={Style.BrandsSlider__buttons}>
@@ -133,7 +135,13 @@ export default function Brands({ items = brandsList }: { items: Brand[] }) {
   );
 }
 
-function BrandsCard({ item }: { item: Brand }) {
+function BrandsCard({
+  item,
+  scrollEl,
+}: {
+  item: Brand;
+  scrollEl: React.RefObject<HTMLDivElement | null>;
+}) {
   const [isDefaultImg, setIsDefaultImg] = useState(false);
   const defaultImg = "/Brands/defaultImg.svg";
   const [isVisible, setIsVisible] = useState(false);
@@ -153,8 +161,8 @@ function BrandsCard({ item }: { item: Brand }) {
         }
       },
       {
-        root: null,
-        rootMargin: "100px",
+        root: scrollEl.current,
+        rootMargin: "250px",
         threshold: 0.1,
       }
     );

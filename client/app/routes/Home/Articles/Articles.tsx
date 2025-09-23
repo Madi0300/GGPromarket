@@ -77,7 +77,9 @@ export default function Articles() {
       <div className={Style.Articles}>
         <div ref={scrollEl} className={Style.Articles__slider}>
           {articles.map((item) => {
-            return <ArticleCard key={item.title} item={item} />;
+            return (
+              <ArticleCard key={item.title} item={item} scrollEl={scrollEl} />
+            );
           })}
         </div>
         <div className={Style.Articles__buttons}>
@@ -109,7 +111,13 @@ export default function Articles() {
   );
 }
 
-function ArticleCard({ item }: { item: Article }) {
+function ArticleCard({
+  item,
+  scrollEl,
+}: {
+  item: Article;
+  scrollEl: React.RefObject<HTMLDivElement | null>;
+}) {
   const intersectingElem = useRef<HTMLAnchorElement | null>(null);
   const [isIntersecting, setIsIntersecting] = useState(false);
   const [isDefaultImg, setIsDefaultImg] = useState(false);
@@ -130,8 +138,8 @@ function ArticleCard({ item }: { item: Article }) {
         }
       },
       {
-        root: null,
-        rootMargin: "100px",
+        root: scrollEl.current,
+        rootMargin: "300px",
         threshold: 0.1,
       }
     );

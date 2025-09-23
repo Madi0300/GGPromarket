@@ -69,6 +69,8 @@
   background-color: #fff;
   padding-bottom: 10px;
 
+  scroll-snap-stop: always;
+
   @media (max-width: 420px) {
     width: calc(100vw - 40px);
     height: auto;
