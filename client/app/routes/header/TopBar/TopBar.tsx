@@ -3,6 +3,7 @@ import Style from "./TopBar.module.scss";
 import { useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../../store/store";
+import { Call } from "../../headerBoard/ui";
 
 export default function TopBar() {
   const currentLocation = useSelector(
@@ -28,25 +29,6 @@ function City({ city = "Москва" }: { city?: string }) {
         <img className={Style.City__icon} src="/header/location-icon.svg" />
         <span className={(Style.City__text, Style.underlined)}>{city}</span>
       </a>
-    </>
-  );
-}
-
-function Call({ number = 84950183210 }: { number?: number }) {
-  const stringedNumber = `${number}`;
-  const formattedPhone: string = `${stringedNumber[0]} ${stringedNumber.slice(1, 4)} ${stringedNumber.slice(4, 7)}-${stringedNumber.slice(7, 9)}-${stringedNumber.slice(9)}`;
-  return (
-    <>
-      <div className={Style.Call}>
-        <span className={Style.Call__number}>{formattedPhone}</span>
-        <img className={Style.Call__icon} src="/header/showMore.svg" alt="" />
-        <a
-          className={`${Style.Call__link} ${Style.underlined}`}
-          href={"tel:" + stringedNumber}
-        >
-          Заказать звонок
-        </a>
-      </div>
     </>
   );
 }

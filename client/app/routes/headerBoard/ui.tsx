@@ -1,4 +1,4 @@
-import Style from "./HeaderBoard.module.scss";
+import Style from "./ui.module.scss";
 import type { ReactNode } from "react";
 import { useState, useRef, useEffect, forwardRef } from "react";
 
@@ -104,3 +104,31 @@ export const Dropdown = forwardRef<HTMLDivElement, Props>(function Dropdown(
   );
 });
 
+export function Call({ number = 84950183210 }: { number?: number }) {
+  const stringedNumber = `${number}`;
+  return (
+    <>
+      <div className={Style.Call}>
+        <PhoneNumber number={number} />
+        <img className={Style.Call__icon} src="/header/showMore.svg" alt="" />
+        <a
+          className={`${Style.Call__link} ${Style.underlined}`}
+          href={"tel:" + stringedNumber}
+        >
+          Заказать звонок
+        </a>
+      </div>
+    </>
+  );
+}
+
+export function PhoneNumber({ number }: { number: number }) {
+  const stringedNumber = `${number}`;
+  const formattedPhone: string = `${stringedNumber[0]} ${stringedNumber.slice(1, 4)} ${stringedNumber.slice(4, 7)}-${stringedNumber.slice(7, 9)}-${stringedNumber.slice(9)}`;
+
+  return (
+    <>
+      <span className={Style.Call__number}>{formattedPhone}</span>
+    </>
+  );
+}
