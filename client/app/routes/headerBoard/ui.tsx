@@ -2,10 +2,16 @@ import Style from "./ui.module.scss";
 import type { ReactNode } from "react";
 import { useState, useRef, useEffect, forwardRef } from "react";
 
-export function Logo() {
+export function Logo({
+  width = "296px",
+  height = "33.21px",
+}: {
+  width?: string;
+  height?: string;
+}) {
   return (
     <>
-      <div className={Style.Logo}>
+      <div className={Style.Logo} style={{ width: width, height: height }}>
         <a href="/">
           <img className={Style.Logo_img} src="/headerBoard/logo.svg" />
         </a>
