@@ -1,0 +1,15 @@
+.FooterBottom {
+  --link--color: rgba(43, 123, 198, 1);
+  padding: 41px 0 49px;
+  font-family: Montserrat;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 24px;
+  letter-spacing: 0%;
+  text-align: left;
+  color: gray;
+
+  &__inlineLink {
+    color: var(--link--color);
+  }
+}
