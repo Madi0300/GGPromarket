@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 400">
+  <defs>
+    <linearGradient id="sliderGradient1" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#102a43" />
+      <stop offset="100%" stop-color="#243b53" />
+    </linearGradient>
+  </defs>
+  <rect width="960" height="400" fill="url(#sliderGradient1)" rx="32" />
+  <g fill="#f0f4f8" font-family="'Montserrat', 'Arial', sans-serif">
+    <text x="60" y="140" font-size="72" font-weight="700" letter-spacing="4">RAIBER</text>
+    <text x="60" y="210" font-size="44" font-weight="500">Смесители</text>
+    <text x="60" y="265" font-size="26" opacity="0.8">Коллекция Neo</text>
+    <rect x="60" y="290" width="200" height="56" rx="28" fill="#f0f4f8" opacity="0.18" />
+    <text x="95" y="327" font-size="24" font-weight="600">Подробнее</text>
+  </g>
+  <circle cx="720" cy="180" r="120" fill="#d9e2ec" opacity="0.35" />
+  <circle cx="760" cy="230" r="90" fill="#bcccdc" opacity="0.3" />
+  <circle cx="700" cy="250" r="60" fill="#f0f4f8" opacity="0.5" />
+</svg>

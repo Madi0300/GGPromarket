@@ -1,24 +1,33 @@
-import { Logo, Dropdown } from "../../headerBoard/ui";
+import { useMemo, useRef, useState } from "react";
+import { Logo, Dropdown, Call } from "../../headerBoard/ui";
 import Style from "./TopBar.module.scss";
-import { useState, useRef } from "react";
-import { useSelector } from "react-redux";
-import type { RootState } from "../../../store/store";
-import { Call } from "../../headerBoard/ui";
+import type { NavigationLink } from "../../../api/types";
 
-export default function TopBar() {
-  const currentLocation = useSelector(
-    (state: RootState) => state.app.currentLocation
+type TopBarProps = {
+  city?: string;
+  supportPhone?: string;
+  rawPhone?: string;
+  navigation?: NavigationLink[];
+};
+
+export default function TopBar({
+  city = "Москва",
+  supportPhone,
+  rawPhone,
+  navigation = [],
+}: TopBarProps) {
+  const navItems = useMemo(
+    () => navigation.map((item) => ({ name: item.label, href: item.href })),
+    [navigation]
   );
-  const callNumber = useSelector((state: RootState) => state.app.callNumber);
+
   return (
-    <>
-      <div className={Style.TopBar}>
-        <Logo />
-        <City city={currentLocation} />
-        <Call number={callNumber} />
-        <Navigation />
-      </div>
-    </>
+    <div className={Style.TopBar}>
+      <Logo />
+      <City city={city} />
+      <Call number={supportPhone ?? "+7 (495) 018-32-10"} rawNumber={rawPhone} />
+      <Navigation links={navItems} />
+    </div>
   );
 }
 
@@ -38,15 +47,7 @@ type NavLink = {
   href: string;
 };
 
-function Navigation() {
-  const navLinks: NavLink[] = [
-    { name: "Каталог", href: "#" },
-    { name: "Доставка", href: "#" },
-    { name: "Скидки", href: "#" },
-    { name: "Бренды", href: "#" },
-    { name: "Контакты", href: "#" },
-  ];
-
+function Navigation({ links = [] }: { links?: NavLink[] }) {
   const [toggleKey, setToggleKey] = useState(0);
   const catalog = useRef<HTMLDivElement | null>(null);
 
@@ -64,12 +65,12 @@ function Navigation() {
         <Dropdown
           position={"right"}
           ref={catalog}
-          items={navLinks}
+          items={links}
           toggleKey={toggleKey}
         />
       </button>
       <div className={Style.Navigation__Nav}>
-        {navLinks.map((item) => {
+        {links.map((item) => {
           return (
             <span key={item.name} className={Style.Navigation__item}>
               {item.name}

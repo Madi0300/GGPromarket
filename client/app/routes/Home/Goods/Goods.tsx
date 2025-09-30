@@ -1,624 +1,190 @@
 import Style from "./Goods.module.scss";
-import { useState, useEffect, useRef } from "react";
+import {
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  type RefObject,
+} from "react";
 import { Title } from "../home";
-
-export type Category =
-  | "Sinks"
-  | "Baths"
-  | "Toilets"
-  | "Shower systems"
-  | "Faucets"
-  | "Mirrors"
-  | "Shower cabins"
-  | "Washing machines"
-  | "Towel dryers"
-  | "Bidets"
-  | "Heaters"
-  | "Dishwashers"
-  | "All";
-
-type GoodsItemData = {
-  name: string;
-  href: string;
-  country: string;
-  price: number;
-  discount?: number | null;
-  imgUrl: string;
-  rate: number;
-  commentsSum: number;
-  isHit?: boolean;
-  category: Category;
-};
-
-const items: GoodsItemData[] = [
-  {
-    name: "Раковина Roca Debba 32799400Y, 60x48 см",
-    href: "#",
-    country: "Испания",
-    price: 2601,
-    discount: null,
-    imgUrl: "/Goods/1.png",
-    rate: 4.5,
-    commentsSum: 12,
-    isHit: true,
-    category: "Sinks",
-  },
-  {
-    name: "Акриловая ванна AM.PM Bliss L 180x80 W53A-180-080W-ARB",
-    href: "#",
-    country: "Германия",
-    price: 26990,
-    discount: 25641,
-    imgUrl: "/Goods/2.png",
-    rate: 4.5,
-    commentsSum: 2,
-    isHit: true,
-    category: "Baths",
-  },
-  {
-    name: "Душевая система Raiber R0808, хром",
-    href: "#",
-    country: "Германия",
-    price: 12207,
-    discount: null,
-    imgUrl: "/Goods/3.png",
-    rate: 4.5,
-    commentsSum: 24,
-    isHit: true,
-    category: "Shower cabins",
-  },
-  {
-    name: "Унитаз AM.PM Spirit V2.0 C708607SC компакт с сиденьем микролифт",
-    href: "#",
-    country: "Испания",
-    price: 14764,
-    discount: null,
-    imgUrl: "/Goods/4.png",
-    rate: 4.5,
-    commentsSum: 4,
-    isHit: true,
-    category: "Toilets",
-  },
-  {
-    name: "Полотенцесушитель электрический Laris Кватро П7 40x60 см",
-    href: "#",
-    country: "Россия, Украина",
-    price: 12730,
-    discount: null,
-    imgUrl: "/Goods/5.png",
-    rate: 4.5,
-    commentsSum: 10,
-    isHit: true,
-    category: "Towel dryers",
-  },
-  {
-    name: "Смеситель Grohe Eurosmart Cosmopolitan, хром",
-    href: "#",
-    country: "Германия",
-    price: 8850,
-    discount: null,
-    imgUrl: "/Goods/6.png",
-    rate: 4.7,
-    commentsSum: 18,
-    isHit: true,
-    category: "Faucets",
-  },
-  {
-    name: "Зеркало Vitra Frame 80x60 см, с подсветкой",
-    href: "#",
-    country: "Турция",
-    price: 15490,
-    discount: 13990,
-    imgUrl: "/Goods/7.png",
-    rate: 4.3,
-    commentsSum: 7,
-    category: "Mirrors",
-  },
-  {
-    name: "Сушильная машина Bosch Serie 4 WTN85231OE, 8 кг",
-    href: "#",
-    country: "Германия",
-    price: 119990,
-    discount: null,
-    imgUrl: "/Goods/8.png",
-    rate: 4.8,
-    commentsSum: 32,
-    isHit: true,
-    category: "Washing machines",
-  },
-  {
-    name: "Настенный полотенцесушитель Terminus Виктория 500x800 мм",
-    href: "#",
-    country: "Россия",
-    price: 10250,
-    discount: null,
-    imgUrl: "/Goods/9.png",
-    rate: 4.2,
-    commentsSum: 5,
-    isHit: true,
-    category: "Towel dryers",
-  },
-  {
-    name: "Биде Jacob Delafon Presquile E4781-00, подвесное",
-    href: "#",
-    country: "Франция",
-    price: 23100,
-    discount: null,
-    imgUrl: "/Goods/10.png",
-    rate: 4.6,
-    commentsSum: 9,
-    isHit: true,
-    category: "Bidets",
-  },
-  {
-    name: "Электрокотел Thermex Variant VE 3,0 кВт",
-    href: "#",
-    country: "Россия",
-    price: 18500,
-    discount: null,
-    imgUrl: "/Goods/11.png",
-    rate: 4.1,
-    commentsSum: 3,
-    isHit: true,
-    category: "Heaters",
-  },
-  {
-    name: "Посудомоечная машина Indesit DSR 15B1 RUS",
-    href: "#",
-    country: "Италия",
-    price: 46990,
-    discount: 42990,
-    imgUrl: "/Goods/12.png",
-    rate: 4.4,
-    commentsSum: 14,
-    category: "Dishwashers",
-  },
-  {
-    name: "Смеситель Hansgrohe Focus S, для раковины",
-    href: "#",
-    country: "Германия",
-    price: 7550,
-    discount: null,
-    imgUrl: "/Goods/13.png",
-    rate: 4.5,
-    commentsSum: 21,
-    isHit: true,
-    category: "Faucets",
-  },
-  {
-    name: "Душевая кабина Kolpa-San Vista 120x80, правая",
-    href: "#",
-    country: "Словения",
-    price: 67990,
-    discount: 64990,
-    imgUrl: "/Goods/14.png",
-    rate: 4.4,
-    commentsSum: 11,
-    category: "Shower cabins",
-  },
-  {
-    name: "Раковина Duravit D-Code 65 см, белая",
-    href: "#",
-    country: "Германия",
-    price: 14300,
-    discount: null,
-    imgUrl: "/Goods/15.png",
-    rate: 4.2,
-    commentsSum: 6,
-    isHit: true,
-    category: "Sinks",
-  },
-  {
-    name: "Акриловая ванна Triton Влада 160x70 см",
-    href: "#",
-    country: "Россия",
-    price: 12490,
-    discount: null,
-    imgUrl: "/Goods/16.png",
-    rate: 4,
-    commentsSum: 4,
-    isHit: true,
-    category: "Baths",
-  },
-  {
-    name: "Система душа Oras Optima 2852",
-    href: "#",
-    country: "Финляндия",
-    price: 10200,
-    discount: 9500,
-    imgUrl: "/Goods/17.png",
-    rate: 4.5,
-    commentsSum: 13,
-    category: "Shower systems",
-  },
-  {
-    name: "Унитаз подвесной Cersanit President CleanOn",
-    href: "#",
-    country: "Польша",
-    price: 12850,
-    discount: 11565,
-    imgUrl: "/Goods/18.png",
-    rate: 4.3,
-    commentsSum: 8,
-    category: "Toilets",
-  },
-  {
-    name: "Зеркало Cielo Mood 100x70 см без подсветки",
-    href: "#",
-    country: "Италия",
-    price: 17500,
-    discount: 15900,
-    imgUrl: "/Goods/19.png",
-    rate: 4.6,
-    commentsSum: 10,
-    category: "Mirrors",
-  },
-  {
-    name: "Стиральная машина Samsung WW70J5555FW, 7 кг",
-    href: "#",
-    country: "Южная Корея",
-    price: 59990,
-    discount: 55990,
-    imgUrl: "/Goods/20.png",
-    rate: 4.7,
-    commentsSum: 29,
-    category: "Washing machines",
-  },
-  {
-    name: "Полотенцесушитель водяной Zehnder Forma Spa 50x120 см",
-    href: "#",
-    country: "Швейцария",
-    price: 34200,
-    discount: null,
-    imgUrl: "/Goods/21.png",
-    rate: 4.8,
-    commentsSum: 17,
-    isHit: true,
-    category: "Towel dryers",
-  },
-  {
-    name: "Биде подвесное Roca Meridian, E34747",
-    href: "#",
-    country: "Испания",
-    price: 21900,
-    discount: 19900,
-    imgUrl: "/Goods/22.png",
-    rate: 4.2,
-    commentsSum: 5,
-    category: "Bidets",
-  },
-  {
-    name: "Конвектор Ballu BEC/EVU-2000",
-    href: "#",
-    country: "Китай",
-    price: 4890,
-    discount: null,
-    imgUrl: "/Goods/23.png",
-    rate: 4,
-    commentsSum: 2,
-    isHit: true,
-    category: "Heaters",
-  },
-  {
-    name: "Посудомоечная машина Bosch Serie 2 SMS2HKI07R",
-    href: "#",
-    country: "Германия",
-    price: 52990,
-    discount: null,
-    imgUrl: "/Goods/24.png",
-    rate: 4.7,
-    commentsSum: 22,
-    isHit: true,
-    category: "Dishwashers",
-  },
-  {
-    name: "Смеситель для душа Ideal Standard Slide",
-    href: "#",
-    country: "Бельгия",
-    price: 8450,
-    discount: 7990,
-    imgUrl: "/Goods/25.png",
-    rate: 4.4,
-    commentsSum: 14,
-    category: "Shower systems",
-  },
-  {
-    name: "Душевой гарнитур Iddis Slide SLSB00i07",
-    href: "#",
-    country: "Китай",
-    price: 11200,
-    discount: 10080,
-    imgUrl: "/Goods/26.png",
-    rate: 4.3,
-    commentsSum: 9,
-    category: "Shower systems",
-  },
-  {
-    name: "Раковина Sanita Luxe 60x45 см, белая",
-    href: "#",
-    country: "Беларусь",
-    price: 5100,
-    discount: 4690,
-    imgUrl: "/Goods/27.png",
-    rate: 4.1,
-    commentsSum: 6,
-    category: "Sinks",
-  },
-  {
-    name: "Акриловая ванна Aquanet Карина 150x70",
-    href: "#",
-    country: "Россия",
-    price: 15800,
-    discount: 14220,
-    imgUrl: "/Goods/28.png",
-    rate: 4.2,
-    commentsSum: 7,
-    category: "Baths",
-  },
-  {
-    name: "Унитаз-компакт Jika Lyra Plus",
-    href: "#",
-    country: "Швейцария",
-    price: 13500,
-    discount: 12500,
-    imgUrl: "/Goods/29.png",
-    rate: 4.6,
-    commentsSum: 12,
-    isHit: true,
-    category: "Toilets",
-  },
-  {
-    name: "Зеркало Aquaton Севилья 70x50 см",
-    href: "#",
-    country: "Россия",
-    price: 6200,
-    discount: null,
-    imgUrl: "/Goods/30.png",
-    rate: 4,
-    commentsSum: 4,
-    isHit: true,
-    category: "Mirrors",
-  },
-];
+import type {
+  Product,
+  ProductCategory,
+  HighlightFilters,
+} from "../../../api/types";
 
 type CategoryItem = {
-  tag: Category;
+  tag: string;
   text: string;
 };
 
-type CategoriesListData = {
-  hits: CategoryItem[];
-  discounts: CategoryItem[];
+type GoodsProps = {
+  items?: Product[];
+  categories?: ProductCategory[];
+  highlights?: HighlightFilters;
 };
 
-const dataCategories: CategoriesListData = {
-  hits: [
-    { tag: "Sinks", text: "Раковины" },
-    { tag: "Baths", text: "Ванны" },
-    { tag: "Toilets", text: "Унитазы" },
-    { tag: "Shower systems", text: "Душевые системы" },
-    { tag: "Faucets", text: "Смесители" },
-    { tag: "Mirrors", text: "Зеркала" },
-    { tag: "Shower cabins", text: "Душевые кабины" },
-    { tag: "Washing machines", text: "Стиральные машины" },
-  ],
-  discounts: [
-    { tag: "Faucets", text: "Смесители" },
-    { tag: "Towel dryers", text: "Полотенцесушители" },
-    { tag: "Bidets", text: "Биде" },
-    { tag: "Shower systems", text: "Душевые системы" },
-    { tag: "Baths", text: "Ванны" },
-    { tag: "Toilets", text: "Унитазы" },
-    { tag: "Heaters", text: "Обогреватели" },
-    { tag: "Dishwashers", text: "Посудомоечные машины" },
-  ],
-} as const;
+type GoodsSliderProps = {
+  data: Product[];
+  categories: CategoryItem[];
+  mode: "hit" | "discount";
+};
 
-type Signs = string[];
-
-const signs: Signs = ["hit", "discount"];
+const ALL_CATEGORY = "all";
+const currencyFormatter = new Intl.NumberFormat("ru-RU");
 
 export default function Goods({
-  data = items,
-  categoriesList = dataCategories,
-}: {
-  data: GoodsItemData[];
-  categoriesList: CategoriesListData;
-}) {
+  items = [],
+  categories = [],
+  highlights,
+}: GoodsProps) {
+  const categoriesMap = useMemo(
+    () => new Map(categories.map((item) => [item.id, item])),
+    [categories]
+  );
+
+  const hitsCategories = useMemo(
+    () =>
+      createCategoryItems(highlights?.hits ?? [], categoriesMap),
+    [highlights?.hits, categoriesMap]
+  );
+
+  const discountCategories = useMemo(
+    () =>
+      createCategoryItems(highlights?.discounts ?? [], categoriesMap),
+    [highlights?.discounts, categoriesMap]
+  );
+
+  if (items.length === 0) {
+    return null;
+  }
+
   return (
     <>
       <Title description="Хиты продаж" />
       <div className={Style.Goods}>
-        <GoodsSlider
-          categories={categoriesList.hits}
-          data={data}
-          sign={signs[0]}
-        />
+        <GoodsSlider categories={hitsCategories} data={items} mode="hit" />
         <Title description="Акции" />
         <GoodsSlider
-          categories={categoriesList.discounts}
-          data={data}
-          sign={signs[1]}
+          categories={discountCategories}
+          data={items}
+          mode="discount"
         />
       </div>
     </>
   );
 }
 
-function GoodsSlider({
-  data,
-  categories,
-  sign,
-}: {
-  data: GoodsItemData[];
-  categories: CategoryItem[];
-  sign: string;
-}) {
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const items = data.filter((item) => {
-    if (sign == "hit" && item.isHit) {
-      if (selectedCategory == "All") return true;
-      if (item.category == selectedCategory) return true;
-      return false;
-    }
-    if (
-      sign == "discount" &&
-      item.discount != null &&
-      item.discount != undefined &&
-      item.price >= item?.discount
-    ) {
-      if (selectedCategory == "All") return true;
-      if (item.category == selectedCategory) return true;
-      return false;
-    }
-  });
-
+function GoodsSlider({ data, categories, mode }: GoodsSliderProps) {
+  const [selectedCategory, setSelectedCategory] = useState<string>(ALL_CATEGORY);
   const scrollEl = useRef<HTMLDivElement | null>(null);
 
-  function scrollBy(direction: string, el: HTMLElement | null) {
+  const filteredItems = useMemo(() => {
+    return data.filter((item) => {
+      const matchesMode =
+        mode === "hit"
+          ? item.availability.isHit
+          : item.availability.hasDiscount;
+
+      if (!matchesMode) return false;
+      if (selectedCategory === ALL_CATEGORY) return true;
+      return item.categories.includes(selectedCategory);
+    });
+  }, [data, mode, selectedCategory]);
+
+  function scrollBy(direction: "left" | "right") {
+    const el = scrollEl.current;
     if (!el) return;
-    if (direction == "right") {
-      el.scrollBy({
-        left: 308,
-        behavior: "smooth",
-      });
-    }
-    if (direction == "left") {
-      el.scrollBy({
-        left: -308,
-        behavior: "smooth",
-      });
-    }
+
+    const card = el.querySelector(
+      `.${Style.GoodsItem}`
+    ) as HTMLElement | null;
+    const gap = 20;
+    const defaultCardWidth = 288;
+    const cardWidth = card ? card.offsetWidth : defaultCardWidth;
+
+    el.scrollBy({
+      left: direction === "right" ? cardWidth + gap : -(cardWidth + gap),
+      behavior: "smooth",
+    });
   }
-  let firstPos = 0;
 
   return (
-    <>
-      <div className={Style.GoodsSlider}>
-        <div className={Style.GoodsSlider__categories}>
+    <div className={Style.GoodsSlider}>
+      <div className={Style.GoodsSlider__categories}>
+        <div
+          onClick={() => {
+            setSelectedCategory(ALL_CATEGORY);
+          }}
+          className={
+            Style.GoodsSlider__category +
+            " " +
+            (selectedCategory === ALL_CATEGORY ? Style.selected : "")
+          }
+        >
+          Любые товары
+        </div>
+        {categories.map((item) => (
           <div
             onClick={() => {
-              setSelectedCategory("All");
+              setSelectedCategory(item.tag);
             }}
+            key={item.tag}
             className={
               Style.GoodsSlider__category +
               " " +
-              (selectedCategory == "All" ? Style.selected : "")
+              (selectedCategory === item.tag ? Style.selected : "")
             }
           >
-            Любые товары
+            {item.text}
           </div>
-          {categories.map((item) => {
-            return (
-              <div
-                onClick={() => {
-                  setSelectedCategory(item.tag);
-                }}
-                key={item.tag}
-                className={
-                  Style.GoodsSlider__category +
-                  " " +
-                  (selectedCategory == item.tag ? Style.selected : "")
-                }
-              >
-                {item.text}
-              </div>
-            );
-          })}
-        </div>
-        <div className={Style.GoodsSlider__items}>
-          <div ref={scrollEl} className={Style.GoodsSlider__items__wrapper}>
-            {items.map((item) => (
-              <GoodsItem key={item.name} props={item} scrollEl={scrollEl} />
-            ))}
-          </div>
-          <div className={Style.GoodsSlider__items__buttons}>
-            <button
-              onClick={() =>
-                scrollBy("left", scrollEl.current as HTMLElement | null)
-              }
-              className={Style.GoodsSlider__items__buttonLeft}
-            >
-              <img
-                className={Style.GoodsSlider__items__button__img}
-                src="/Goods/arrow.svg"
-                alt="arrow"
-              />
-            </button>
-            <button
-              onClick={() =>
-                scrollBy("right", scrollEl.current as HTMLElement | null)
-              }
-              className={Style.GoodsSlider__items__buttonRight}
-            >
-              <img
-                className={Style.GoodsSlider__items__button__img}
-                src="/Goods/arrow.svg"
-                alt="arrow"
-              />
-            </button>
-          </div>
-        </div>
+        ))}
       </div>
-    </>
+      <div className={Style.GoodsSlider__listWrapper}>
+        <button
+          className={Style.GoodsSlider__navLeft}
+          onClick={() => scrollBy("left")}
+          aria-label="Scroll left"
+        >
+          <img src="/Goods/arrow.svg" alt="" />
+        </button>
+        <div ref={scrollEl} className={Style.GoodsSlider__list}>
+          {filteredItems.map((item) => (
+            <GoodsItem key={item.id} item={item} scrollEl={scrollEl} />
+          ))}
+        </div>
+        <button
+          className={Style.GoodsSlider__navRight}
+          onClick={() => scrollBy("right")}
+          aria-label="Scroll right"
+        >
+          <img src="/Goods/arrow.svg" alt="" />
+        </button>
+      </div>
+    </div>
   );
 }
 
-function GoodsItem({
-  props,
-  scrollEl,
-}: {
-  props: GoodsItemData;
-  scrollEl: React.RefObject<HTMLDivElement | null>;
-}) {
-  const [isDefaultImg, setIsDefaultImg] = useState(false);
+type GoodsItemProps = {
+  item: Product;
+  scrollEl: RefObject<HTMLDivElement | null>;
+};
+
+function GoodsItem({ item, scrollEl }: GoodsItemProps) {
   const [isHover, setIsHover] = useState(false);
+  const [isDefaultImg, setIsDefaultImg] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-  const elem = useRef(null);
-  const price = props.price
-    .toString()
-    .split("")
-    .reverse()
-    .map((item, index) => {
-      if ((index + 1) % 3 == 0 && index != 0) return " " + item;
-      else return item;
-    })
-    .reverse()
-    .join("");
+  const elem = useRef<HTMLAnchorElement | null>(null);
+  const { price, availability, rating } = item;
 
-  const discount = props.discount
-    ? props.discount
-        .toString()
-        .split("")
-        .reverse()
-        .map((item, index) => {
-          if ((index + 1) % 3 == 0 && index != 0) return " " + item;
-          else return item;
-        })
-        .reverse()
-        .join("")
-    : null;
+  const formattedPrice = `${currencyFormatter.format(price.current)} ₽`;
+  const discountPrice =
+    availability.hasDiscount && price.old
+      ? `${currencyFormatter.format(price.old)} ₽`
+      : null;
 
-  const isDiscount =
-    props.discount != undefined &&
-    Number.isFinite(props.discount) &&
-    props.price - props.discount;
-
-  const discountItem = (
-    <p className={Style.GoodsItem__discount}>{discount + " " + "₽"}</p>
-  );
-  const nullItem = <div className={Style.GoodsItem__nullItem}></div>;
-  const discountSign = (
-    <div className={Style.GoodsItem__discountSign}>АКЦИЯ</div>
-  );
-  const hitSign = <div className={Style.GoodsItem__hitSign}>ХИТ</div>;
-
-  const GoodItemSigns = (
-    <div className={Style.GoodsItem__signs}>
-      {props.isHit ? hitSign : null}
-      {isDiscount ? discountSign : null}
-    </div>
-  );
+  const isDiscount = Boolean(discountPrice);
+  const productHref = `/catalog/product/${item.slug}`;
 
   useEffect(() => {
     if (!elem.current) return;
@@ -627,10 +193,9 @@ function GoodsItem({
 
     const observer = new IntersectionObserver(
       (entries) => {
-        const [el] = entries;
-        if (el.isIntersecting) {
+        const [entry] = entries;
+        if (entry.isIntersecting) {
           setIsVisible(true);
-          console.log(el + "isShowed");
           observer.unobserve(element);
         }
       },
@@ -645,11 +210,25 @@ function GoodsItem({
     return () => {
       observer.disconnect();
     };
-  }, []);
+  }, [isVisible, scrollEl]);
+
+  const likeIcon = (
+    <img src="/Goods/like.svg" alt="like" className={Style.GoodsItem__like} />
+  );
+  const hitSign = <div className={Style.GoodsItem__hitSign}>ХИТ</div>;
+  const discountPercent =
+    price.old && price.old < price.current
+      ? Math.round(((price.current - price.old) / price.current) * 100)
+      : null;
+  const discountSign =
+    discountPercent !== null ? (
+      <div className={Style.GoodsItem__discountSign}>-{discountPercent}%</div>
+    ) : null;
+
   return (
     <a
       ref={elem}
-      href={props.href}
+      href={productHref}
       onMouseLeave={() => {
         setIsHover(false);
       }}
@@ -661,28 +240,35 @@ function GoodsItem({
       {isVisible ? (
         <img
           className={Style.GoodsItem__image}
-          src={!isDefaultImg ? props.imgUrl : "/Goods/default.png"}
-          alt=""
+          src={!isDefaultImg && item.media.thumbnail ? item.media.thumbnail : "/Goods/default.png"}
+          alt={item.title}
           onError={() => {
             setIsDefaultImg(true);
           }}
         />
       ) : null}
-      <div
-        className={Style.GoodsItem__content + " " + Style.GoodsItem__snapItem}
-      >
-        <Rate rateSum={props.rate} commentsSum={props.commentsSum} />
-        <h4 className={Style.GoodsItem__title}>{props.name}</h4>
-        <p className={Style.GoodsItem__country}>{props.country}</p>
+      <div className={Style.GoodsItem__content + " " + Style.GoodsItem__snapItem}>
+        <Rate rateSum={rating.score} commentsSum={rating.reviewsCount} />
+        <h4 className={Style.GoodsItem__title}>{item.title}</h4>
+        <p className={Style.GoodsItem__country}>{item.origin}</p>
         <div className={Style.GoodsItem__info}>
-          <p className={Style.GoodsItem__price}>{price + " ₽"}</p>
+          <p className={Style.GoodsItem__price}>{formattedPrice}</p>
           <button className={Style.GoodsItem__button}>В корзину</button>
-          {Number.isFinite(props.discount) ? discountItem : nullItem}
+          {discountPrice ? (
+            <div className={Style.GoodsItem__discount}>{discountPrice}</div>
+          ) : (
+            <div className={Style.GoodsItem__discount}></div>
+          )}
         </div>
       </div>
       <div className={Style.GoodsItem__hoverBanner}>Быстрый просмотр</div>
-      <img src="/Goods/like.svg" alt="like" className={Style.GoodsItem__like} />
-      {isDiscount || props.isHit ? GoodItemSigns : null}
+      {likeIcon}
+      {(availability.isHit || isDiscount) && (
+        <div className={Style.GoodsItem__signs}>
+          {availability.isHit ? hitSign : null}
+          {isDiscount ? discountSign : null}
+        </div>
+      )}
     </a>
   );
 }
@@ -694,27 +280,20 @@ function Rate({
   rateSum: number;
   commentsSum: number;
 }) {
-  let curRate = rateSum;
+  const fullStars = Math.floor(rateSum);
+  const hasHalfStar = rateSum - fullStars >= 0.5;
+  const stars = [] as JSX.Element[];
 
-  let stars = [];
-
-  if (rateSum < 0) {
-    return;
-  }
-  for (let i = 1; i <= curRate; curRate--) {
+  for (let i = 0; i < fullStars; i++) {
     stars.push(
-      <img
-        key={5 - curRate}
-        src="/Goods/star.svg"
-        alt=""
-        className={Style.Rate__icon}
-      />
+      <img key={`star-${i}`} src="/Goods/star.svg" alt="" className={Style.Rate__icon} />
     );
   }
-  if (curRate > 0) {
+
+  if (hasHalfStar) {
     stars.push(
       <img
-        key={5 - curRate}
+        key="half-star"
         src="/Goods/halfStar.svg"
         alt=""
         className={Style.Rate__icon}
@@ -723,14 +302,28 @@ function Rate({
   }
 
   return (
-    <>
-      <div className={Style.Rate}>
-        <span className={Style.Rate__stars}>{stars}</span>
-        <span className={Style.Rate__comments}>
-          <img src="/Goods/commentsIcon.svg" alt="" />
-          {rateSum}
-        </span>
-      </div>
-    </>
+    <div className={Style.Rate}>
+      <span className={Style.Rate__stars}>{stars}</span>
+      <span className={Style.Rate__comments}>
+        <img src="/Goods/commentsIcon.svg" alt="" />
+        {commentsSum}
+      </span>
+    </div>
   );
+}
+
+function createCategoryItems(
+  ids: string[],
+  map: Map<string, ProductCategory>
+): CategoryItem[] {
+  const seen = new Set<string>();
+  return ids
+    .map((id) => map.get(id))
+    .filter((item): item is ProductCategory => Boolean(item))
+    .filter((item) => {
+      if (seen.has(item.id)) return false;
+      seen.add(item.id);
+      return true;
+    })
+    .map((item) => ({ tag: item.id, text: item.title }));
 }

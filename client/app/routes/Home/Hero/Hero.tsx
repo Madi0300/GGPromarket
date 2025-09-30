@@ -1,30 +1,30 @@
 import Style from "./Hero.module.scss";
-import { useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
-import type { RootState } from "../../../store/store";
+import { useEffect, useMemo, useRef, useState } from "react";
+import type { HeroPayload } from "../../../api/types";
 
-export default function Hero() {
+type HeroProps = {
+  items?: HeroPayload["slider"];
+  sidebar?: HeroPayload["sidebar"];
+};
+
+export default function Hero({ items = [], sidebar = [] }: HeroProps) {
   const [currentItem, setCurrentItem] = useState(0);
-  const baseUrl = import.meta.env.BASE_URL || "/";
-  const defaultImageUrl = `${baseUrl}HeroSlider/default.png`;
-
-  const items = useSelector((state: RootState) => state.app.heroItems);
-  const sideBarItems = useSelector(
-    (state: RootState) => state.app.heroSidebarItems
-  );
   const [isSliderImgDefault, setIsSliderImgDefault] = useState(false);
   const [isSidebarFirstImgDefault, setIsSidebarFirstImgDefault] =
     useState(false);
-
   const [isSidebarSecondImgDefault, setIsSidebarSecondImgDefault] =
     useState(false);
-
-  const currentSliderImg = items[currentItem].imgUrl;
-  const sideBarFirstImg = sideBarItems[0].imgUrl;
-  const sideBarSecondImg = sideBarItems[1].imgUrl;
-
   const [isVisible, setIsVisible] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
+
+  const baseUrl = import.meta.env.BASE_URL || "/";
+  const defaultImageUrl = `${baseUrl}HeroSlider/default.png`;
+
+  useEffect(() => {
+    if (currentItem >= items.length) {
+      setCurrentItem(0);
+    }
+  }, [items.length, currentItem]);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -43,17 +43,22 @@ export default function Hero() {
     return () => observer.disconnect();
   }, []);
 
-  if (items.length === 0) return null;
+  const slide = items[currentItem] ?? items[0];
+  const sidebarItems = useMemo(() => sidebar.slice(0, 2), [sidebar]);
 
-  function handleButtonClick(direction: "left" | "right") {
+  if (!slide) {
+    return null;
+  }
+
+  const handleButtonClick = (direction: "left" | "right") => {
+    setIsSliderImgDefault(false);
     setCurrentItem((prev) => {
       if (direction === "left") {
         return prev === 0 ? items.length - 1 : prev - 1;
-      } else {
-        return prev === items.length - 1 ? 0 : prev + 1;
       }
+      return prev === items.length - 1 ? 0 : prev + 1;
     });
-  }
+  };
 
   return (
     <div className={Style.Hero} ref={containerRef}>
@@ -62,8 +67,8 @@ export default function Hero() {
           {isVisible && (
             <img
               className={Style.Hero__slider__img}
-              src={!isSliderImgDefault ? currentSliderImg : defaultImageUrl}
-              alt={items[currentItem].title}
+              src={!isSliderImgDefault ? slide.image : defaultImageUrl}
+              alt={slide.title}
               onError={() => {
                 setIsSliderImgDefault(true);
               }}
@@ -71,17 +76,10 @@ export default function Hero() {
           )}
         </div>
         <div className={Style.Hero__slider__content}>
-          <h2 className={Style.Hero__slider__title}>
-            {items[currentItem].title}
-          </h2>
-          <p className={Style.Hero__slider__subtitle}>
-            {items[currentItem].subtitle}
-          </p>
-          <a
-            href={items[currentItem].link}
-            className={Style.Hero__slider__button}
-          >
-            Подробнее
+          <h2 className={Style.Hero__slider__title}>{slide.title}</h2>
+          <p className={Style.Hero__slider__subtitle}>{slide.subtitle}</p>
+          <a href={slide.cta.href} className={Style.Hero__slider__button}>
+            {slide.cta.label}
           </a>
         </div>
         <div className={Style.Hero__slider__nav}>
@@ -95,75 +93,45 @@ export default function Hero() {
           <button
             onClick={() => handleButtonClick("right")}
             className={Style.Hero__slider__navButtonRight}
-            aria-label="Previous"
+            aria-label="Next"
           >
             <img src="/HeroSlider/arrowRight.svg" alt="" />
           </button>
         </div>
       </div>
       <div className={Style.Hero__sidebar}>
-        {sideBarItems.length > 0 && (
-          <div className={Style.Hero__sidebar__item}>
-            <div className={Style.Hero__sidebar__imageWrapper}>
-              {isVisible ? (
-                <img
-                  className={Style.Hero__sidebar__img}
-                  src={
-                    !isSidebarFirstImgDefault
-                      ? sideBarFirstImg
-                      : defaultImageUrl
-                  }
-                  onError={() => {
-                    setIsSidebarFirstImgDefault(true);
-                  }}
-                  alt="#"
-                />
-              ) : null}
+        {sidebarItems.map((item, index) => {
+          const isFirst = index === 0;
+          const isDefault = isFirst
+            ? isSidebarFirstImgDefault
+            : isSidebarSecondImgDefault;
+          const setDefault = isFirst
+            ? setIsSidebarFirstImgDefault
+            : setIsSidebarSecondImgDefault;
+
+          return (
+            <div key={item.id} className={Style.Hero__sidebar__item}>
+              <div className={Style.Hero__sidebar__imageWrapper}>
+                {isVisible ? (
+                  <img
+                    className={Style.Hero__sidebar__img}
+                    src={!isDefault ? item.image : defaultImageUrl}
+                    onError={() => {
+                      setDefault(true);
+                    }}
+                    alt={item.title}
+                  />
+                ) : null}
+              </div>
+              <div className={Style.Hero__sidebar__content}>
+                <h3 className={Style.Hero__sidebar__title}>{item.title}</h3>
+                <a className={Style.Hero__sidebar__button} href={item.href}>
+                  Подробнее
+                </a>
+              </div>
             </div>
-            <div className={Style.Hero__sidebar__content}>
-              <h3 className={Style.Hero__sidebar__title}>
-                {sideBarItems[0].title}
-              </h3>
-              <a
-                className={Style.Hero__sidebar__button}
-                href={sideBarItems[0].link}
-              >
-                Подробнее
-              </a>
-            </div>
-          </div>
-        )}
-        {sideBarItems.length > 1 && (
-          <div className={Style.Hero__sidebar__item}>
-            <div className={Style.Hero__sidebar__imageWrapper}>
-              {isVisible ? (
-                <img
-                  className={Style.Hero__sidebar__img}
-                  src={
-                    !isSidebarSecondImgDefault
-                      ? sideBarSecondImg
-                      : defaultImageUrl
-                  }
-                  onError={() => {
-                    setIsSidebarSecondImgDefault(true);
-                  }}
-                  alt="#"
-                />
-              ) : null}
-            </div>
-            <div className={Style.Hero__sidebar__content}>
-              <h3 className={Style.Hero__sidebar__title}>
-                {sideBarItems[1].title}
-              </h3>
-              <a
-                className={Style.Hero__sidebar__button}
-                href={sideBarItems[1].link}
-              >
-                Подробнее
-              </a>
-            </div>
-          </div>
-        )}
+          );
+        })}
       </div>
     </div>
   );

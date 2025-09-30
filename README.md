@@ -1,27 +1,28 @@
 # GGPromarket 🛁🚽
 
-> **Single-page e-commerce demo for bathroom & sanitary ware**  
-> Built as a portfolio project to showcase modern React + TypeScript skills.
+> **Single-page e-commerce demo for bathroom & sanitary ware**
+> Frontend powered by React Router + Vite and backed by a lightweight Node.js API.
 
 ## ✨ Features
 
 - **Responsive UI** — desktop / tablet / mobile / any sizes
-- **Product catalogue** with category filtering (baths, toilets, sinks, …)
-- **Cart & mini-cart** powered by Redux Toolkit
-- **Client-side routing & SSR-ready build** (React Router v7 CLI)
-- **Lazy-loaded images** (IntersectionObserver)
-- **Default images** applies a default image if there is an error loading the required image
+- **Product catalogue** with data served from a backend API
+- **Hydrated state**: no hardcoded Redux data, everything loads via `/api/*`
+- **Client-side routing (React Router v7)** with loader-based data fetching
+- **Lazy-loaded media** (IntersectionObserver) with resilient default fallbacks
+- **Shared media storage**: marketing assets are hosted from the Node.js server
 
 ## 🛠️ Tech stack (2025-09-10)
 
-| Layer                | Tech & version                             |
-| -------------------- | ------------------------------------------ |
-| **Framework**        | React **19.1.1** + TypeScript 5.9          |
-| **Router / Build**   | React Router CLI **7.8.x** (Vite 7)        |
-| **State management** | Redux Toolkit **2.9** + RTK Query          |
-| **Styling**          | Tailwind CSS **4.1** + CSS/SCSS Modules    |
-| **Tooling**          | Vite **7.1**                               |
-| **Testing**          | Vitest + React Testing Library _(planned)_ |
+| Layer                  | Tech & version                             |
+| ---------------------- | ------------------------------------------ |
+| **Frontend**           | React **19.1.1**, TypeScript 5.9           |
+| **Routing / Bundling** | React Router CLI **7.8.x**, Vite **7.1**   |
+| **Styling**            | Tailwind CSS **4.1**, CSS/SCSS Modules     |
+| **State management**   | Redux Toolkit (store scaffolding only)     |
+| **Backend**            | Node.js 20, Express 4.21, Helmet, CORS     |
+| **Assets**             | Static media served from `/server/public`  |
+| **Testing**            | Vitest + React Testing Library _(planned)_ |
 
 ## 📸 Screenshots
 
@@ -32,51 +33,64 @@
 ## 🚀 Quick start
 
 ```bash
-# 1. Clone repo & install deps
+# 1. Clone repo
 git clone https://github.com/Madi0300/GGPromarket.git
 cd GGPromarket
-npm install          # or pnpm / yarn
 
-# 2. Start dev server (HMR)
-npm run dev              # http://localhost:5173
+# 2. Install dependencies for both apps
+cd client && npm install
+cd ../server && npm install
 
-# 3. Production build
-npm run build            # creates build/ & server/ bundles
-npm run preview          # SSR-preview on port 3000
+# 3. Start backend API (http://localhost:4000)
+npm run dev
+
+# 4. In another terminal start the React app (http://localhost:5173)
+cd ../client
+npm run dev
+
+# 5. Production builds
+# Backend
+cd ../server && npm run start   # uses compiled JS in src/
+
+# Frontend
+cd ../client
+npm run build
 ```
 
-> **Node ≥ 18.18 required.**
+> **Node ≥ 18.18 required** for both frontend and backend toolchains.
 
 ## 📂 Project structure (trimmed)
 
 ```text
 client/
   app/
-    routes/
-      headerBoard/
-      header/
-      home/
-        home.tsx
-        Collections/
-        Goods/
-        Hero/
-        Icons/
-  store/
-    appSlice.ts
-    index.ts
-  routes.ts
+    api/               # shared TypeScript contracts
+    routes/            # React Router route tree
+    utils/api.ts       # helper to call backend within loaders
+  vite.config.ts       # dev proxy to the Node backend
+
+server/
+  data/                # static JSON-like content used by the API
+  public/media/        # marketing imagery served at /media/*
+  src/                 # Express application
 ```
 
-## 🗺️ Roadmap
+## 🧭 API overview
 
-- [x] Finish **ProductCatalog** (filters, empty-state, skeletons)
-- [x] Build **PopularBrands** carousel
-- [x] Add **SEOTextBlock** (rich text + internal links)
-- [ ] Layout **Footer** with adaptive grid
-- [ ] Set up minimal **backend** (Node + Express or Fastify)
-- [ ] Expose `/api/products` & `/api/brands` endpoints (static JSON)
-- [ ] Wire frontend to API via RTK Query
-- [ ] Deploy full stack (Vercel / Render / Railway)
+The Node.js backend exposes read-only JSON endpoints under `http://localhost:4000/api`:
+
+| Endpoint             | Description                                      |
+| -------------------- | ------------------------------------------------ |
+| `/api/config`        | Header + navigation configuration                 |
+| `/api/home`          | Aggregated payload for the homepage (hero, goods) |
+| `/api/products`      | Full product catalogue with categories            |
+| `/api/brands`        | Brand directory with logo URLs                    |
+| `/api/articles`      | Content cards for the blog slider                 |
+| `/api/footer`        | Footer links, schedule and social accounts        |
+
+Static images moved from `client/public` now live under `server/public/media` and
+are exposed via `GET /media/...`. To keep the repository PR-friendly, these
+assets are stored as editable SVG placeholders instead of binary PNGs.
 
 ## 🤝 Contributing
 

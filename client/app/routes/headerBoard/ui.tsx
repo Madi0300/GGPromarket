@@ -110,8 +110,15 @@ export const Dropdown = forwardRef<HTMLDivElement, Props>(function Dropdown(
   );
 });
 
-export function Call({ number = 84950183210 }: { number?: number }) {
-  const stringedNumber = `${number}`;
+export function Call({
+  number = "+7 (495) 018-32-10",
+  rawNumber,
+}: {
+  number?: string;
+  rawNumber?: string;
+}) {
+  const phoneToDial = rawNumber?.replace(/[^+\d]/g, "") ??
+    number.replace(/[^+\d]/g, "");
   return (
     <>
       <div className={Style.Call}>
@@ -119,7 +126,7 @@ export function Call({ number = 84950183210 }: { number?: number }) {
         <img className={Style.Call__icon} src="/header/showMore.svg" alt="" />
         <a
           className={`${Style.Call__link} ${Style.underlined}`}
-          href={"tel:" + stringedNumber}
+          href={`tel:${phoneToDial}`}
         >
           Заказать звонок
         </a>
@@ -128,13 +135,16 @@ export function Call({ number = 84950183210 }: { number?: number }) {
   );
 }
 
-export function PhoneNumber({ number }: { number: number }) {
-  const stringedNumber = `${number}`;
-  const formattedPhone: string = `${stringedNumber[0]} ${stringedNumber.slice(1, 4)} ${stringedNumber.slice(4, 7)}-${stringedNumber.slice(7, 9)}-${stringedNumber.slice(9)}`;
+export function PhoneNumber({ number }: { number: string }) {
+  const digits = number.replace(/[^+\d]/g, "");
+  const normalized = digits.startsWith("+") ? digits : `+${digits}`;
 
-  return (
-    <>
-      <span className={Style.Call__number}>{formattedPhone}</span>
-    </>
-  );
+  const plain = normalized.replace(/[^\d]/g, "");
+
+  if (plain.length === 11) {
+    const formatted = `+${plain[0]} ${plain.slice(1, 4)} ${plain.slice(4, 7)}-${plain.slice(7, 9)}-${plain.slice(9)}`;
+    return <span className={Style.Call__number}>{formatted}</span>;
+  }
+
+  return <span className={Style.Call__number}>{number}</span>;
 }

@@ -1,31 +1,30 @@
 import Style from "./SEO.module.scss";
+import type { SeoBlock } from "../../../api/types";
 
-export default function SEO() {
+type SEOProps = {
+  block?: SeoBlock;
+};
+
+export default function SEO({ block }: SEOProps) {
+  if (!block) return null;
+
   return (
-    <>
-      <div className={Style.SEO}>
-        <div className={Style.SEO__imgWrapper}>
-          <img className={Style.SEO__img} src="/SEO/SEO.png" alt="SEO" />
-        </div>
-        <div className={Style.SEO__content}>
-          <h2 className={Style.SEO__title}>Блок SEO-текста про магазин</h2>
-          <div className={Style.SEO__textWrapper}>
-            <p className={Style.SEO__text}>
-              GG Promarket — крупный ритейлер сантехнического оборудования,
-              плитки и аксессуаров. Мы нацелены на то, чтобы сделать процесс
-              выбора и покупки сантехники максимально простым и интуитивно
-              понятным. При создании и обновлении сайта santehnika-online.ru мы
-              продумали логичную структуру каталога, организовали систему
-              поиска, снабдили карточки товаров подробными описаниями и
-              характеристиками. Выбирать оборудование в нашем магазине легко
-              даже тем, кто впервые имеет дело с сантехникой. А уточнить детали
-              и получить информацию о совместимости товаров круглосуточно
-              помогут опытные консультанты нашего контакт-центра. С нами вы
-              полюбите выбирать!
+    <div className={Style.SEO}>
+      <div className={Style.SEO__imgWrapper}>
+        {block.image ? (
+          <img className={Style.SEO__img} src={block.image} alt={block.title} />
+        ) : null}
+      </div>
+      <div className={Style.SEO__content}>
+        <h2 className={Style.SEO__title}>{block.title}</h2>
+        <div className={Style.SEO__textWrapper}>
+          {block.content.map((paragraph, index) => (
+            <p key={index} className={Style.SEO__text}>
+              {paragraph}
             </p>
-          </div>
+          ))}
         </div>
       </div>
-    </>
+    </div>
   );
 }

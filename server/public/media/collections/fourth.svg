@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 520">
+  <defs>
+    <linearGradient id="collectionFourth" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2d6a4f" />
+      <stop offset="100%" stop-color="#95d5b2" />
+    </linearGradient>
+    <pattern id="collectionPattern4" width="28" height="28" patternUnits="userSpaceOnUse">
+      <rect width="28" height="28" fill="#d8f3dc" opacity="0.4" />
+      <circle cx="14" cy="14" r="4" fill="#2d6a4f" opacity="0.4" />
+    </pattern>
+  </defs>
+  <rect width="520" height="520" rx="48" fill="url(#collectionFourth)" />
+  <rect x="48" y="48" width="424" height="424" rx="32" fill="url(#collectionPattern4)" />
+  <text x="60" y="272" font-size="60" font-family="'Montserrat', 'Arial', sans-serif" font-weight="600" fill="#081c15">RANE</text>
+</svg>

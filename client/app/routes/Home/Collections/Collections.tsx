@@ -1,56 +1,29 @@
 import Style from "./Collections.module.scss";
 import { Title } from "../home";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
+import type { CollectionItem as CollectionEntity } from "../../../api/types";
 
-type CollectionItem = {
-  title: string;
-  autor: string;
-  imgSrc: string;
+type LayoutKeys = "main" | "second" | "third" | "fourth" | "fifth";
+
+type CollectionsProps = {
+  items?: CollectionEntity[];
 };
 
-type CollectionsMap = {
-  main: CollectionItem;
-  second: CollectionItem;
-  third: CollectionItem;
-  fourth: CollectionItem;
-  fifth: CollectionItem;
-};
-
-const defaultCollections: CollectionsMap = {
-  main: {
-    title: "Сияние",
-    autor: "Kerama Marazzi",
-    imgSrc: "/collections/main.png",
-  },
-  second: {
-    title: "Вестанвинд ",
-    autor: "LB-Ceramics",
-    imgSrc: "/collections/second.png",
-  },
-  third: {
-    title: "Rotterdam",
-    autor: "Gracia Ceramica",
-    imgSrc: "/collections/third.png",
-  },
-  fourth: {
-    title: "Rane",
-    autor: "Alma Ceramica",
-    imgSrc: "/collections/fourth.png",
-  },
-  fifth: {
-    title: "Гинардо",
-    autor: "Kerama Marazzi",
-    imgSrc: "/collections/fifth.png",
-  },
-};
-
-export default function Collections({
-  items = defaultCollections,
-}: {
-  items?: CollectionsMap;
-}) {
+export default function Collections({ items = [] }: CollectionsProps) {
   const [isVisible, setIsVisible] = useState<Boolean>(false);
   const mainRef = useRef<HTMLDivElement | null>(null);
+
+  const collectionMap = useMemo(() => {
+    const byId = new Map(items.map((item) => [item.id, item]));
+    return {
+      main: byId.get("main"),
+      second: byId.get("second"),
+      third: byId.get("third"),
+      fourth: byId.get("fourth"),
+      fifth: byId.get("fifth"),
+    } as Record<LayoutKeys, CollectionEntity | undefined>;
+  }, [items]);
+
   useEffect(() => {
     const elem = mainRef.current;
     if (!elem) return;
@@ -83,78 +56,50 @@ export default function Collections({
           ref={mainRef}
           className={`${Style.Collections__main} ${Style.Collections__item}`}
         >
-          {isVisible ? (
-            <img
-              className={Style.Collections__img}
-              src={items.main.imgSrc}
-              alt={items.main.title}
-            />
-          ) : null}
-          <div className={Style.Collections__content}>
-            <div className={Style.Collections__title}>{items.main.title}</div>
-            <div className={Style.Collections__autor}>{items.main.autor}</div>
-          </div>
+          <CollectionCard isVisible={isVisible} item={collectionMap.main} />
         </div>
         <div
           className={`${Style.Collections__second} ${Style.Collections__item}`}
         >
-          {isVisible ? (
-            <img
-              className={Style.Collections__img}
-              src={items.second.imgSrc}
-              alt={items.second.title}
-            />
-          ) : null}
-          <div className={Style.Collections__content}>
-            <div className={Style.Collections__title}>{items.second.title}</div>
-            <div className={Style.Collections__autor}>{items.second.autor}</div>
-          </div>
+          <CollectionCard isVisible={isVisible} item={collectionMap.second} />
         </div>
         <div
           className={`${Style.Collections__third} ${Style.Collections__item}`}
         >
-          {isVisible ? (
-            <img
-              className={Style.Collections__img}
-              src={items.third.imgSrc}
-              alt={items.third.title}
-            />
-          ) : null}
-          <div className={Style.Collections__content}>
-            <div className={Style.Collections__title}>{items.third.title}</div>
-            <div className={Style.Collections__autor}>{items.third.autor}</div>
-          </div>
+          <CollectionCard isVisible={isVisible} item={collectionMap.third} />
         </div>
         <div
           className={`${Style.Collections__fourth} ${Style.Collections__item}`}
         >
-          {isVisible ? (
-            <img
-              className={Style.Collections__img}
-              src={items.fourth.imgSrc}
-              alt={items.fourth.title}
-            />
-          ) : null}
-          <div className={Style.Collections__content}>
-            <div className={Style.Collections__title}>{items.fourth.title}</div>
-            <div className={Style.Collections__autor}>{items.fourth.autor}</div>
-          </div>
+          <CollectionCard isVisible={isVisible} item={collectionMap.fourth} />
         </div>
         <div
           className={`${Style.Collections__fifth} ${Style.Collections__item}`}
         >
-          {isVisible ? (
-            <img
-              className={Style.Collections__img}
-              src={items.fifth.imgSrc}
-              alt={items.fifth.title}
-            />
-          ) : null}
-          <div className={Style.Collections__content}>
-            <div className={Style.Collections__title}>{items.fifth.title}</div>
-            <div className={Style.Collections__autor}>{items.fifth.autor}</div>
-          </div>
+          <CollectionCard isVisible={isVisible} item={collectionMap.fifth} />
         </div>
+      </div>
+    </>
+  );
+}
+
+function CollectionCard({
+  item,
+  isVisible,
+}: {
+  item?: CollectionEntity;
+  isVisible: Boolean;
+}) {
+  if (!item) return null;
+
+  return (
+    <>
+      {isVisible ? (
+        <img className={Style.Collections__img} src={item.image} alt={item.title} />
+      ) : null}
+      <div className={Style.Collections__content}>
+        <div className={Style.Collections__title}>{item.title}</div>
+        <div className={Style.Collections__autor}>{item.author}</div>
       </div>
     </>
   );

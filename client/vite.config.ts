@@ -6,4 +6,16 @@ import tsconfigPaths from "vite-tsconfig-paths";
 export default defineConfig({
   base: "/",
   plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
+  server: {
+    proxy: {
+      "/api": {
+        target: "http://localhost:4000",
+        changeOrigin: true,
+      },
+      "/media": {
+        target: "http://localhost:4000",
+        changeOrigin: true,
+      },
+    },
+  },
 });
