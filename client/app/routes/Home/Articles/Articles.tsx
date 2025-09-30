@@ -1,58 +1,18 @@
 import { Title } from "../home";
 import Style from "./Articles.module.scss";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, type RefObject } from "react";
+import type { Article as ArticleEntity } from "../../../api/types";
 
-type Article = {
-  title: string;
-  imgUrl: string;
-  link: string;
+type ArticlesProps = {
+  items?: ArticleEntity[];
 };
 
-const articles: Article[] = [
-  {
-    title: "Актуальные и необычные аксессуары для ванной комнаты",
-    imgUrl: "article/img1.png",
-    link: "/articles/1",
-  },
-  {
-    title: "Какой температуры должна быть горячая вода?",
-    imgUrl: "article/img1.png",
-    link: "/articles/1",
-  },
-  {
-    title: "Конденсат на бачке унитаза: причины появления и способы устранения",
-    imgUrl: "article/img1.png",
-    link: "/articles/1",
-  },
-  {
-    title: "Анаэробный герметик для резьбовых соединений",
-    imgUrl: "article/img1.png",
-    link: "/articles/1",
-  },
-  {
-    title: "Анаэробный герметик для резьбовых соединений",
-    imgUrl: "article/img1.png",
-    link: "/articles/1",
-  },
-  {
-    title: "Анаэробный герметик для резьбовых соединений",
-    imgUrl: "article/img1.png",
-    link: "/articles/1",
-  },
-  {
-    title: "Анаэробный герметик для резьбовых соединений",
-    imgUrl: "article/img1.png",
-    link: "/articles/1",
-  },
-  {
-    title: "Анаэробный герметик для резьбовых соединений",
-    imgUrl: "article/img1.png",
-    link: "/articles/1",
-  },
-];
-
-export default function Articles() {
+export default function Articles({ items = [] }: ArticlesProps) {
   const scrollEl = useRef<HTMLDivElement | null>(null);
+
+  if (items.length === 0) {
+    return null;
+  }
 
   const scrollBy = (direction: "left" | "right") => {
     const el = scrollEl.current;
@@ -76,9 +36,9 @@ export default function Articles() {
       <Title description="Статьи" />
       <div className={Style.Articles}>
         <div ref={scrollEl} className={Style.Articles__slider}>
-          {articles.map((item) => {
+          {items.map((item) => {
             return (
-              <ArticleCard key={item.title} item={item} scrollEl={scrollEl} />
+              <ArticleCard key={item.id} item={item} scrollEl={scrollEl} />
             );
           })}
         </div>
@@ -111,13 +71,12 @@ export default function Articles() {
   );
 }
 
-function ArticleCard({
-  item,
-  scrollEl,
-}: {
-  item: Article;
-  scrollEl: React.RefObject<HTMLDivElement | null>;
-}) {
+type ArticleCardProps = {
+  item: ArticleEntity;
+  scrollEl: RefObject<HTMLDivElement | null>;
+};
+
+function ArticleCard({ item, scrollEl }: ArticleCardProps) {
   const intersectingElem = useRef<HTMLAnchorElement | null>(null);
   const [isIntersecting, setIsIntersecting] = useState(false);
   const [isDefaultImg, setIsDefaultImg] = useState(false);
@@ -147,23 +106,22 @@ function ArticleCard({
     observer.observe(elem);
   });
 
+  const imageSrc = item.image && !isDefaultImg ? item.image : defaultImg;
+
   return (
-    <>
-      <a ref={intersectingElem} href={item.link} className={Style.ArticleCard}>
-        {isIntersecting ? (
-          <img
-            className={Style.ArticleCard__img}
-            src={!isDefaultImg ? item.imgUrl : defaultImg}
-            alt={item.title}
-            onError={() => {
-              if (isDefaultImg) return;
-              console.log("ddd");
-              setIsDefaultImg(true);
-            }}
-          />
-        ) : null}
-        <h4 className={Style.ArticleCard__title}>{item.title}</h4>
-      </a>
-    </>
+    <a ref={intersectingElem} href={item.href} className={Style.ArticleCard}>
+      {isIntersecting ? (
+        <img
+          className={Style.ArticleCard__img}
+          src={imageSrc}
+          alt={item.title}
+          onError={() => {
+            if (isDefaultImg) return;
+            setIsDefaultImg(true);
+          }}
+        />
+      ) : null}
+      <h4 className={Style.ArticleCard__title}>{item.title}</h4>
+    </a>
   );
 }

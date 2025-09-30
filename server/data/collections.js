@@ -1,0 +1,42 @@
+export const tileCollections = [
+  {
+    id: "main",
+    title: "Сияние",
+    author: "Kerama Marazzi",
+    image: "/media/collections/main.svg",
+    href: "/collections/siianie",
+    order: 1,
+  },
+  {
+    id: "second",
+    title: "Вестанвинд",
+    author: "LB-Ceramics",
+    image: "/media/collections/second.svg",
+    href: "/collections/vestanvind",
+    order: 2,
+  },
+  {
+    id: "third",
+    title: "Rotterdam",
+    author: "Gracia Ceramica",
+    image: "/media/collections/third.svg",
+    href: "/collections/rotterdam",
+    order: 3,
+  },
+  {
+    id: "fourth",
+    title: "Rane",
+    author: "Alma Ceramica",
+    image: "/media/collections/fourth.svg",
+    href: "/collections/rane",
+    order: 4,
+  },
+  {
+    id: "fifth",
+    title: "Гинардо",
+    author: "Kerama Marazzi",
+    image: "/media/collections/fifth.svg",
+    href: "/collections/ginardo",
+    order: 5,
+  },
+];

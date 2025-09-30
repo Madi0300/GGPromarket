@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 520">
+  <defs>
+    <linearGradient id="collectionSecond" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5a189a" />
+      <stop offset="100%" stop-color="#9d4edd" />
+    </linearGradient>
+    <pattern id="collectionPattern2" width="32" height="32" patternUnits="userSpaceOnUse">
+      <rect width="32" height="32" fill="#f3f0ff" opacity="0.25" />
+      <path d="M0 32L32 0" stroke="#c77dff" stroke-width="4" opacity="0.3" />
+    </pattern>
+  </defs>
+  <rect width="520" height="520" rx="48" fill="url(#collectionSecond)" />
+  <rect x="48" y="48" width="424" height="424" rx="32" fill="url(#collectionPattern2)" />
+  <text x="60" y="272" font-size="58" font-family="'Montserrat', 'Arial', sans-serif" font-weight="600" fill="#240046">ВЕСТАНВИНД</text>
+</svg>

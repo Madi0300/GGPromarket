@@ -1,0 +1,22 @@
+{
+  "name": "ggpromarket-server",
+  "version": "0.1.0",
+  "description": "API server for the GG Promarket demo storefront",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon --watch src --ext js,json --exec node src/index.js",
+    "start": "node src/index.js"
+  },
+  "engines": {
+    "node": ">=18.18"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "helmet": "^7.0.0",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  }
+}

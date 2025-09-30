@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 400">
+  <defs>
+    <linearGradient id="seoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#14213d" />
+      <stop offset="100%" stop-color="#fca311" />
+    </linearGradient>
+    <pattern id="seoPattern" width="60" height="60" patternUnits="userSpaceOnUse" patternTransform="rotate(30)">
+      <rect width="60" height="60" fill="#e5e5e5" opacity="0.2" />
+      <circle cx="30" cy="30" r="8" fill="#fca311" opacity="0.35" />
+    </pattern>
+  </defs>
+  <rect width="720" height="400" rx="36" fill="#14213d" />
+  <rect x="40" y="40" width="640" height="320" rx="28" fill="url(#seoPattern)" />
+  <rect x="40" y="40" width="640" height="320" rx="28" stroke="url(#seoGradient)" stroke-width="8" fill="none" />
+  <text x="80" y="210" font-size="64" font-family="'Montserrat', 'Arial', sans-serif" font-weight="600" fill="#fca311">GG Promarket</text>
+</svg>

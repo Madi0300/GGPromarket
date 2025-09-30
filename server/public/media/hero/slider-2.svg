@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 400">
+  <defs>
+    <linearGradient id="sliderGradient2" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#0b7285" />
+      <stop offset="100%" stop-color="#087f5b" />
+    </linearGradient>
+  </defs>
+  <rect width="960" height="400" fill="url(#sliderGradient2)" rx="32" />
+  <g fill="#f8f9fa" font-family="'Montserrat', 'Arial', sans-serif">
+    <text x="60" y="140" font-size="68" font-weight="700" letter-spacing="5">RAIBER</text>
+    <text x="60" y="210" font-size="42" font-weight="500">Смесители</text>
+    <text x="60" y="265" font-size="24" opacity="0.85">Новая коллекция</text>
+    <rect x="60" y="290" width="220" height="56" rx="28" fill="#f8f9fa" opacity="0.2" />
+    <text x="95" y="327" font-size="24" font-weight="600">Подробнее</text>
+  </g>
+  <path d="M650 60c80 40 120 100 120 160s-40 120-120 160" fill="none" stroke="#d3f9d8" stroke-width="28" stroke-linecap="round" opacity="0.6" />
+  <circle cx="770" cy="200" r="76" fill="#96f2d7" opacity="0.4" />
+</svg>

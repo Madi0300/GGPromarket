@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 120">
+  <defs>
+    <linearGradient id="yandexGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ffcc00" />
+      <stop offset="100%" stop-color="#ffa000" />
+    </linearGradient>
+  </defs>
+  <rect width="240" height="120" rx="18" fill="#1f2933" />
+  <rect x="16" y="16" width="208" height="88" rx="14" fill="url(#yandexGradient)" />
+  <g fill="#1f2933" font-family="'Montserrat', 'Arial', sans-serif" font-weight="600">
+    <text x="32" y="62" font-size="28">Яндекс</text>
+    <text x="32" y="92" font-size="22">Рейтинг 4.8 / 5</text>
+  </g>
+  <g fill="#1f2933" transform="translate(150 35)">
+    <polygon points="20,0 26,13 40,15 30,24 33,38 20,31 7,38 10,24 0,15 14,13" />
+  </g>
+</svg>

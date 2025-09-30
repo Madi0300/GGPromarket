@@ -1,24 +1,30 @@
 import Style from "./HeaderMiddle.module.scss";
-import { useState, useRef } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Dropdown } from "../../headerBoard/ui";
-import { useSelector } from "react-redux";
-import type { RootState } from "../../../store/store";
+import type { NavigationLink, AppConfig } from "../../../api/types";
 
-export default function HeaderMiddle() {
+type HeaderMiddleProps = {
+  catalog?: NavigationLink[];
+  counters?: AppConfig["counters"];
+};
+
+export default function HeaderMiddle({
+  catalog = [],
+  counters,
+}: HeaderMiddleProps) {
   return (
-    <>
-      <div className={Style.HeaderMiddle}>
-        <Categories />
-        <Search />
-        <ActionButtons />
-      </div>
-    </>
+    <div className={Style.HeaderMiddle}>
+      <Categories items={catalog} />
+      <Search />
+      <ActionButtons counters={counters} />
+    </div>
   );
 }
 
-function Categories() {
-  const productCatalog = useSelector(
-    (state: RootState) => state.app.productCatalog
+function Categories({ items }: { items: NavigationLink[] }) {
+  const dropdownItems = useMemo(
+    () => items.map((item) => ({ name: item.label, href: item.href })),
+    [items]
   );
 
   const [toggleKey, setToggleKey] = useState(0);
@@ -43,7 +49,7 @@ function Categories() {
             <span></span>
             <Dropdown
               ref={catalog}
-              items={productCatalog}
+              items={dropdownItems}
               toggleKey={toggleKey}
             />
           </button>
@@ -54,12 +60,12 @@ function Categories() {
           </p>
         </div>
         <div className={`${Style.Categories__two} ${Style.Categories__title}`}>
-          <a href="#">Акции</a>
+          <a href="/discounts">Акции</a>
         </div>
         <div
           className={`${Style.Categories__three} ${Style.Categories__title}`}
         >
-          <a href="#">Магазины</a>
+          <a href="/stores">Магазины</a>
         </div>
       </div>
     </>
@@ -86,12 +92,12 @@ function Search() {
   );
 }
 
-function ActionButtons() {
-  const notificationSum = useSelector(
-    (state: RootState) => state.app.notificationSum
-  );
-
-  function notificationCreate(sum: number) {
+function ActionButtons({
+  counters,
+}: {
+  counters?: AppConfig["counters"];
+}) {
+  const notificationCreate = (sum: number) => {
     return (
       <div className={Style.ActionButtons__button__notification}>
         <img
@@ -104,16 +110,16 @@ function ActionButtons() {
         </span>
       </div>
     );
-  }
+  };
+
+  const values = counters ?? { user: 0, favourites: 0, cart: 0 };
 
   return (
     <>
       <div className={Style.ActionButtons}>
         <div className={Style.ActionButtons__button}>
           <a href="#">
-            {notificationSum.user > 0
-              ? notificationCreate(notificationSum.user)
-              : null}
+            {values.user > 0 ? notificationCreate(values.user) : null}
             <img
               className={Style.ActionButtons__button__icon}
               src="/header/userButton.svg"
@@ -123,8 +129,8 @@ function ActionButtons() {
         </div>
         <div className={Style.ActionButtons__button}>
           <a href="#">
-            {notificationSum.liked > 0
-              ? notificationCreate(notificationSum.liked)
+            {values.favourites > 0
+              ? notificationCreate(values.favourites)
               : null}
             <img
               className={Style.ActionButtons__button__icon}
@@ -135,9 +141,7 @@ function ActionButtons() {
         </div>
         <div className={Style.ActionButtons__button}>
           <a href="#">
-            {notificationSum.cart > 0
-              ? notificationCreate(notificationSum.cart)
-              : null}
+            {values.cart > 0 ? notificationCreate(values.cart) : null}
             <img
               className={Style.ActionButtons__button__icon}
               src="/header/cartButton.svg"

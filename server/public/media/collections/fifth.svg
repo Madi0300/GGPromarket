@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 520">
+  <defs>
+    <linearGradient id="collectionFifth" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#bc4749" />
+      <stop offset="100%" stop-color="#f9844a" />
+    </linearGradient>
+    <pattern id="collectionPattern5" width="34" height="34" patternUnits="userSpaceOnUse" patternTransform="rotate(30)">
+      <rect width="34" height="34" fill="#ffddd2" opacity="0.35" />
+      <path d="M0 0L34 0L34 34" fill="none" stroke="#e56b6f" stroke-width="4" opacity="0.4" />
+    </pattern>
+  </defs>
+  <rect width="520" height="520" rx="48" fill="url(#collectionFifth)" />
+  <rect x="46" y="46" width="428" height="428" rx="34" fill="url(#collectionPattern5)" />
+  <text x="60" y="272" font-size="58" font-family="'Montserrat', 'Arial', sans-serif" font-weight="600" fill="#611a1a">ГИНАРДО</text>
+</svg>
