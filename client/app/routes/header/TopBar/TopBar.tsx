@@ -1,15 +1,16 @@
 import { Logo, Dropdown } from "../../headerBoard/ui";
 import Style from "./TopBar.module.scss";
 import { useState, useRef } from "react";
-import { useSelector } from "react-redux";
 import type { RootState } from "../../../store/store";
 import { Call } from "../../headerBoard/ui";
+import { useGetHeaderDataQuery } from "../../../store/apiSlise";
 
 export default function TopBar() {
-  const currentLocation = useSelector(
-    (state: RootState) => state.app.currentLocation
-  );
-  const callNumber = useSelector((state: RootState) => state.app.callNumber);
+  const { data, error, isLoading, isSuccess } = useGetHeaderDataQuery();
+
+  const currentLocation = isSuccess ? data.currentLocation : "";
+  const callNumber = isSuccess ? data.callNumber : "";
+
   return (
     <>
       <div className={Style.TopBar}>

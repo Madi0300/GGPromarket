@@ -2,16 +2,18 @@ import Style from "./Hero.module.scss";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../../store/store";
+import { useGetHeroDataQuery } from "../../../store/apiSlise";
 
 export default function Hero() {
   const [currentItem, setCurrentItem] = useState(0);
   const baseUrl = import.meta.env.BASE_URL || "/";
+
+  const { data, error, isLoading, isSuccess } = useGetHeroDataQuery();
+
   const defaultImageUrl = `${baseUrl}HeroSlider/default.png`;
 
-  const items = useSelector((state: RootState) => state.app.heroItems);
-  const sideBarItems = useSelector(
-    (state: RootState) => state.app.heroSidebarItems
-  );
+  const items = isSuccess ? data.heroItems : null;
+  const sideBarItems = isSuccess ? data.heroSidebarItems : null;
   const [isSliderImgDefault, setIsSliderImgDefault] = useState(false);
   const [isSidebarFirstImgDefault, setIsSidebarFirstImgDefault] =
     useState(false);
@@ -19,9 +21,9 @@ export default function Hero() {
   const [isSidebarSecondImgDefault, setIsSidebarSecondImgDefault] =
     useState(false);
 
-  const currentSliderImg = items[currentItem].imgUrl;
-  const sideBarFirstImg = sideBarItems[0].imgUrl;
-  const sideBarSecondImg = sideBarItems[1].imgUrl;
+  const currentSliderImg = isSuccess ? items[currentItem].imgUrl : "";
+  const sideBarFirstImg = isSuccess ? sideBarItems[0].imgUrl : "";
+  const sideBarSecondImg = isSuccess ? sideBarItems[1].imgUrl : "";
 
   const [isVisible, setIsVisible] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -43,7 +45,7 @@ export default function Hero() {
     return () => observer.disconnect();
   }, []);
 
-  if (items.length === 0) return null;
+  if (items && items.length === 0) return null;
 
   function handleButtonClick(direction: "left" | "right") {
     setCurrentItem((prev) => {
@@ -57,52 +59,54 @@ export default function Hero() {
 
   return (
     <div className={Style.Hero} ref={containerRef}>
-      <div className={Style.Hero__slider}>
-        <div className={Style.Hero__slider__imageWrapper}>
-          {isVisible && (
-            <img
-              className={Style.Hero__slider__img}
-              src={!isSliderImgDefault ? currentSliderImg : defaultImageUrl}
-              alt={items[currentItem].title}
-              onError={() => {
-                setIsSliderImgDefault(true);
-              }}
-            />
-          )}
+      {isSuccess ? (
+        <div className={Style.Hero__slider}>
+          <div className={Style.Hero__slider__imageWrapper}>
+            {isVisible && (
+              <img
+                className={Style.Hero__slider__img}
+                src={!isSliderImgDefault ? currentSliderImg : defaultImageUrl}
+                alt={items[currentItem].title}
+                onError={() => {
+                  setIsSliderImgDefault(true);
+                }}
+              />
+            )}
+          </div>
+          <div className={Style.Hero__slider__content}>
+            <h2 className={Style.Hero__slider__title}>
+              {items[currentItem].title}
+            </h2>
+            <p className={Style.Hero__slider__subtitle}>
+              {items[currentItem].subtitle}
+            </p>
+            <a
+              href={items[currentItem].link}
+              className={Style.Hero__slider__button}
+            >
+              Подробнее
+            </a>
+          </div>
+          <div className={Style.Hero__slider__nav}>
+            <button
+              onClick={() => handleButtonClick("left")}
+              className={Style.Hero__slider__navButtonLeft}
+              aria-label="Previous"
+            >
+              <img src="/HeroSlider/arrowLeft.svg" alt="" />
+            </button>
+            <button
+              onClick={() => handleButtonClick("right")}
+              className={Style.Hero__slider__navButtonRight}
+              aria-label="Previous"
+            >
+              <img src="/HeroSlider/arrowRight.svg" alt="" />
+            </button>
+          </div>
         </div>
-        <div className={Style.Hero__slider__content}>
-          <h2 className={Style.Hero__slider__title}>
-            {items[currentItem].title}
-          </h2>
-          <p className={Style.Hero__slider__subtitle}>
-            {items[currentItem].subtitle}
-          </p>
-          <a
-            href={items[currentItem].link}
-            className={Style.Hero__slider__button}
-          >
-            Подробнее
-          </a>
-        </div>
-        <div className={Style.Hero__slider__nav}>
-          <button
-            onClick={() => handleButtonClick("left")}
-            className={Style.Hero__slider__navButtonLeft}
-            aria-label="Previous"
-          >
-            <img src="/HeroSlider/arrowLeft.svg" alt="" />
-          </button>
-          <button
-            onClick={() => handleButtonClick("right")}
-            className={Style.Hero__slider__navButtonRight}
-            aria-label="Previous"
-          >
-            <img src="/HeroSlider/arrowRight.svg" alt="" />
-          </button>
-        </div>
-      </div>
+      ) : null}
       <div className={Style.Hero__sidebar}>
-        {sideBarItems.length > 0 && (
+        {sideBarItems && sideBarItems.length > 0 && (
           <div className={Style.Hero__sidebar__item}>
             <div className={Style.Hero__sidebar__imageWrapper}>
               {isVisible ? (
@@ -133,7 +137,7 @@ export default function Hero() {
             </div>
           </div>
         )}
-        {sideBarItems.length > 1 && (
+        {sideBarItems && sideBarItems.length > 1 && (
           <div className={Style.Hero__sidebar__item}>
             <div className={Style.Hero__sidebar__imageWrapper}>
               {isVisible ? (

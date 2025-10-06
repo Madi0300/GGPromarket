@@ -1,8 +1,8 @@
 import Style from "./HeaderMiddle.module.scss";
 import { useState, useRef } from "react";
 import { Dropdown } from "../../headerBoard/ui";
-import { useSelector } from "react-redux";
 import type { RootState } from "../../../store/store";
+import { useGetHeaderDataQuery } from "../../../store/apiSlise";
 
 export default function HeaderMiddle() {
   return (
@@ -17,9 +17,9 @@ export default function HeaderMiddle() {
 }
 
 function Categories() {
-  const productCatalog = useSelector(
-    (state: RootState) => state.app.productCatalog
-  );
+  const { data, error, isLoading, isSuccess } = useGetHeaderDataQuery();
+
+  const productCatalog = isSuccess ? data.productCatalog : [];
 
   const [toggleKey, setToggleKey] = useState(0);
   const catalog = useRef<HTMLDivElement | null>(null);
@@ -87,9 +87,15 @@ function Search() {
 }
 
 function ActionButtons() {
-  const notificationSum = useSelector(
-    (state: RootState) => state.app.notificationSum
-  );
+  const { data, isLoading, isSuccess, error } = useGetHeaderDataQuery();
+
+  const notificationSum = isSuccess
+    ? data.notificationSum
+    : {
+        user: 0,
+        liked: 0,
+        cart: 0,
+      };
 
   function notificationCreate(sum: number) {
     return (

@@ -1,6 +1,7 @@
 import Style from "./Collections.module.scss";
 import { Title } from "../home";
 import { useState, useEffect, useRef } from "react";
+import { useGetCollectionsDataQuery } from "#/apiSlise";
 
 type CollectionItem = {
   title: string;
@@ -18,7 +19,7 @@ type CollectionsMap = {
 
 const defaultCollections: CollectionsMap = {
   main: {
-    title: "Сияние",
+    title: "Error",
     autor: "Kerama Marazzi",
     imgSrc: "/collections/main.png",
   },
@@ -44,11 +45,9 @@ const defaultCollections: CollectionsMap = {
   },
 };
 
-export default function Collections({
-  items = defaultCollections,
-}: {
-  items?: CollectionsMap;
-}) {
+export default function Collections() {
+  const { data, isSuccess, isError, error } = useGetCollectionsDataQuery();
+  const items = isSuccess ? data : defaultCollections;
   const [isVisible, setIsVisible] = useState<Boolean>(false);
   const mainRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {

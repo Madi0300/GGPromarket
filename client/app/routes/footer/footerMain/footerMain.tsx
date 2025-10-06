@@ -3,6 +3,7 @@ import { Logo, PhoneNumber } from "../../headerBoard/ui";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../../store/store";
 import { Container } from "../../headerBoard/ui";
+import { useGetHeaderDataQuery } from "../../../store/apiSlise";
 
 const footerContent = {
   productLinks: [
@@ -46,7 +47,9 @@ const footerContent = {
 } as const;
 
 export default function FooterMain() {
-  const number = useSelector((state: RootState) => state.app.callNumber);
+  const { data, error, isLoading, isSuccess } = useGetHeaderDataQuery();
+
+  const number = isSuccess ? data.callNumber : "";
 
   return (
     <>
