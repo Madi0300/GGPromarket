@@ -1,5 +1,6 @@
 ﻿const express = require('express');
 const router = express.Router();
+const { toAbsolute } = require('../utils/urlUtils');
 
 const articles = require('../data/articles');
 const brands = require('../data/brands');
@@ -11,55 +12,35 @@ const icons = require('../data/icons');
 const seo = require('../data/seo');
 
 router.get('/articles', (req, res) => {
-  res.json(articles);
+  res.json(toAbsolute(articles));
 });
 
 router.get('/brands', (req, res) => {
-  res.json(brands);
+  res.json(toAbsolute(brands));
 });
 
 router.get('/collections', (req, res) => {
-  res.json(collections);
+  res.json(toAbsolute(collections));
 });
 
 router.get('/footer', (req, res) => {
-  res.json(footer);
+  res.json(toAbsolute(footer));
 });
 
 router.get('/header', (req, res) => {
-  res.json(header);
+  res.json(toAbsolute(header));
 });
 
 router.get('/hero', (req, res) => {
-  const baseUrl = `${req.protocol}://${req.get('host')}`;
-  const toAbsolute = (url) => {
-    if (!url) return url;
-    return url.startsWith('http://') || url.startsWith('https://')
-      ? url
-      : `${baseUrl}${url}`;
-  };
-
-  const response = {
-    ...hero,
-    heroItems: hero.heroItems.map((item) => ({
-      ...item,
-      imgUrl: toAbsolute(item.imgUrl),
-    })),
-    heroSidebarItems: hero.heroSidebarItems.map((item) => ({
-      ...item,
-      imgUrl: toAbsolute(item.imgUrl),
-    })),
-  };
-
-  res.json(response);
+  res.json(toAbsolute(hero));
 });
 
 router.get('/icons', (req, res) => {
-  res.json(icons);
+  res.json(toAbsolute(icons));
 });
 
 router.get('/seo', (req, res) => {
-  res.json(seo);
+  res.json(toAbsolute(seo));
 });
 
 module.exports = router;
