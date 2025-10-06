@@ -24,22 +24,22 @@ const defaultCollections: CollectionsMap = {
     imgSrc: "/collections/main.png",
   },
   second: {
-    title: "Вестанвинд ",
+    title: "Error ",
     autor: "LB-Ceramics",
     imgSrc: "/collections/second.png",
   },
   third: {
-    title: "Rotterdam",
+    title: "Error",
     autor: "Gracia Ceramica",
     imgSrc: "/collections/third.png",
   },
   fourth: {
-    title: "Rane",
+    title: "Error",
     autor: "Alma Ceramica",
     imgSrc: "/collections/fourth.png",
   },
   fifth: {
-    title: "Гинардо",
+    title: "Error",
     autor: "Kerama Marazzi",
     imgSrc: "/collections/fifth.png",
   },

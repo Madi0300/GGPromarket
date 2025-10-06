@@ -10,6 +10,7 @@ const header = require('../data/header');
 const hero = require('../data/hero');
 const icons = require('../data/icons');
 const seo = require('../data/seo');
+const goods = require('../data/goods');
 
 router.get('/articles', (req, res) => {
   res.json(toAbsolute(articles));
@@ -41,6 +42,10 @@ router.get('/icons', (req, res) => {
 
 router.get('/seo', (req, res) => {
   res.json(toAbsolute(seo));
+});
+
+router.get('/goods', (req, res) => {
+  res.json(toAbsolute(goods));
 });
 
 module.exports = router;
