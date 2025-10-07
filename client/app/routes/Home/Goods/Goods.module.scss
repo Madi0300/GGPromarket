@@ -81,6 +81,8 @@
 
   > :first-child {
     margin-bottom: 20px;
+    height: 288px;
+    object-fit: cover;
   }
   &__signs {
     position: absolute;
