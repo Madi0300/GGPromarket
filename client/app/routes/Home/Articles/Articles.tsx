@@ -1,6 +1,7 @@
 import { Title } from "../home";
 import Style from "./Articles.module.scss";
 import { useState, useRef, useEffect } from "react";
+import { useGetArticlesDataQuery } from "#/apiSlise";
 
 type Article = {
   title: string;
@@ -52,6 +53,8 @@ const articles: Article[] = [
 ];
 
 export default function Articles() {
+  const { data, isSuccess, isError, error } = useGetArticlesDataQuery();
+  const dataItems = isSuccess ? data : articles;
   const scrollEl = useRef<HTMLDivElement | null>(null);
 
   const scrollBy = (direction: "left" | "right") => {
@@ -76,7 +79,7 @@ export default function Articles() {
       <Title description="Статьи" />
       <div className={Style.Articles}>
         <div ref={scrollEl} className={Style.Articles__slider}>
-          {articles.map((item) => {
+          {dataItems.map((item) => {
             return (
               <ArticleCard key={item.title} item={item} scrollEl={scrollEl} />
             );
