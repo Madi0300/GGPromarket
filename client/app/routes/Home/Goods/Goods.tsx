@@ -1,6 +1,7 @@
 import Style from "./Goods.module.scss";
 import { useState, useEffect, useRef } from "react";
 import { Title } from "../home";
+import { useGetGoodsDataQuery } from "#/apiSlise";
 
 export type Category =
   | "Sinks"
@@ -32,7 +33,7 @@ type GoodsItemData = {
 
 const items: GoodsItemData[] = [
   {
-    name: "Раковина Roca Debba 32799400Y, 60x48 см",
+    name: "Error Roca Debba 32799400Y, 60x48 см",
     href: "#",
     country: "Испания",
     price: 2601,
@@ -419,25 +420,25 @@ type Signs = string[];
 const signs: Signs = ["hit", "discount"];
 
 export default function Goods({
-  data = items,
   categoriesList = dataCategories,
 }: {
-  data: GoodsItemData[];
   categoriesList: CategoriesListData;
 }) {
+  const { isSuccess, isError, error, data } = useGetGoodsDataQuery();
+  const itemData = isSuccess ? data : items;
   return (
     <>
       <Title description="Хиты продаж" />
       <div className={Style.Goods}>
         <GoodsSlider
           categories={categoriesList.hits}
-          data={data}
+          data={itemData}
           sign={signs[0]}
         />
         <Title description="Акции" />
         <GoodsSlider
           categories={categoriesList.discounts}
-          data={data}
+          data={itemData}
           sign={signs[1]}
         />
       </div>
