@@ -18,6 +18,9 @@ export const apiSlice = createApi({
     getGoodsData: builder.query({
       query: () => "/goods",
     }),
+    getBrandsData: builder.query({
+      query: () => "/brands",
+    }),
   }),
 });
 
@@ -26,4 +29,5 @@ export const {
   useGetHeaderDataQuery,
   useGetCollectionsDataQuery,
   useGetGoodsDataQuery,
+  useGetBrandsDataQuery,
 } = apiSlice;

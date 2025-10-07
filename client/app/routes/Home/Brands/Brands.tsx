@@ -1,6 +1,7 @@
 import { Title } from "../home";
 import Style from "./Brands.module.scss";
 import { useEffect, useRef, useState } from "react";
+import { useGetBrandsDataQuery } from "#/apiSlise";
 
 type Brand = {
   name: string;
@@ -75,7 +76,9 @@ export const brandsList: Brand[] = [
   { name: "LVI", imgUrl: "/assets/brands/lvi.svg", link: "/brands/lvi" },
 ];
 
-export default function Brands({ items = brandsList }: { items: Brand[] }) {
+export default function Brands() {
+  const { data, isSuccess, isError, error } = useGetBrandsDataQuery();
+  const items = isSuccess ? data : brandsList;
   const scrollEl = useRef<HTMLDivElement | null>(null);
 
   const scrollBy = (direction: "left" | "right") => {
