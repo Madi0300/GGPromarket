@@ -24,6 +24,9 @@ export const apiSlice = createApi({
     getArticlesData: builder.query({
       query: () => "/articles",
     }),
+    getSEOData: builder.query({
+      query: () => "/seo",
+    }),
   }),
 });
 
@@ -34,4 +37,5 @@ export const {
   useGetGoodsDataQuery,
   useGetBrandsDataQuery,
   useGetArticlesDataQuery,
+  useGetSEODataQuery,
 } = apiSlice;
