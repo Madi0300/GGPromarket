@@ -4,10 +4,11 @@ import { useSelector } from "react-redux";
 import type { RootState } from "../../../store/store";
 import { Container } from "../../headerBoard/ui";
 import { useGetHeaderDataQuery } from "../../../store/apiSlise";
+import { useGetFooterDataQuery } from "#/apiSlise";
 
-const footerContent = {
+const footerContentOffline = {
   productLinks: [
-    { name: "Плитка", href: "#" },
+    { name: "Error", href: "#" },
     { name: "Мебель для ванной", href: "#" },
     { name: "Электроника и бытовая техника", href: "#" },
     { name: "Отопление", href: "#" },
@@ -47,10 +48,16 @@ const footerContent = {
 } as const;
 
 export default function FooterMain() {
-  const { data, error, isLoading, isSuccess } = useGetHeaderDataQuery();
-
-  const number = isSuccess ? data.callNumber : "";
-
+  let number = "";
+  (() => {
+    const { data, error, isLoading, isSuccess } = useGetHeaderDataQuery();
+    number = isSuccess ? data.callNumber : "";
+  })();
+  let footerContent;
+  (() => {
+    const { data, error, isLoading, isSuccess } = useGetFooterDataQuery();
+    footerContent = isSuccess ? data : footerContentOffline;
+  })();
   return (
     <>
       <div className={Style.FooterMain}>
@@ -58,11 +65,13 @@ export default function FooterMain() {
           <div className={Style.FooterMain__wrapper}>
             <div className={Style.FooterMain__list}>
               <ul className={Style.FooterMain__ul}>
-                {footerContent.productLinks.map((link) => (
-                  <li key={link.name} className={Style.FooterMain__item}>
-                    <a href={link.href}>{link.name} </a>
-                  </li>
-                ))}
+                {footerContent.productLinks.map(
+                  (link: { name: string; href: string }) => (
+                    <li key={link.name} className={Style.FooterMain__item}>
+                      <a href={link.href}>{link.name} </a>
+                    </li>
+                  )
+                )}
               </ul>
               <Logo width={"214px"} height={"24px"} />
               <div className={Style.FooterMain__copyright}>
@@ -71,15 +80,17 @@ export default function FooterMain() {
             </div>
             <div className={Style.FooterMain__list}>
               <ul className={Style.FooterMain__ul}>
-                {footerContent.infoLinks.map((link) => (
-                  <li key={link.name} className={Style.FooterMain__li}>
-                    <a href={link.href}>{link.name}</a>
-                  </li>
-                ))}
+                {footerContent.infoLinks.map(
+                  (link: { name: string; href: string }) => (
+                    <li key={link.name} className={Style.FooterMain__li}>
+                      <a href={link.href}>{link.name}</a>
+                    </li>
+                  )
+                )}
               </ul>
             </div>
             <div className={Style.FooterMain__contacts}>
-              <PhoneNumber number={number} />
+              <PhoneNumber number={Number(number)} />
               <a
                 href={`tel:${number}`}
                 className={Style.FooterMain__callButton}
@@ -98,18 +109,20 @@ export default function FooterMain() {
                 </li>
               </ul>
               <div className={Style.FooterMain__socialMedia}>
-                {footerContent.socialMediaLinks.map((item) => {
-                  return (
-                    <>
-                      <a
-                        className={Style.FooterMain__socialMedia__item}
-                        href={item.href}
-                      >
-                        <img src={item.img} />{" "}
-                      </a>{" "}
-                    </>
-                  );
-                })}
+                {footerContent.socialMediaLinks.map(
+                  (item: { name: string; href: string; img: string }) => {
+                    return (
+                      <>
+                        <a
+                          className={Style.FooterMain__socialMedia__item}
+                          href={item.href}
+                        >
+                          <img src={item.img} />{" "}
+                        </a>{" "}
+                      </>
+                    );
+                  }
+                )}
               </div>
             </div>
             <div className={Style.FooterMain__adress}>
