@@ -33,6 +33,7 @@ node server.js
 - `GET /api/icons`: Получение данных для блока с иконками.
 - `GET /api/seo`: Получение данных для SEO блока.
 - `GET /api/goods`: Получение списка товаров.
+- `GET /api/server-url`: Получение полного адреса сервера.
 
 ## Добавление изображений
 
@@ -186,4 +187,12 @@ node server.js
     "category": "Sinks"
   }
 ]
+```
+
+### `/api/server-url`
+
+```json
+{
+  "serverUrl": "http://localhost:3001"
+}
 ```
