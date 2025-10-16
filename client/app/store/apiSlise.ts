@@ -6,6 +6,9 @@ export const apiSlice = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3001/api" }),
 
   endpoints: (builder) => ({
+    getServerUrl: builder.query({
+      query: () => "/server-url",
+    }),
     getHeroData: builder.query({
       query: () => "/hero",
     }),
@@ -30,10 +33,14 @@ export const apiSlice = createApi({
     getFooterData: builder.query({
       query: () => "/footer",
     }),
+    getGoodDataById: builder.query({
+      query: (id) => `/goods/${id}`,
+    }),
   }),
 });
 
 export const {
+  useGetServerUrlQuery,
   useGetHeroDataQuery,
   useGetHeaderDataQuery,
   useGetCollectionsDataQuery,
@@ -42,4 +49,5 @@ export const {
   useGetArticlesDataQuery,
   useGetSEODataQuery,
   useGetFooterDataQuery,
+  useGetGoodDataByIdQuery,
 } = apiSlice;

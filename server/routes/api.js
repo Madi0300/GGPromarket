@@ -1,6 +1,7 @@
 ﻿const express = require('express');
 const router = express.Router();
 const { toAbsolute } = require('../utils/urlUtils');
+const config = require('../config');
 
 const articles = require('../data/articles');
 const brands = require('../data/brands');
@@ -45,7 +46,26 @@ router.get('/seo', (req, res) => {
 });
 
 router.get('/goods', (req, res) => {
-  res.json(toAbsolute(goods));
+  const goodsWithoutDescription = goods.map(item => {
+    const { description, ...rest } = item;
+    return rest;
+  });
+  res.json(toAbsolute(goodsWithoutDescription));
+});
+
+router.get('/goods/:id', (req, res) => {
+  const good = goods.find(item => item.id === +req.params.id);
+
+  if (!good) {
+    return res.status(404).json({ message: 'Товар не найден' });
+  }
+
+  res.json(toAbsolute(good));
+});
+
+router.get('/server-url', (req, res) => {
+  const serverUrl = `${config.host}:${config.port}`;
+  res.json({ serverUrl });
 });
 
 module.exports = router;
