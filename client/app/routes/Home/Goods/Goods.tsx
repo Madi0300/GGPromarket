@@ -3,8 +3,6 @@ import { useState, useEffect, useRef, type ReactNode } from "react";
 import { useNavigate } from "react-router";
 import { Title } from "../home";
 import { useGetGoodsDataQuery } from "#/apiSlise";
-import { useAppDispatch } from "#/hooks";
-import { openModal } from "#/modalSlice";
 import { Rate } from "@/headerBoard/ui";
 
 type Category =
@@ -80,14 +78,11 @@ const dataCategories: CategoriesListData = {
 
 const signs: GoodsSliderSign[] = ["hit", "discount"];
 
-export default function Goods({
-  categoriesList = dataCategories,
-}: {
-  categoriesList: CategoriesListData;
-}) {
+export default function Goods() {
   const { isSuccess, isError, error, data } = useGetGoodsDataQuery(null);
   const itemData = isSuccess ? data : "loading";
   const itemError = isError ? error : null;
+  const categoriesList = dataCategories;
 
   return (
     <>
@@ -320,11 +315,8 @@ function GoodsItemCard({ props, scrollEl }: GoodsItemProps) {
     };
   }, [isVisible, scrollEl]);
 
-  const dispatch = useAppDispatch();
-
   function handleClickCard(id: number) {
-    navigate(`/product/${id}`);
-    dispatch(openModal(id));
+    navigate(`/product/${id}`, { preventScrollReset: true });
   }
 
   return (
@@ -353,9 +345,7 @@ function GoodsItemCard({ props, scrollEl }: GoodsItemProps) {
           }}
         />
       ) : null}
-      <div
-        className={Style.GoodsItem__content + " " + Style.GoodsItem__snapItem}
-      >
+      <div className={Style.GoodsItem__content}>
         <Rate rateSum={props.rate} commentsSum={props.commentsSum} />
         <h4 className={Style.GoodsItem__title}>{props.name}</h4>
         <p className={Style.GoodsItem__country}>{props.country}</p>
