@@ -1,7 +1,6 @@
 import Style from "./Modal.module.scss";
 import { useGetGoodDataByIdQuery, useGetServerUrlQuery } from "#/apiSlise";
 import { useAppDispatch, useAppSelector } from "#/hooks";
-import type { ModalState } from "#/modalSlice";
 
 import { useState, useEffect } from "react";
 import { Rate } from "@/headerBoard/ui";
