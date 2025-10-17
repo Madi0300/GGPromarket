@@ -70,6 +70,7 @@
 
   &__burger {
     width: 24px;
+    cursor: pointer;
 
     > :not(:last-child) {
       margin-bottom: 6px;
