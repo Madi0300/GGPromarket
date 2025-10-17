@@ -13,3 +13,11 @@
 body {
   background: rgba(243, 249, 255, 1);
 }
+
+.modal-open {
+  overflow: hidden; /* Самое главное правило! Запрещает прокрутку body. */
+}
+
+html {
+  scrollbar-gutter: stable;
+}

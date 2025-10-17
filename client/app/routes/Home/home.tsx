@@ -8,6 +8,8 @@ import Brands from "./Brands/Brands";
 import Style from "./home.module.scss";
 import Articles from "./Articles/Articles";
 import SEO from "./SEO/SEO";
+import { Outlet, useParams } from "react-router";
+import { useEffect } from "react";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -17,6 +19,16 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
+  const params = useParams();
+  const { productId } = params;
+
+  useEffect(() => {
+    if (typeof productId == "string") {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  });
   return (
     <>
       <Container>
@@ -27,6 +39,7 @@ export default function Home() {
         <Brands />
         <Articles />
         <SEO />
+        <Outlet />
       </Container>
     </>
   );
