@@ -15,7 +15,7 @@ body {
 }
 
 .modal-open {
-  overflow: hidden; /* Самое главное правило! Запрещает прокрутку body. */
+  overflow: hidden;
 }
 
 html {
