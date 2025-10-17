@@ -66,18 +66,15 @@
   background-color: #fff;
   display: flex;
   flex-direction: column;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  @media (max-width: 425px) {
+    scroll-snap-align: center;
+  }
 
   width: 308px;
   height: 540px;
   padding: 20px 20px 22px 20px;
-
-  &__snapItem {
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
-    @media (max-width: 425px) {
-      scroll-snap-align: center;
-    }
-  }
 
   > :first-child {
     margin-bottom: 20px;
@@ -201,21 +198,6 @@
     right: 20px;
     opacity: 0;
     transition: opacity ease-in-out 0.3s;
-  }
-}
-
-.Rate {
-  max-height: 13px;
-  gap: 8px;
-  display: flex;
-  &__stars {
-    display: flex;
-    gap: 5px;
-  }
-  &__comments {
-    display: flex;
-    align-items: center;
-    gap: 5px;
   }
 }
 
