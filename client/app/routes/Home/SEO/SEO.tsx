@@ -2,7 +2,7 @@ import Style from "./SEO.module.scss";
 import { useGetSEODataQuery } from "#/apiSlise";
 
 export default function SEO() {
-  const { data, isSuccess } = useGetSEODataQuery();
+  const { data, isSuccess } = useGetSEODataQuery(null);
   const seoImg = isSuccess ? data.imgUrl : "/SEO/SEO.png";
   const seoText = isSuccess ? data.text : "";
   const seoTitle = isSuccess ? data.title : "";

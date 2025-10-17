@@ -77,7 +77,7 @@ export const brandsList: Brand[] = [
 ];
 
 export default function Brands() {
-  const { data, isSuccess, isError, error } = useGetBrandsDataQuery();
+  const { data, isSuccess, isError, error } = useGetBrandsDataQuery(null);
   const items = isSuccess ? data : brandsList;
   const scrollEl = useRef<HTMLDivElement | null>(null);
 
@@ -103,7 +103,7 @@ export default function Brands() {
       <Title description="Популярные бренды"></Title>
       <div className={Style.BrandsSlider}>
         <div ref={scrollEl} className={Style.Brands}>
-          {items.map((item) => {
+          {items.map((item: Brand) => {
             return (
               <BrandsCard key={item.name} item={item} scrollEl={scrollEl} />
             );

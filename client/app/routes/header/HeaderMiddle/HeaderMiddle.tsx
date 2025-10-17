@@ -17,7 +17,7 @@ export default function HeaderMiddle() {
 }
 
 function Categories() {
-  const { data, error, isLoading, isSuccess } = useGetHeaderDataQuery();
+  const { data, error, isLoading, isSuccess } = useGetHeaderDataQuery(null);
 
   const productCatalog = isSuccess ? data.productCatalog : [];
 
@@ -87,7 +87,7 @@ function Search() {
 }
 
 function ActionButtons() {
-  const { data, isLoading, isSuccess, error } = useGetHeaderDataQuery();
+  const { data, isLoading, isSuccess, error } = useGetHeaderDataQuery(null);
 
   const notificationSum = isSuccess
     ? data.notificationSum

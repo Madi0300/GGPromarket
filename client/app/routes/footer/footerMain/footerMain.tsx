@@ -1,4 +1,4 @@
-import Style from "./footerMain.module.scss";
+﻿import Style from "./footerMain.module.scss";
 import { Logo, PhoneNumber } from "../../headerBoard/ui";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../../store/store";
@@ -50,12 +50,12 @@ const footerContentOffline = {
 export default function FooterMain() {
   let number = "";
   (() => {
-    const { data, error, isLoading, isSuccess } = useGetHeaderDataQuery();
+    const { data, error, isLoading, isSuccess } = useGetHeaderDataQuery(null);
     number = isSuccess ? data.callNumber : "";
   })();
   let footerContent;
   (() => {
-    const { data, error, isLoading, isSuccess } = useGetFooterDataQuery();
+    const { data, error, isLoading, isSuccess } = useGetFooterDataQuery(null);
     footerContent = isSuccess ? data : footerContentOffline;
   })();
   return (
@@ -112,14 +112,13 @@ export default function FooterMain() {
                 {footerContent.socialMediaLinks.map(
                   (item: { name: string; href: string; img: string }) => {
                     return (
-                      <>
-                        <a
-                          className={Style.FooterMain__socialMedia__item}
-                          href={item.href}
-                        >
-                          <img src={item.img} />{" "}
-                        </a>{" "}
-                      </>
+                      <a
+                        key={item.name}
+                        className={Style.FooterMain__socialMedia__item}
+                        href={item.href}
+                      >
+                        <img src={item.img} />
+                      </a>
                     );
                   }
                 )}

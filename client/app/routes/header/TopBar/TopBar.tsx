@@ -6,7 +6,7 @@ import { Call } from "../../headerBoard/ui";
 import { useGetHeaderDataQuery } from "../../../store/apiSlise";
 
 export default function TopBar() {
-  const { data, error, isLoading, isSuccess } = useGetHeaderDataQuery();
+  const { data, error, isLoading, isSuccess } = useGetHeaderDataQuery(null);
 
   const currentLocation = isSuccess ? data.currentLocation : "";
   const callNumber = isSuccess ? data.callNumber : "";
@@ -41,11 +41,11 @@ type NavLink = {
 
 function Navigation() {
   const navLinks: NavLink[] = [
-    { name: "Каталог", href: "#" },
-    { name: "Доставка", href: "#" },
-    { name: "Скидки", href: "#" },
-    { name: "Бренды", href: "#" },
-    { name: "Контакты", href: "#" },
+    { name: "Каталог", href: "/catalog" },
+    { name: "Доставка", href: "/order" },
+    { name: "Скидки", href: "/discounts" },
+    { name: "Бренды", href: "/brands" },
+    { name: "Контакты", href: "/contacts" },
   ];
 
   const [toggleKey, setToggleKey] = useState(0);
@@ -72,9 +72,13 @@ function Navigation() {
       <div className={Style.Navigation__Nav}>
         {navLinks.map((item) => {
           return (
-            <span key={item.name} className={Style.Navigation__item}>
+            <a
+              href={item.href}
+              key={item.name}
+              className={Style.Navigation__item}
+            >
               {item.name}
-            </span>
+            </a>
           );
         })}
       </div>
