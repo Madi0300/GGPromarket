@@ -138,3 +138,49 @@ export function PhoneNumber({ number }: { number: number }) {
     </>
   );
 }
+
+type RateProps = {
+  rateSum: number;
+  commentsSum: number;
+};
+
+export function Rate({ rateSum, commentsSum }: RateProps) {
+  let curRate = rateSum;
+  const stars: ReactNode[] = [];
+
+  if (rateSum < 0) {
+    return null;
+  }
+  for (let i = 1; i <= curRate; curRate--) {
+    stars.push(
+      <img
+        key={5 - curRate}
+        src="/Goods/star.svg"
+        alt=""
+        className={Style.Rate__icon}
+      />
+    );
+  }
+  if (curRate > 0) {
+    stars.push(
+      <img
+        key={5 - curRate}
+        src="/Goods/halfStar.svg"
+        alt=""
+        className={Style.Rate__icon}
+      />
+    );
+  }
+
+  return (
+    <>
+      <div className={Style.Rate}>
+        <span className={Style.Rate__stars}>{stars}</span>
+        <span className={Style.Rate__comments}>
+          <img src="/Goods/commentsIcon.svg" alt="" />
+          {rateSum}
+        </span>
+      </div>
+    </>
+  );
+}
