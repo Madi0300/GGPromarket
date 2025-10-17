@@ -7,6 +7,7 @@ type Article = {
   title: string;
   imgUrl: string;
   link: string;
+  id: number;
 };
 
 const articles: Article[] = [
@@ -14,46 +15,54 @@ const articles: Article[] = [
     title: "Актуальные и необычные аксессуары для ванной комнаты",
     imgUrl: "article/img1.png",
     link: "/articles/1",
+    id: 1,
   },
   {
     title: "Какой температуры должна быть горячая вода?",
     imgUrl: "article/img1.png",
     link: "/articles/1",
+    id: 2,
   },
   {
     title: "Конденсат на бачке унитаза: причины появления и способы устранения",
     imgUrl: "article/img1.png",
     link: "/articles/1",
+    id: 3,
   },
   {
     title: "Анаэробный герметик для резьбовых соединений",
     imgUrl: "article/img1.png",
     link: "/articles/1",
+    id: 4,
   },
   {
     title: "Анаэробный герметик для резьбовых соединений",
     imgUrl: "article/img1.png",
     link: "/articles/1",
+    id: 5,
   },
   {
     title: "Анаэробный герметик для резьбовых соединений",
     imgUrl: "article/img1.png",
     link: "/articles/1",
+    id: 6,
   },
   {
     title: "Анаэробный герметик для резьбовых соединений",
     imgUrl: "article/img1.png",
     link: "/articles/1",
+    id: 7,
   },
   {
     title: "Анаэробный герметик для резьбовых соединений",
     imgUrl: "article/img1.png",
     link: "/articles/1",
+    id: 8,
   },
 ];
 
 export default function Articles() {
-  const { data, isSuccess, isError, error } = useGetArticlesDataQuery();
+  const { data, isSuccess, isError, error } = useGetArticlesDataQuery(null);
   const dataItems = isSuccess ? data : articles;
   const scrollEl = useRef<HTMLDivElement | null>(null);
 
@@ -79,9 +88,9 @@ export default function Articles() {
       <Title description="Статьи" />
       <div className={Style.Articles}>
         <div ref={scrollEl} className={Style.Articles__slider}>
-          {dataItems.map((item) => {
+          {dataItems.map((item: Article) => {
             return (
-              <ArticleCard key={item.title} item={item} scrollEl={scrollEl} />
+              <ArticleCard key={item.id} item={item} scrollEl={scrollEl} />
             );
           })}
         </div>
