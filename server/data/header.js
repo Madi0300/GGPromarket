@@ -1,6 +1,6 @@
 const header = {
   currentLocation: "Москва",
-  callNumber: 84950183210,
+  callNumber: 81231231223,
   productCatalog: [
     { name: "Сантехника", href: "/santehnika" },
     { name: "Смесители", href: "/smesiteli" },
