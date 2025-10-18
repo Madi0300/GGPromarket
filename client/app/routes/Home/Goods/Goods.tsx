@@ -4,6 +4,8 @@ import { useNavigate } from "react-router";
 import { Title } from "../home";
 import { useGetGoodsDataQuery } from "#/apiSlise";
 import { Rate } from "@/headerBoard/ui";
+import { useAppDispatch } from "#/hooks";
+import { increment } from "#/clientStates";
 
 type Category =
   | "Sinks"
@@ -315,8 +317,35 @@ function GoodsItemCard({ props, scrollEl }: GoodsItemProps) {
     };
   }, [isVisible, scrollEl]);
 
-  function handleClickCard(id: number) {
-    navigate(`/product/${id}`, { preventScrollReset: true });
+  const likeElem = useRef<HTMLImageElement | null>(null);
+
+  const localLikes = JSON.parse(localStorage.getItem("likes") || "[]");
+
+  const [isLiked, setIsLiked] = useState(localLikes.includes(props.id));
+  const dispatch = useAppDispatch();
+
+  function handleClickCard(e: React.MouseEvent, id: number) {
+    if (likeElem.current && e.target === likeElem.current) {
+      console.log("like");
+      const localLikesJSON = localStorage.getItem("likes");
+      const localLikes = localLikesJSON ? JSON.parse(localLikesJSON) : [];
+
+      console.log(localLikes);
+
+      if (localLikes.includes(id)) {
+        const newLikes = localLikes.filter((item: number) => item !== id);
+        console.log(newLikes);
+        localStorage.setItem("likes", JSON.stringify(newLikes));
+        setIsLiked(false);
+      } else {
+        localLikes.push(id);
+        localStorage.setItem("likes", JSON.stringify(localLikes));
+        setIsLiked(true);
+      }
+      dispatch(increment());
+    } else {
+      navigate(`/product/${id}`, { preventScrollReset: true });
+    }
   }
 
   return (
@@ -331,7 +360,7 @@ function GoodsItemCard({ props, scrollEl }: GoodsItemProps) {
       }}
       onClick={(e) => {
         e.preventDefault();
-        handleClickCard(props.id);
+        handleClickCard(e, props.id);
       }}
       className={Style.GoodsItem + " " + (isHover ? Style.active : "")}
     >
@@ -358,7 +387,12 @@ function GoodsItemCard({ props, scrollEl }: GoodsItemProps) {
         </div>
       </div>
       <div className={Style.GoodsItem__hoverBanner}>Быстрый просмотр</div>
-      <img src="/Goods/like.svg" alt="like" className={Style.GoodsItem__like} />
+      <img
+        ref={likeElem}
+        src={isLiked ? "/Goods/liked.png" : "/Goods/like.svg"}
+        alt="like"
+        className={Style.GoodsItem__like}
+      />
       {isDiscount || props.isHit ? goodItemSigns : null}
     </a>
   );

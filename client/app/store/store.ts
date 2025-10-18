@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { apiSlice } from "./apiSlise";
+import clientStateReducer from "./clientStates";
 
 export const store = configureStore({
   reducer: {
     [apiSlice.reducerPath]: apiSlice.reducer,
+    clientState: clientStateReducer,
   },
 
   middleware: (getDefaultMiddleware) =>

@@ -217,3 +217,34 @@
     order: 2;
   }
 }
+
+.LikedGoods {
+  position: absolute;
+  max-width: 360px;
+  top: 0;
+  right: 0;
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 10px;
+  z-index: 4;
+  color: rgba(0, 0, 0, 1);
+
+  font-family: Montserrat;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: 0%;
+  text-align: left;
+  &__list {
+    > :not(:last-child) {
+      margin-bottom: 10px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+  }
+  &__item:not(:last-child) {
+    padding-bottom: 10px;
+  }
+  @media (max-width: 720px) {
+    margin: 0 20px;
+  }
+}
