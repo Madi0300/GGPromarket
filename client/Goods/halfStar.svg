@@ -1,0 +1,16 @@
+<svg viewBox="0 0 14 13" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="14.000000" height="13.000000" fill="none" customFrame="#000000">
+	<defs>
+		<filter id="pixso_custom_mask_type_alpha">
+			<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0 " />
+		</filter>
+	</defs>
+	<mask id="mask_0" width="14.000000" height="13.000000" x="0.000000" y="0.000000" maskUnits="userSpaceOnUse">
+		<g filter="url(#pixso_custom_mask_type_alpha)">
+			<path id="Vector" d="M6.96996 0L9.13305 4.29412L14 5L10.515 8.29412L11.2961 13L6.96996 10.8235L2.64378 13L3.48498 8.29412L0 5L4.80687 4.29412L6.96996 0Z" fill="rgb(156.683,163.846,167.875)" fill-rule="evenodd" />
+		</g>
+	</mask>
+	<g id="Mask Group" mask="url(#mask_0)">
+		<path id="Vector" d="M6.96996 0L9.13305 4.29412L14 5L10.515 8.29412L11.2961 13L6.96996 10.8235L2.64378 13L3.48498 8.29412L0 5L4.80687 4.29412L6.96996 0Z" fill="rgb(255,214.2,0)" fill-rule="evenodd" />
+		<rect id="Rectangle 76" width="12.000000" height="19.000000" x="7.000000" y="-3.000000" fill="rgb(153.452,163.363,168.938)" />
+	</g>
+</svg>
