@@ -12,13 +12,9 @@ export default function Modal() {
   const { productId: id } = params;
   const isOpen = typeof id === "string";
   const [isDefaultImg, setIsDefaultImg] = useState(false);
-  let serverUrl;
-  () => {
-    const { data, isSuccess } = useGetServerUrlQuery(null);
-    if (isSuccess) {
-      serverUrl = data;
-    }
-  };
+  const { data: serverUrlData, isSuccess: isServerUrlSuccess } =
+    useGetServerUrlQuery(null);
+  const serverUrl = isServerUrlSuccess ? serverUrlData.serverUrl : "";
 
   const defaultImg = "/Goods/default.png";
 
@@ -30,6 +26,19 @@ export default function Modal() {
 
   function close() {
     navigate("/", { preventScrollReset: true });
+  }
+
+  async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    if (!serverUrl || !data) return;
+
+    const formData = new FormData();
+    formData.append("id", data.id.toString());
+
+    await fetch(`${serverUrl}/api/purchase`, {
+      method: "POST",
+      body: formData,
+    });
   }
 
   useEffect(() => {
@@ -92,38 +101,26 @@ export default function Modal() {
                     </p>
                   </div>
                   <div className={Style.Modal__forms}>
-                    <form
-                      className={Style.Modal__form}
-                      method="post"
-                      action={serverUrl + "/api/purchase"}
+                    <button
+                      onClick={handleSubmit}
+                      className={
+                        Style.Modal__form__button +
+                        " " +
+                        Style.Modal__form__button__buy
+                      }
                     >
-                      <input type="hidden" name="id" value={data.id} />
-                      <button
-                        className={
-                          Style.Modal__form__button +
-                          " " +
-                          Style.Modal__form__button__buy
-                        }
-                      >
-                        Купить сейчас
-                      </button>
-                    </form>
-                    <form
-                      className={Style.Modal__form}
-                      method="post"
-                      action={serverUrl + "/api/purchase"}
+                      Купить сейчас
+                    </button>
+                    <button
+                      onClick={handleSubmit}
+                      className={
+                        Style.Modal__form__button +
+                        " " +
+                        Style.Modal__form__button__add
+                      }
                     >
-                      <input type="hidden" name="id" value={data.id} />
-                      <button
-                        className={
-                          Style.Modal__form__button +
-                          " " +
-                          Style.Modal__form__button__add
-                        }
-                      >
-                        В корзину
-                      </button>
-                    </form>
+                      В корзину
+                    </button>
                   </div>
                 </div>
               </>
