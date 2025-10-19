@@ -4,13 +4,16 @@ import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 import path from "path";
 
-export default defineConfig({
-  base: "/",
-  plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./app/routes"),
-      "#": path.resolve(__dirname, "./app/store"),
+export default defineConfig(({ mode }) => {
+  const base = mode === "production" ? "/GGPromarket/" : "/";
+  return {
+    base: base,
+    plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
+    resolve: {
+      alias: {
+        "@": path.resolve(__dirname, "./app/routes"),
+        "#": path.resolve(__dirname, "./app/store"),
+      },
     },
-  },
+  };
 });
