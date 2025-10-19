@@ -25,17 +25,17 @@ const footerContentOffline = {
     {
       name: "whatsapp",
       href: "https://www.whatsapp.com",
-      img: "/Footer/socialMedia/whatsapp.svg",
+      img: "Footer/socialMedia/whatsapp.svg",
     },
     {
       name: "instagram",
       href: "https://www.instagram.com",
-      img: "/Footer/socialMedia/instagram.svg",
+      img: "Footer/socialMedia/instagram.svg",
     },
     {
       name: "telegram",
       href: "https://www.telegram.org",
-      img: "/Footer/socialMedia/telegram.svg",
+      img: "Footer/socialMedia/telegram.svg",
     },
   ],
   adress: "Москва, ул. Салтыковская, 6 стр 11",
@@ -48,16 +48,13 @@ const footerContentOffline = {
 } as const;
 
 export default function FooterMain() {
-  let number = "";
-  (() => {
-    const { data, error, isLoading, isSuccess } = useGetHeaderDataQuery(null);
-    number = isSuccess ? data.callNumber : "";
-  })();
-  let footerContent;
-  (() => {
-    const { data, error, isLoading, isSuccess } = useGetFooterDataQuery(null);
-    footerContent = isSuccess ? data : footerContentOffline;
-  })();
+  const { data: headerData, isSuccess: isHeaderSuccess } =
+    useGetHeaderDataQuery(null);
+  const { data: footerData, isSuccess: isFooterSuccess } =
+    useGetFooterDataQuery(null);
+
+  const number = isHeaderSuccess ? headerData.callNumber : "";
+  const footerContent = isFooterSuccess ? footerData : footerContentOffline;
   return (
     <>
       <div className={Style.FooterMain}>
@@ -109,7 +106,7 @@ export default function FooterMain() {
                 </li>
               </ul>
               <div className={Style.FooterMain__socialMedia}>
-                {footerContent.socialMediaLinks.map(
+                {footerContentOffline.socialMediaLinks.map(
                   (item: { name: string; href: string; img: string }) => {
                     return (
                       <a
@@ -117,7 +114,7 @@ export default function FooterMain() {
                         className={Style.FooterMain__socialMedia__item}
                         href={item.href}
                       >
-                        <img src={item.img} />
+                        <img src={import.meta.env.BASE_URL + item.img} />
                       </a>
                     );
                   }

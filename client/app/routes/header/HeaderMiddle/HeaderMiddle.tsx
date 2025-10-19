@@ -106,7 +106,7 @@ function Search() {
             placeholder="Поиск по сайту"
           />
           <button type="submit" className={Style.Search__button}>
-            <img src="/header/search-icon.svg" alt="" />
+            <img src={`${import.meta.env.BASE_URL}header/search-icon.svg`} alt="" />
           </button>
         </form>
       </div>
@@ -141,7 +141,7 @@ function ActionButtons({
       <div className={Style.ActionButtons__button__notification}>
         <img
           className={Style.ActionButtons__eliplse}
-          src="/header/elipse.svg"
+          src={`${import.meta.env.BASE_URL}header/elipse.svg`}
           alt=""
         />
         <span className={Style.ActionButtons__button__notification__sum}>
@@ -176,7 +176,7 @@ function ActionButtons({
               : null}
             <img
               className={Style.ActionButtons__button__icon}
-              src="/header/userButton.svg"
+              src={`${import.meta.env.BASE_URL}header/userButton.svg`}
               alt=""
             />
           </a>
@@ -188,7 +188,7 @@ function ActionButtons({
               : null}
             <img
               className={Style.ActionButtons__button__icon}
-              src="/header/likedButton.svg"
+              src={`${import.meta.env.BASE_URL}header/likedButton.svg`}
               alt=""
             />
           </a>
@@ -200,7 +200,7 @@ function ActionButtons({
               : null}
             <img
               className={Style.ActionButtons__button__icon}
-              src="/header/cartButton.svg"
+              src={`${import.meta.env.BASE_URL}header/cartButton.svg`}
               alt=""
             />
           </a>

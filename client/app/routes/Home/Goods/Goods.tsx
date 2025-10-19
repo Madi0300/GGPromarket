@@ -208,7 +208,7 @@ function GoodsSlider({ data, categories, sign }: GoodsSliderProps) {
             >
               <img
                 className={Style.GoodsSlider__items__button__img}
-                src="/Goods/arrow.svg"
+                src={`${import.meta.env.BASE_URL}Goods/arrow.svg`}
                 alt="arrow"
               />
             </button>
@@ -220,7 +220,7 @@ function GoodsSlider({ data, categories, sign }: GoodsSliderProps) {
             >
               <img
                 className={Style.GoodsSlider__items__button__img}
-                src="/Goods/arrow.svg"
+                src={`${import.meta.env.BASE_URL}Goods/arrow.svg`}
                 alt="arrow"
               />
             </button>
@@ -367,7 +367,11 @@ function GoodsItemCard({ props, scrollEl }: GoodsItemProps) {
       {isVisible ? (
         <img
           className={Style.GoodsItem__image}
-          src={!isDefaultImg ? props.imgUrl : "/Goods/default.png"}
+          src={
+            !isDefaultImg
+              ? props.imgUrl
+              : `${import.meta.env.BASE_URL}Goods/default.png`
+          }
           alt=""
           onError={() => {
             setIsDefaultImg(true);
@@ -389,7 +393,11 @@ function GoodsItemCard({ props, scrollEl }: GoodsItemProps) {
       <div className={Style.GoodsItem__hoverBanner}>Быстрый просмотр</div>
       <img
         ref={likeElem}
-        src={isLiked ? "/Goods/liked.png" : "/Goods/like.svg"}
+        src={
+          isLiked
+            ? `${import.meta.env.BASE_URL}Goods/liked.png`
+            : `${import.meta.env.BASE_URL}Goods/like.svg`
+        }
         alt="like"
         className={Style.GoodsItem__like}
       />

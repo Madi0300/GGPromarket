@@ -117,7 +117,7 @@ export default function Brands() {
           >
             <img
               className={Style.BrandsSlider__buttonImg}
-              src="/Goods/arrow.svg"
+              src={`${import.meta.env.BASE_URL}Goods/arrow.svg`}
               alt="arrow"
             />
           </button>
@@ -128,7 +128,7 @@ export default function Brands() {
           >
             <img
               className={Style.BrandsSlider__buttonImg}
-              src="/Goods/arrow.svg"
+              src={`${import.meta.env.BASE_URL}Goods/arrow.svg`}
               alt="arrow"
             />
           </button>
@@ -146,7 +146,7 @@ function BrandsCard({
   scrollEl: React.RefObject<HTMLDivElement | null>;
 }) {
   const [isDefaultImg, setIsDefaultImg] = useState(false);
-  const defaultImg = "/Brands/defaultImg.svg";
+  const defaultImg = `${import.meta.env.BASE_URL}Brands/defaultImg.png`;
   const [isVisible, setIsVisible] = useState(false);
   const intersectingElem = useRef<HTMLAnchorElement | null>(null);
 

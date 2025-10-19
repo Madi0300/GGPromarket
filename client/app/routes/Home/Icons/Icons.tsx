@@ -6,21 +6,21 @@ export type IconItem = { key: string; icon: string; text: string };
 export const iconsData: readonly IconItem[] = [
   {
     key: "truck",
-    icon: "/Icons/truck.svg",
+    icon: "Icons/truck.svg",
     text: "Быстрая доставка\nпо Москве и в любой\nрегион России",
   },
   {
     key: "shield",
-    icon: "/Icons/shield.svg",
+    icon: "Icons/shield.svg",
     text: "Все товары имеют\nофициальную гарантию\nпроизводителя",
   },
   {
     key: "forklift",
-    icon: "/Icons/forklift.svg",
+    icon: "Icons/forklift.svg",
     text: "Более 100 000 товаров",
   },
-  { key: "coin", icon: "/Icons/coin.svg", text: "Любой способ оплаты" },
-  { key: "like", icon: "/Icons/like.svg", text: "Высокие оценки клиентов" },
+  { key: "coin", icon: "Icons/coin.svg", text: "Любой способ оплаты" },
+  { key: "like", icon: "Icons/like.svg", text: "Высокие оценки клиентов" },
 ] as const;
 
 export default function Icons({
@@ -36,7 +36,7 @@ export default function Icons({
             <div className={Style.Icons__iconWrapper}>
               <img
                 className={Style.Icons__iconWrapper__img}
-                src={item.icon}
+                src={import.meta.env.BASE_URL + item.icon}
                 alt={item.key}
               />
             </div>

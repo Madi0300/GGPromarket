@@ -102,7 +102,7 @@ export default function Articles() {
           >
             <img
               className={Style.Articles__buttonImg}
-              src="/Goods/arrow.svg"
+              src={`${import.meta.env.BASE_URL}Goods/arrow.svg`}
               alt="arrow"
             />
           </button>
@@ -113,7 +113,7 @@ export default function Articles() {
           >
             <img
               className={Style.Articles__buttonImg}
-              src="/Goods/arrow.svg"
+              src={`${import.meta.env.BASE_URL}Goods/arrow.svg`}
               alt="arrow"
             />
           </button>
@@ -133,7 +133,7 @@ function ArticleCard({
   const intersectingElem = useRef<HTMLAnchorElement | null>(null);
   const [isIntersecting, setIsIntersecting] = useState(false);
   const [isDefaultImg, setIsDefaultImg] = useState(false);
-  const defaultImg = "/Articles/defaultImg.png";
+  const defaultImg = `${import.meta.env.BASE_URL}Articles/defaultImg.png`;
 
   useEffect(() => {
     if (isIntersecting) return;

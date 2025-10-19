@@ -27,7 +27,7 @@ function City({ city = "Москва" }: { city?: string }) {
   return (
     <>
       <a className={Style.City} href="#">
-        <img className={Style.City__icon} src="/header/location-icon.svg" />
+        <img className={Style.City__icon} src={`${import.meta.env.BASE_URL}header/location-icon.svg`} />
         <span className={(Style.City__text, Style.underlined)}>{city}</span>
       </a>
     </>

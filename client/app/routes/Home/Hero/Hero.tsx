@@ -93,14 +93,14 @@ export default function Hero() {
               className={Style.Hero__slider__navButtonLeft}
               aria-label="Previous"
             >
-              <img src="/HeroSlider/arrowLeft.svg" alt="" />
+              <img src={`${import.meta.env.BASE_URL}HeroSlider/arrowLeft.svg`} alt="" />
             </button>
             <button
               onClick={() => handleButtonClick("right")}
               className={Style.Hero__slider__navButtonRight}
               aria-label="Previous"
             >
-              <img src="/HeroSlider/arrowRight.svg" alt="" />
+              <img src={`${import.meta.env.BASE_URL}HeroSlider/arrowRight.svg`} alt="" />
             </button>
           </div>
         </div>
