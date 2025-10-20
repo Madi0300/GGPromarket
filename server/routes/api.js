@@ -1,7 +1,6 @@
 ﻿const express = require('express');
 const router = express.Router();
-const { toAbsolute } = require('../utils/urlUtils');
-const config = require('../config');
+const { toAbsolute, resolveBaseUrl } = require('../utils/urlUtils');
 
 const articles = require('../data/articles');
 const brands = require('../data/brands');
@@ -13,44 +12,34 @@ const icons = require('../data/icons');
 const seo = require('../data/seo');
 const goods = require('../data/goods');
 
-router.get('/articles', (req, res) => {
-  res.json(toAbsolute(articles));
-});
+const sendWithAbsolute = payload => (req, res) => {
+  const baseUrl = resolveBaseUrl(req);
+  res.json(toAbsolute(payload, baseUrl));
+};
 
-router.get('/brands', (req, res) => {
-  res.json(toAbsolute(brands));
-});
+router.get('/articles', sendWithAbsolute(articles));
 
-router.get('/collections', (req, res) => {
-  res.json(toAbsolute(collections));
-});
+router.get('/brands', sendWithAbsolute(brands));
 
-router.get('/footer', (req, res) => {
-  res.json(toAbsolute(footer));
-});
+router.get('/collections', sendWithAbsolute(collections));
 
-router.get('/header', (req, res) => {
-  res.json(toAbsolute(header));
-});
+router.get('/footer', sendWithAbsolute(footer));
 
-router.get('/hero', (req, res) => {
-  res.json(toAbsolute(hero));
-});
+router.get('/header', sendWithAbsolute(header));
 
-router.get('/icons', (req, res) => {
-  res.json(toAbsolute(icons));
-});
+router.get('/hero', sendWithAbsolute(hero));
 
-router.get('/seo', (req, res) => {
-  res.json(toAbsolute(seo));
-});
+router.get('/icons', sendWithAbsolute(icons));
+
+router.get('/seo', sendWithAbsolute(seo));
 
 router.get('/goods', (req, res) => {
   const goodsWithoutDescription = goods.map(item => {
     const { description, ...rest } = item;
     return rest;
   });
-  res.json(toAbsolute(goodsWithoutDescription));
+  const baseUrl = resolveBaseUrl(req);
+  res.json(toAbsolute(goodsWithoutDescription, baseUrl));
 });
 
 router.get('/goods/:id', (req, res) => {
@@ -60,12 +49,12 @@ router.get('/goods/:id', (req, res) => {
     return res.status(404).json({ message: 'Товар не найден' });
   }
 
-  res.json(toAbsolute(good));
+  const baseUrl = resolveBaseUrl(req);
+  res.json(toAbsolute(good, baseUrl));
 });
 
 router.get('/server-url', (req, res) => {
-  const serverUrl = `${config.host}:${config.port}`;
-  res.json({ serverUrl });
+  res.json({ serverUrl: resolveBaseUrl(req) });
 });
 
 module.exports = router;
