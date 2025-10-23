@@ -145,6 +145,13 @@
     border: 1px solid rgba(43, 123, 198, 1);
     border-radius: 4px;
     text-transform: uppercase;
+    z-index: 2;
+    cursor: pointer;
+    transition: all ease-in-out 0.3s;
+  }
+  &__button:hover {
+    background-color: rgba(43, 123, 198, 1);
+    color: #fff;
   }
 
   &__price {

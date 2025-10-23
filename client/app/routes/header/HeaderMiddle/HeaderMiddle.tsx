@@ -7,37 +7,64 @@ import {
   useGetGoodDataByIdQuery,
 } from "../../../store/apiSlise";
 import { useAppSelector } from "#/hooks";
-import { toogleLikesButton } from "#/clientStates";
+import { toogleLikesButton, toogleCartButton } from "#/clientStates";
 import { useAppDispatch } from "#/hooks";
 import { useNavigate } from "react-router";
 
 type ButtonsCords = {
   like: { X: number; Y: number };
+  cart: { X: number; Y: number };
 };
 
 export default function HeaderMiddle() {
   const likedItemsId = JSON.parse(localStorage.getItem("likes") || "[]");
+  const cardItemsId = JSON.parse(localStorage.getItem("cart") || "[]");
   const isLikesButtonTouched = useAppSelector(
     (state: RootState) => state.clientState.likesButtonTouched
   );
   const isLikedButtonTouched = useAppSelector(
     (state: RootState) => state.clientState.likeTouched
   );
-  const [buttonsCords, setButtonsCords] = useState<ButtonsCords>({
+  const isCartButtonTouched = useAppSelector(
+    (state: RootState) => state.clientState.cartButtonTouched
+  );
+  const [ButtonsCords, setButtonsCords] = useState<ButtonsCords>({
     like: { X: 0, Y: 0 },
+    cart: { X: 0, Y: 0 },
   });
+
+  let itemsSum = 0;
+
+  for (let i = 0; i < cardItemsId.length; i++) {
+    const { data, isSuccess } = useGetGoodDataByIdQuery(cardItemsId[i]);
+    if (isSuccess) {
+      itemsSum += data.price;
+    }
+  }
 
   return (
     <>
       <div className={Style.HeaderMiddle}>
         <Categories />
         <Search />
-        <ActionButtons setLikeButtonCords={setButtonsCords} />
+        <ActionButtons setButtonCords={setButtonsCords} />
         {isLikesButtonTouched ? (
-          <GetGoodsListById
-            cords={buttonsCords.like}
-            likedItemsId={likedItemsId}
-          />
+          <GetGoodsListById cords={ButtonsCords.like} itemsId={likedItemsId} />
+        ) : null}
+        {isCartButtonTouched ? (
+          <>
+            <GetGoodsListById cords={ButtonsCords.cart} itemsId={cardItemsId} />
+            <div
+              className={Style.HeaderMiddle__cartSum}
+              style={{
+                position: "absolute",
+                left: `${ButtonsCords.cart.X - 300}px`,
+                top: `${ButtonsCords.cart.Y - 40}px`,
+              }}
+            >
+              Общий счет: {itemsSum}₽
+            </div>
+          </>
         ) : null}
       </div>
     </>
@@ -163,13 +190,14 @@ function Search() {
 }
 
 function ActionButtons({
-  setLikeButtonCords,
+  setButtonCords,
 }: {
-  setLikeButtonCords: React.Dispatch<React.SetStateAction<ButtonsCords>>;
+  setButtonCords: React.Dispatch<React.SetStateAction<ButtonsCords>>;
 }) {
   const { data, isLoading, isSuccess, error } = useGetHeaderDataQuery(null);
   const dispatch = useAppDispatch();
   const likeElem = useRef<HTMLAnchorElement | null>(null);
+  const cartElem = useRef<HTMLAnchorElement | null>(null);
 
   const likeTouchCounter = useAppSelector(
     (state) => state.clientState.likeTouched
@@ -178,7 +206,7 @@ function ActionButtons({
   const notificationSum = {
     user: 0,
     liked: JSON.parse(localStorage.getItem("likes") || "[]").length,
-    cart: 0,
+    cart: JSON.parse(localStorage.getItem("cart") || "[]").length,
   };
 
   //Система лайка можно в любое время изменить для получения от сервера
@@ -205,13 +233,29 @@ function ActionButtons({
     const likeCords = likeElem.current?.getBoundingClientRect();
     if (!likeCords) return;
 
-    setLikeButtonCords({
+    setButtonCords((prevState) => ({
+      ...prevState,
       like: {
         X: likeCords.left + window.scrollX,
         Y: likeCords.bottom + window.scrollY,
       },
-    });
+    }));
     dispatch(toogleLikesButton());
+  }
+  function handleCartClick(e: React.MouseEvent) {
+    e.preventDefault();
+    if (!cartElem.current) return;
+    const cartCords = cartElem.current?.getBoundingClientRect();
+    if (!cartCords) return;
+
+    setButtonCords((prevState) => ({
+      ...prevState,
+      cart: {
+        X: cartCords.left + window.scrollX,
+        Y: cartCords.bottom + window.scrollY,
+      },
+    }));
+    dispatch(toogleCartButton());
   }
 
   return (
@@ -242,7 +286,7 @@ function ActionButtons({
           </a>
         </div>
         <div className={Style.ActionButtons__button}>
-          <a href="#">
+          <a href="#" ref={cartElem} onClick={handleCartClick}>
             {notificationSum.cart > 0
               ? notificationCreate(notificationSum.cart)
               : null}
@@ -258,7 +302,7 @@ function ActionButtons({
   );
 }
 
-function LikedItem({ id }: { id: number }) {
+function GetItem({ id }: { id: number }) {
   const { data, isSuccess } = useGetGoodDataByIdQuery(id);
   const navigate = useNavigate();
 
@@ -285,13 +329,13 @@ function LikedItem({ id }: { id: number }) {
 }
 
 function GetGoodsListById({
-  likedItemsId,
+  itemsId,
   cords,
 }: {
-  likedItemsId: number[];
+  itemsId: number[];
   cords: { X: number; Y: number };
 }) {
-  const hasItems = likedItemsId && likedItemsId.length > 0;
+  const hasItems = itemsId && itemsId.length > 0;
   const likedGoodsElem = useRef<HTMLDivElement | null>(null);
 
   const elemCords = {
@@ -312,8 +356,8 @@ function GetGoodsListById({
     <div ref={likedGoodsElem} style={elemCords} className={Style.LikedGoods}>
       {hasItems ? (
         <ul className={Style.LikedGoods__list}>
-          {likedItemsId.map((id) => (
-            <LikedItem key={id} id={id} />
+          {itemsId.map((id) => (
+            <GetItem key={id} id={id} />
           ))}
         </ul>
       ) : (

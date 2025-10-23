@@ -318,11 +318,16 @@ function GoodsItemCard({ props, scrollEl }: GoodsItemProps) {
   }, [isVisible, scrollEl]);
 
   const likeElem = useRef<HTMLImageElement | null>(null);
+  const cartElem = useRef<HTMLButtonElement | null>(null);
 
   const localLikes = JSON.parse(localStorage.getItem("likes") || "[]");
 
   const [isLiked, setIsLiked] = useState(localLikes.includes(props.id));
   const dispatch = useAppDispatch();
+  const [isIncart, setIsIncart] = useState(() => {
+    const localCart = JSON.parse(localStorage.getItem("cart") || "[]");
+    return localCart.includes(props.id);
+  });
 
   function handleClickCard(e: React.MouseEvent, id: number) {
     if (likeElem.current && e.target === likeElem.current) {
@@ -341,6 +346,24 @@ function GoodsItemCard({ props, scrollEl }: GoodsItemProps) {
         localLikes.push(id);
         localStorage.setItem("likes", JSON.stringify(localLikes));
         setIsLiked(true);
+      }
+      dispatch(increment());
+    } else if (cartElem.current && e.target === cartElem.current) {
+      console.log("cart");
+      const localCartJSON = localStorage.getItem("cart");
+      const localCart = localCartJSON ? JSON.parse(localCartJSON) : [];
+
+      console.log(localCart);
+
+      if (localCart.includes(id)) {
+        const newCart = localCart.filter((item: number) => item !== id);
+        console.log(newCart);
+        localStorage.setItem("cart", JSON.stringify(newCart));
+        setIsIncart(false);
+      } else {
+        localCart.push(id);
+        localStorage.setItem("cart", JSON.stringify(localCart));
+        setIsIncart(true);
       }
       dispatch(increment());
     } else {
@@ -386,7 +409,9 @@ function GoodsItemCard({ props, scrollEl }: GoodsItemProps) {
           <p className={Style.GoodsItem__price}>
             {discount != null && discount < price ? discount : price + " ₽"}
           </p>
-          <button className={Style.GoodsItem__button}>В корзину</button>
+          <button ref={cartElem} className={Style.GoodsItem__button}>
+            {isIncart ? "В корзине" : "В корзину"}
+          </button>
           {Number.isFinite(props.discount) ? discountItem : nullItem}
         </div>
       </div>
