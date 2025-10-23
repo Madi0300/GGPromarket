@@ -1,1 +1,0 @@
-import{k as o}from"./apiSlise-CKyxjTQ5.js";const c={likeTouched:0,likesButtonTouched:!1},t=o({name:"clientState",initialState:c,reducers:{increment:e=>{e.likeTouched+=1,console.log(e.likeTouched)},toogleLikesButton:e=>{e.likesButtonTouched=!e.likesButtonTouched}}}),{increment:n,toogleLikesButton:l}=t.actions,s=t.reducer;export{s as c,n as i,l as t};
