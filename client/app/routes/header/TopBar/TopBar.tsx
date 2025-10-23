@@ -1,6 +1,6 @@
 import { Logo, Dropdown } from "../../headerBoard/ui";
 import Style from "./TopBar.module.scss";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import type { RootState } from "../../../store/store";
 import { Call } from "../../headerBoard/ui";
 import { useGetHeaderDataQuery } from "../../../store/apiSlise";
@@ -48,27 +48,73 @@ function Navigation() {
     { name: "Контакты", href: "/contacts" },
   ];
 
-  const [toggleKey, setToggleKey] = useState(0);
-  const catalog = useRef<HTMLDivElement | null>(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [dropdownCords, setDropdownCords] = useState<{ X: number; Y: number }>({
+    X: 0,
+    Y: 0,
+  });
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const burgerRef = useRef<HTMLButtonElement | null>(null);
 
   function handleClickBurger(e: React.MouseEvent) {
-    if (catalog.current && catalog.current.contains(e.target as Node)) return;
-    setToggleKey((k) => k + 1);
+    e.preventDefault();
+    if (!burgerRef.current) return;
+
+    const nextState = !isDropdownOpen;
+
+    if (nextState) {
+      const burgerRect = burgerRef.current.getBoundingClientRect();
+      setDropdownCords({
+        X: burgerRect.left + window.scrollX,
+        Y: burgerRect.bottom + window.scrollY,
+      });
+    }
+
+    setIsDropdownOpen(nextState);
   }
+
+  useEffect(() => {
+    if (!isDropdownOpen) return;
+
+    function handleOutsideClick(event: MouseEvent) {
+      const target = event.target as Node;
+
+      if (
+        dropdownRef.current?.contains(target) ||
+        burgerRef.current?.contains(target)
+      ) {
+        return;
+      }
+
+      setIsDropdownOpen(false);
+    }
+
+    document.addEventListener("mousedown", handleOutsideClick);
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, [isDropdownOpen]);
 
   return (
     <>
-      <button onClick={handleClickBurger} className={Style.Navigation__Burger}>
+      <button
+        onClick={handleClickBurger}
+        className={Style.Navigation__Burger}
+        ref={burgerRef}
+        aria-expanded={isDropdownOpen}
+      >
         <span></span>
         <span></span>
         <span></span>
-        <Dropdown
-          position={"right"}
-          ref={catalog}
-          items={navLinks}
-          toggleKey={toggleKey}
-        />
       </button>
+      <Dropdown
+        position={"right"}
+        ref={dropdownRef}
+        items={navLinks}
+        cords={dropdownCords}
+        isOpen={isDropdownOpen}
+      />
       <div className={Style.Navigation__Nav}>
         {navLinks.map((item) => {
           return (

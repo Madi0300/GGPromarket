@@ -25,19 +25,28 @@ export function Container({ children }: { children: ReactNode }) {
 }
 
 type Item = { name: string; href: string };
+type DropdownCoordinates = { X: number; Y: number };
 
 type Props = {
-  toggleKey: number;
+  cords: DropdownCoordinates;
   items: Item[];
+  isOpen: boolean;
   position?: "left" | "right";
+  emptyPlaceholder?: ReactNode;
 };
 
 export const Dropdown = forwardRef<HTMLDivElement, Props>(function Dropdown(
-  { toggleKey, items, position = "left" },
+  { cords, items, isOpen, position = "left", emptyPlaceholder },
   forwardedRef
 ) {
   const localRef = useRef<HTMLDivElement | null>(null);
-  const [isOpen, setIsOpen] = useState(false);
+  const [positionStyle, setPositionStyle] = useState<{
+    top: number;
+    left: number;
+  }>({
+    top: Math.max(0, cords.Y),
+    left: Math.max(0, cords.X),
+  });
 
   useEffect(() => {
     if (!forwardedRef) return;
@@ -59,53 +68,69 @@ export const Dropdown = forwardRef<HTMLDivElement, Props>(function Dropdown(
         ).current = null;
       }
     };
-  }, [forwardedRef]);
+  }, [forwardedRef, isOpen]);
 
   useEffect(() => {
-    let timer: number | undefined;
+    if (!isOpen) return;
+    const top = Math.max(0, cords.Y);
+    const left = Math.max(0, cords.X);
 
-    if (!isOpen && toggleKey > 0) {
-      timer = window.setTimeout(() => {
-        setIsOpen(true);
-      }, 0);
-    } else {
-      if (localRef.current) {
-        localRef.current.classList.remove(Style.Dropdown__list__active);
+    setPositionStyle((prev) => {
+      if (prev.top === top && prev.left === left) {
+        return prev;
       }
-      timer = window.setTimeout(() => {
-        if (!localRef.current) return;
-        localRef.current.classList.remove(Style.Dropdown__list__active);
-        setIsOpen(false);
-      }, 300);
-    }
-
-    return () => {
-      if (timer !== undefined) clearTimeout(timer);
-    };
-  }, [toggleKey]);
+      return { top, left };
+    });
+  }, [cords.X, cords.Y, isOpen]);
 
   useEffect(() => {
-    if (isOpen && localRef.current) {
-      localRef.current.classList.add(Style.Dropdown__list__active);
+    if (!isOpen || !localRef.current) return;
+
+    const dropdownElement = localRef.current;
+    const { width } = dropdownElement.getBoundingClientRect();
+    const viewportWidth = window.innerWidth;
+
+    const top = Math.max(0, cords.Y);
+    let left = position === "left" ? cords.X - width : cords.X;
+
+    if (left < 0) {
+      left = 0;
     }
-  }, [isOpen]);
+
+    if (left + width > viewportWidth) {
+      left = Math.max(0, viewportWidth - width);
+    }
+
+    setPositionStyle((prev) => {
+      if (prev.top === top && prev.left === left) {
+        return prev;
+      }
+      return { top, left };
+    });
+  }, [isOpen, cords.X, cords.Y, position]);
 
   if (!isOpen) return null;
 
   return (
     <div
       ref={localRef}
-      className={
-        Style.Dropdown__list + " " + Style["Dropdown__list__" + position]
-      }
+      className={Style.Dropdown__list}
+      style={{
+        top: positionStyle.top,
+        left: positionStyle.left,
+      }}
     >
-      <ul className={Style.Dropdown__ul}>
-        {items.map((item) => (
-          <li key={item.name} className={Style.Dropdown__li}>
-            <a href={item.href}>{item.name}</a>
-          </li>
-        ))}
-      </ul>
+      {items.length > 0 ? (
+        <ul className={Style.Dropdown__ul}>
+          {items.map((item) => (
+            <li key={item.name} className={Style.Dropdown__li}>
+              <a href={item.href}>{item.name}</a>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        emptyPlaceholder ?? null
+      )}
     </div>
   );
 });

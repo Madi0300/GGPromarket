@@ -46,35 +46,80 @@ export default function HeaderMiddle() {
 
 function Categories() {
   const { data, error, isLoading, isSuccess } = useGetHeaderDataQuery(null);
+  const [isDropdownActive, setIsDropdownActive] = useState(false);
 
   const productCatalog = isSuccess ? data.productCatalog : [];
 
-  const [toggleKey, setToggleKey] = useState(0);
-  const catalog = useRef<HTMLDivElement | null>(null);
+  const [dropdownCords, setDropdownCords] = useState<{ X: number; Y: number }>({
+    X: 0,
+    Y: 0,
+  });
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const burgerRef = useRef<HTMLButtonElement | null>(null);
+
+  useEffect(() => {
+    if (!isDropdownActive) return;
+
+    function handleOutsideClick(event: MouseEvent) {
+      const target = event.target as Node;
+
+      if (
+        dropdownRef.current?.contains(target) ||
+        burgerRef.current?.contains(target)
+      ) {
+        return;
+      }
+
+      setIsDropdownActive(false);
+    }
+
+    document.addEventListener("mousedown", handleOutsideClick);
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, [isDropdownActive]);
 
   function handleClickBurger(e: React.MouseEvent) {
-    if (catalog.current && catalog.current.contains(e.target as Node)) return;
-    setToggleKey((k) => k + 1);
+    e.preventDefault();
+    if (!burgerRef.current) return;
+
+    const nextState = !isDropdownActive;
+
+    if (nextState) {
+      const burgerRect = burgerRef.current.getBoundingClientRect();
+      setDropdownCords({
+        X: burgerRect.left + window.scrollX,
+        Y: burgerRect.bottom + window.scrollY,
+      });
+    }
+
+    setIsDropdownActive(nextState);
   }
 
   return (
     <>
       <div className={Style.Categories}>
-        <div className={Style.Categories__one}>
+        <div
+          className={`${Style.Categories__one} ${isDropdownActive ? Style.active : ""}`}
+        >
           <button
-            aria-expanded={catalog.current != null}
+            aria-expanded={isDropdownActive}
             onClick={handleClickBurger}
             className={Style.Categories__burger}
+            ref={burgerRef}
           >
             <span></span>
             <span></span>
             <span></span>
-            <Dropdown
-              ref={catalog}
-              items={productCatalog}
-              toggleKey={toggleKey}
-            />
           </button>
+          <Dropdown
+            ref={dropdownRef}
+            items={productCatalog}
+            cords={dropdownCords}
+            isOpen={isDropdownActive}
+            position="right"
+          />
           <p
             className={`${Style.Categories__one__name} ${Style.Categories__title}`}
           >
@@ -106,7 +151,10 @@ function Search() {
             placeholder="Поиск по сайту"
           />
           <button type="submit" className={Style.Search__button}>
-            <img src={`${import.meta.env.BASE_URL}header/search-icon.svg`} alt="" />
+            <img
+              src={`${import.meta.env.BASE_URL}header/search-icon.svg`}
+              alt=""
+            />
           </button>
         </form>
       </div>
