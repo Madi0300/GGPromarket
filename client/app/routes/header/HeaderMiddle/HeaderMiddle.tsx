@@ -1,10 +1,11 @@
 import Style from "./HeaderMiddle.module.scss";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { Dropdown } from "../../headerBoard/ui";
 import type { RootState } from "../../../store/store";
 import {
   useGetHeaderDataQuery,
   useGetGoodDataByIdQuery,
+  useGetGoodsDataQuery,
 } from "../../../store/apiSlise";
 import { useAppSelector } from "#/hooks";
 import { toogleLikesButton, toogleCartButton } from "#/clientStates";
@@ -16,9 +17,18 @@ type ButtonsCords = {
   cart: { X: number; Y: number };
 };
 
+type GoodsPricePreview = {
+  id: number;
+  price: number;
+};
+
 export default function HeaderMiddle() {
-  const likedItemsId = JSON.parse(localStorage.getItem("likes") || "[]");
-  const cardItemsId = JSON.parse(localStorage.getItem("cart") || "[]");
+  const likedItemsId = JSON.parse(
+    localStorage.getItem("likes") || "[]"
+  ) as number[];
+  const cardItemsId = JSON.parse(
+    localStorage.getItem("cart") || "[]"
+  ) as number[];
   const isLikesButtonTouched = useAppSelector(
     (state: RootState) => state.clientState.likesButtonTouched
   );
@@ -33,14 +43,15 @@ export default function HeaderMiddle() {
     cart: { X: 0, Y: 0 },
   });
 
-  let itemsSum = 0;
-
-  for (let i = 0; i < cardItemsId.length; i++) {
-    const { data, isSuccess } = useGetGoodDataByIdQuery(cardItemsId[i]);
-    if (isSuccess) {
-      itemsSum += data.price;
-    }
-  }
+  const { data: goodsData } = useGetGoodsDataQuery(null);
+  const itemsSum = useMemo(() => {
+    if (!goodsData) return 0;
+    const goodsList = goodsData as GoodsPricePreview[];
+    return cardItemsId.reduce<number>((sum, itemId) => {
+      const item = goodsList.find((good) => good.id === itemId);
+      return item ? sum + item.price : sum;
+    }, 0);
+  }, [cardItemsId, goodsData]);
 
   return (
     <>

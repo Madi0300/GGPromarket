@@ -8,7 +8,7 @@ export default function Hero() {
   const [currentItem, setCurrentItem] = useState(0);
   const baseUrl = import.meta.env.BASE_URL || "/";
 
-  const { data, error, isLoading, isSuccess } = useGetHeroDataQuery();
+  const { data, error, isLoading, isSuccess } = useGetHeroDataQuery(null);
 
   const defaultImageUrl = `${baseUrl}HeroSlider/default.png`;
 
