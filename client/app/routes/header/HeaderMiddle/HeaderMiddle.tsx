@@ -8,7 +8,7 @@ import {
   useGetGoodsDataQuery,
 } from "../../../store/apiSlise";
 import { useAppSelector } from "#/hooks";
-import { toogleLikesButton, toogleCartButton } from "#/clientStates";
+import { toggleLike, toggleCart } from "#/clientStates";
 import { useAppDispatch } from "#/hooks";
 import { useNavigate } from "react-router";
 
@@ -23,21 +23,14 @@ type GoodsPricePreview = {
 };
 
 export default function HeaderMiddle() {
-  const likedItemsId = JSON.parse(
-    localStorage.getItem("likes") || "[]"
-  ) as number[];
-  const cardItemsId = JSON.parse(
-    localStorage.getItem("cart") || "[]"
-  ) as number[];
-  const isLikesButtonTouched = useAppSelector(
-    (state: RootState) => state.clientState.likesButtonTouched
+  const likedItemsId = useAppSelector(
+    (state: RootState) => state.clientState.likedItems
   );
-  const isLikedButtonTouched = useAppSelector(
-    (state: RootState) => state.clientState.likeTouched
+  const cardItemsId = useAppSelector(
+    (state: RootState) => state.clientState.cartItems
   );
-  const isCartButtonTouched = useAppSelector(
-    (state: RootState) => state.clientState.cartButtonTouched
-  );
+  const [isLikesButtonTouched, setIsLikesButtonTouched] = useState(false);
+  const [isCartButtonTouched, setIsCartButtonTouched] = useState(false);
   const [ButtonsCords, setButtonsCords] = useState<ButtonsCords>({
     like: { X: 0, Y: 0 },
     cart: { X: 0, Y: 0 },
@@ -47,7 +40,7 @@ export default function HeaderMiddle() {
   const itemsSum = useMemo(() => {
     if (!goodsData) return 0;
     const goodsList = goodsData as GoodsPricePreview[];
-    return cardItemsId.reduce<number>((sum, itemId) => {
+    return cardItemsId.reduce((sum: number, itemId: number) => {
       const item = goodsList.find((good) => good.id === itemId);
       return item ? sum + item.price : sum;
     }, 0);
@@ -58,7 +51,13 @@ export default function HeaderMiddle() {
       <div className={Style.HeaderMiddle}>
         <Categories />
         <Search />
-        <ActionButtons setButtonCords={setButtonsCords} />
+        <ActionButtons
+          setButtonCords={setButtonsCords}
+          setIsCartButtonTouched={setIsCartButtonTouched}
+          setIsLikesButtonTouched={setIsLikesButtonTouched}
+          isLikesButtonTouched={isLikesButtonTouched}
+          isCartButtonTouched={isCartButtonTouched}
+        />
         {isLikesButtonTouched ? (
           <GetGoodsListById cords={ButtonsCords.like} itemsId={likedItemsId} />
         ) : null}
@@ -202,26 +201,27 @@ function Search() {
 
 function ActionButtons({
   setButtonCords,
+  setIsCartButtonTouched,
+  setIsLikesButtonTouched,
+  isLikesButtonTouched,
+  isCartButtonTouched,
 }: {
   setButtonCords: React.Dispatch<React.SetStateAction<ButtonsCords>>;
+  setIsLikesButtonTouched: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsCartButtonTouched: React.Dispatch<React.SetStateAction<boolean>>;
+  isLikesButtonTouched: boolean;
+  isCartButtonTouched: boolean;
 }) {
   const { data, isLoading, isSuccess, error } = useGetHeaderDataQuery(null);
   const dispatch = useAppDispatch();
   const likeElem = useRef<HTMLAnchorElement | null>(null);
   const cartElem = useRef<HTMLAnchorElement | null>(null);
 
-  const likeTouchCounter = useAppSelector(
-    (state) => state.clientState.likeTouched
-  );
-
   const notificationSum = {
     user: 0,
-    liked: JSON.parse(localStorage.getItem("likes") || "[]").length,
-    cart: JSON.parse(localStorage.getItem("cart") || "[]").length,
+    liked: useAppSelector((state) => state.clientState.likedItems).length,
+    cart: useAppSelector((state) => state.clientState.cartItems).length,
   };
-
-  //Система лайка можно в любое время изменить для получения от сервера
-  //В данном случае я просто буду использовать localStorage
 
   function notificationCreate(sum: number) {
     return (
@@ -251,7 +251,7 @@ function ActionButtons({
         Y: likeCords.bottom + window.scrollY,
       },
     }));
-    dispatch(toogleLikesButton());
+    setIsLikesButtonTouched(!isLikesButtonTouched);
   }
   function handleCartClick(e: React.MouseEvent) {
     e.preventDefault();
@@ -266,7 +266,7 @@ function ActionButtons({
         Y: cartCords.bottom + window.scrollY,
       },
     }));
-    dispatch(toogleCartButton());
+    setIsCartButtonTouched(!isCartButtonTouched);
   }
 
   return (

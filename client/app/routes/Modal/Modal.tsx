@@ -2,14 +2,16 @@ import Style from "./Modal.module.scss";
 import { useGetGoodDataByIdQuery, useGetServerUrlQuery } from "#/apiSlise";
 import { useAppDispatch, useAppSelector } from "#/hooks";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, type ReactEventHandler } from "react";
 import { Rate } from "@/headerBoard/ui";
 import { useNavigate } from "react-router";
 import { useParams } from "react-router";
+import { toggleCart } from "#/clientStates";
 
 export default function Modal() {
   const params = useParams();
   const { productId: id } = params;
+  const numericId = Number(id);
   const isOpen = typeof id === "string";
   const [isDefaultImg, setIsDefaultImg] = useState(false);
   const { data: serverUrlData, isSuccess: isServerUrlSuccess } =
@@ -19,6 +21,10 @@ export default function Modal() {
   const defaultImg = import.meta.env.BASE_URL + "Goods/default.png";
 
   const { data, isSuccess, isError, error } = useGetGoodDataByIdQuery(`${id}`);
+
+  const isInCart = useAppSelector(
+    (state) => state.clientState.cartItems
+  ).includes(numericId);
 
   const dispatch = useAppDispatch();
 
@@ -39,6 +45,10 @@ export default function Modal() {
       method: "POST",
       body: formData,
     });
+  }
+  function toggleItemToCart(e: React.MouseEvent) {
+    e.preventDefault();
+    dispatch(toggleCart(numericId));
   }
 
   useEffect(() => {
@@ -112,14 +122,14 @@ export default function Modal() {
                       Купить сейчас
                     </button>
                     <button
-                      onClick={handleSubmit}
+                      onClick={toggleItemToCart}
                       className={
                         Style.Modal__form__button +
                         " " +
                         Style.Modal__form__button__add
                       }
                     >
-                      В корзину
+                      {isInCart ? "В корзине" : "В корзину"}
                     </button>
                   </div>
                 </div>

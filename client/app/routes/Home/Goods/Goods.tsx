@@ -4,8 +4,9 @@ import { useNavigate } from "react-router";
 import { Title } from "../home";
 import { useGetGoodsDataQuery } from "#/apiSlise";
 import { Rate } from "@/headerBoard/ui";
-import { useAppDispatch } from "#/hooks";
-import { increment } from "#/clientStates";
+import { useAppDispatch, useAppSelector } from "#/hooks";
+import { toggleLike, toggleCart } from "#/clientStates";
+import React, { useMemo } from "react";
 
 type Category =
   | "Sinks"
@@ -236,7 +237,7 @@ type GoodsItemProps = {
   scrollEl: React.RefObject<HTMLDivElement | null>;
 };
 
-function GoodsItemCard({ props, scrollEl }: GoodsItemProps) {
+const GoodsItemCard = React.memo(({ props, scrollEl }: GoodsItemProps) => {
   const [isDefaultImg, setIsDefaultImg] = useState(false);
   const [isHover, setIsHover] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
@@ -320,57 +321,23 @@ function GoodsItemCard({ props, scrollEl }: GoodsItemProps) {
   const likeElem = useRef<HTMLImageElement | null>(null);
   const cartElem = useRef<HTMLButtonElement | null>(null);
 
-  const localLikes = JSON.parse(localStorage.getItem("likes") || "[]");
-
-  const [isLiked, setIsLiked] = useState(localLikes.includes(props.id));
+  const isLiked = useAppSelector(
+    (state) => state.clientState.likedItems
+  ).includes(props.id);
+  const isInCart = useAppSelector(
+    (state) => state.clientState.cartItems
+  ).includes(props.id);
   const dispatch = useAppDispatch();
-  const [isIncart, setIsIncart] = useState(() => {
-    const localCart = JSON.parse(localStorage.getItem("cart") || "[]");
-    return localCart.includes(props.id);
-  });
 
   function handleClickCard(e: React.MouseEvent, id: number) {
     if (likeElem.current && e.target === likeElem.current) {
-      console.log("like");
-      const localLikesJSON = localStorage.getItem("likes");
-      const localLikes = localLikesJSON ? JSON.parse(localLikesJSON) : [];
-
-      console.log(localLikes);
-
-      if (localLikes.includes(id)) {
-        const newLikes = localLikes.filter((item: number) => item !== id);
-        console.log(newLikes);
-        localStorage.setItem("likes", JSON.stringify(newLikes));
-        setIsLiked(false);
-      } else {
-        localLikes.push(id);
-        localStorage.setItem("likes", JSON.stringify(localLikes));
-        setIsLiked(true);
-      }
-      dispatch(increment());
+      dispatch(toggleLike(id));
     } else if (cartElem.current && e.target === cartElem.current) {
-      console.log("cart");
-      const localCartJSON = localStorage.getItem("cart");
-      const localCart = localCartJSON ? JSON.parse(localCartJSON) : [];
-
-      console.log(localCart);
-
-      if (localCart.includes(id)) {
-        const newCart = localCart.filter((item: number) => item !== id);
-        console.log(newCart);
-        localStorage.setItem("cart", JSON.stringify(newCart));
-        setIsIncart(false);
-      } else {
-        localCart.push(id);
-        localStorage.setItem("cart", JSON.stringify(localCart));
-        setIsIncart(true);
-      }
-      dispatch(increment());
+      dispatch(toggleCart(id));
     } else {
       navigate(`/product/${id}`, { preventScrollReset: true });
     }
   }
-
   return (
     <a
       ref={elem}
@@ -410,7 +377,7 @@ function GoodsItemCard({ props, scrollEl }: GoodsItemProps) {
             {discount != null && discount < price ? discount : price + " ₽"}
           </p>
           <button ref={cartElem} className={Style.GoodsItem__button}>
-            {isIncart ? "В корзине" : "В корзину"}
+            {isInCart ? "В корзине" : "В корзину"}
           </button>
           {Number.isFinite(props.discount) ? discountItem : nullItem}
         </div>
@@ -429,4 +396,4 @@ function GoodsItemCard({ props, scrollEl }: GoodsItemProps) {
       {isDiscount || props.isHit ? goodItemSigns : null}
     </a>
   );
-}
+});
