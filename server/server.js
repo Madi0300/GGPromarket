@@ -13,6 +13,11 @@ app.use(
 );
 app.use(express.json());
 
+app.use(
+  "/Footer/socialMedia",
+  express.static(path.join(__dirname, "public", "images", "footer", "socialMedia"))
+);
+
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/api", apiRoutes);

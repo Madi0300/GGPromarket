@@ -13,7 +13,10 @@ export function Logo({
     <>
       <div className={Style.Logo} style={{ width: width, height: height }}>
         <a href="/">
-          <img className={Style.Logo_img} src={`${import.meta.env.BASE_URL}headerBoard/logo.svg`} />
+          <img
+            className={Style.Logo_img}
+            src={`${import.meta.env.BASE_URL}headerBoard/logo.svg`}
+          />
         </a>
       </div>
     </>
@@ -129,19 +132,23 @@ export const Dropdown = forwardRef<HTMLDivElement, Props>(function Dropdown(
           ))}
         </ul>
       ) : (
-        emptyPlaceholder ?? null
+        (emptyPlaceholder ?? null)
       )}
     </div>
   );
 });
 
-export function Call({ number = 84950183210 }: { number?: number }) {
+export function Call({ number }: { number?: number }) {
   const stringedNumber = `${number}`;
   return (
     <>
       <div className={Style.Call}>
         <PhoneNumber number={number} />
-        <img className={Style.Call__icon} src={`${import.meta.env.BASE_URL}header/showMore.svg`} alt="" />
+        <img
+          className={Style.Call__icon}
+          src={`${import.meta.env.BASE_URL}header/showMore.svg`}
+          alt=""
+        />
         <a
           className={`${Style.Call__link} ${Style.underlined}`}
           href={"tel:" + stringedNumber}
@@ -153,13 +160,15 @@ export function Call({ number = 84950183210 }: { number?: number }) {
   );
 }
 
-export function PhoneNumber({ number }: { number: number }) {
+export function PhoneNumber({ number }: { number: number | undefined }) {
   const stringedNumber = `${number}`;
   const formattedPhone: string = `${stringedNumber[0]} ${stringedNumber.slice(1, 4)} ${stringedNumber.slice(4, 7)}-${stringedNumber.slice(7, 9)}-${stringedNumber.slice(9)}`;
 
   return (
     <>
-      <span className={Style.Call__number}>{formattedPhone}</span>
+      <span className={Style.Call__number}>
+        {number != undefined ? formattedPhone : ""}
+      </span>
     </>
   );
 }
@@ -202,7 +211,10 @@ export function Rate({ rateSum, commentsSum }: RateProps) {
       <div className={Style.Rate}>
         <span className={Style.Rate__stars}>{stars}</span>
         <span className={Style.Rate__comments}>
-          <img src={`${import.meta.env.BASE_URL}Goods/commentsIcon.svg`} alt="" />
+          <img
+            src={`${import.meta.env.BASE_URL}Goods/commentsIcon.svg`}
+            alt=""
+          />
           {rateSum}
         </span>
       </div>

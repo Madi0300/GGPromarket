@@ -1,3 +1,12 @@
+.Goods {
+  &__loading {
+    height: 686px;
+  }
+  &__error {
+    height: 686px;
+  }
+}
+
 .GoodsSlider {
   margin-bottom: 80px;
   position: relative;
@@ -54,6 +63,13 @@
       background: rgba(213, 224, 230, 0.5);
       border-radius: 5px;
     }
+  }
+  &__noItems {
+    width: 100%;
+    height: 540px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 }
 
@@ -148,6 +164,7 @@
     z-index: 2;
     cursor: pointer;
     transition: all ease-in-out 0.3s;
+    align-self: end;
   }
   &__button:hover {
     background-color: rgba(43, 123, 198, 1);

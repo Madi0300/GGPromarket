@@ -46,5 +46,11 @@ export default function Home() {
 }
 
 export function Title({ description }: { description: string }) {
-  return <div className={Style.Title}>{description}</div>;
+  return (
+    <>
+      <br />
+      <div className={Style.Title}>{description}</div>
+      <br />
+    </>
+  );
 }

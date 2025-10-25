@@ -35,6 +35,41 @@ const resolveBaseUrl = req => {
   return getFallbackBaseUrl();
 };
 
+const ASSET_EXTENSION_REGEXP = /\.(png|jpe?g|svg|webp|gif|bmp|ico|avif)$/i;
+const ensureTrailingSlash = value => (value.endsWith('/') ? value : `${value}/`);
+const stripQueryAndHash = value => value.split(/[?#]/)[0];
+const hasScheme = value => /^[a-z][a-z0-9+\-.]*:/i.test(value);
+
+const isRelativeAssetPath = value => {
+  if (typeof value !== 'string') {
+    return false;
+  }
+
+  const trimmed = value.trim();
+
+  if (!trimmed) {
+    return false;
+  }
+
+  if (trimmed.startsWith('//') || hasScheme(trimmed)) {
+    return false;
+  }
+
+  return ASSET_EXTENSION_REGEXP.test(stripQueryAndHash(trimmed));
+};
+
+const makeAbsoluteUrl = (value, baseUrl) => {
+  try {
+    return new URL(value, ensureTrailingSlash(baseUrl)).toString();
+  } catch (error) {
+    if (value.startsWith('/')) {
+      return `${baseUrl}${value}`;
+    }
+
+    return `${ensureTrailingSlash(baseUrl)}${value}`;
+  }
+};
+
 const toAbsolute = (data, baseUrl = resolveBaseUrl()) => {
   if (!baseUrl) {
     return data;
@@ -50,8 +85,8 @@ const toAbsolute = (data, baseUrl = resolveBaseUrl()) => {
     for (const key in data) {
       const value = data[key];
 
-      if (typeof value === 'string' && value.startsWith('/images')) {
-        newData[key] = `${baseUrl}${value}`;
+      if (typeof value === 'string') {
+        newData[key] = isRelativeAssetPath(value) ? makeAbsoluteUrl(value, baseUrl) : value;
       } else {
         newData[key] = toAbsolute(value, baseUrl);
       }

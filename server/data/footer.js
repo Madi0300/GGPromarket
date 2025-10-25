@@ -1,4 +1,3 @@
-
 const footer = {
   productLinks: [
     { name: "Плитка", href: "#" },
@@ -23,19 +22,19 @@ const footer = {
     {
       name: "instagram",
       href: "https://www.instagram.com",
-      img: "/Footer/socialMedia/instagram.svg",
+      img: "Footer/socialMedia/instagram.svg",
     },
     {
       name: "telegram",
       href: "https://www.telegram.org",
-      img: "/Footer/socialMedia/telegram.svg",
+      img: "Footer/socialMedia/telegram.svg",
     },
   ],
   adress: "Москва, ул. Салтыковская, 6 стр 11",
   email: "zakaz@ggpromarket.ru",
   rate: {
     href: "#",
-    imgUrl: "/images/footer/yandex.png",
+    imgUrl: "images/footer/yandex.png",
     alt: "yandex",
   },
 };

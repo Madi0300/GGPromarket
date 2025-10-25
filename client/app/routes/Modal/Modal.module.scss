@@ -234,10 +234,20 @@
       &__add {
         border: 1px solid rgba(43, 123, 198, 1);
         color: rgba(43, 123, 198, 1);
+        transition: all ease-in-out 0.3s;
+      }
+      &__add:hover {
+        background-color: rgba(43, 123, 198, 1);
+        color: #fff;
       }
       &__buy {
         border: 1px solid rgb(232, 152, 3);
         color: rgb(232, 152, 3);
+        transition: all ease-in-out 0.3s;
+      }
+      &__buy:hover {
+        background-color: rgb(232, 152, 3);
+        color: #fff;
       }
     }
   }

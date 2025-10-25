@@ -7,20 +7,8 @@ import { useGetHeaderDataQuery } from "../../../store/apiSlise";
 import { useGetFooterDataQuery } from "#/apiSlise";
 
 const footerContentOffline = {
-  productLinks: [
-    { name: "Error", href: "#" },
-    { name: "Мебель для ванной", href: "#" },
-    { name: "Электроника и бытовая техника", href: "#" },
-    { name: "Отопление", href: "#" },
-    { name: "Напольное покрытие", href: "#" },
-  ],
-  infoLinks: [
-    { name: "Оплата", href: "#" },
-    { name: "Доставка", href: "#" },
-    { name: "Поставщикам", href: "#" },
-    { name: "Статьи", href: "#" },
-    { name: "Контакты", href: "#" },
-  ],
+  productLinks: [{ name: "Error", href: "#" }],
+  infoLinks: [],
   socialMediaLinks: [
     {
       name: "whatsapp",
@@ -48,10 +36,20 @@ const footerContentOffline = {
 } as const;
 
 export default function FooterMain() {
-  const { data: headerData, isSuccess: isHeaderSuccess } =
-    useGetHeaderDataQuery(null);
-  const { data: footerData, isSuccess: isFooterSuccess } =
-    useGetFooterDataQuery(null);
+  const {
+    data: headerData,
+    isSuccess: isHeaderSuccess,
+    isError: isHeaderError,
+    error: headerError,
+    isLoading: isHeaderLoading,
+  } = useGetHeaderDataQuery(null);
+  const {
+    data: footerData,
+    isSuccess: isFooterSuccess,
+    isError: isFooterError,
+    error: footerError,
+    isLoading: isFooterLoading,
+  } = useGetFooterDataQuery(null);
 
   const number = isHeaderSuccess ? headerData.callNumber : "";
   const footerContent = isFooterSuccess ? footerData : footerContentOffline;
@@ -62,84 +60,115 @@ export default function FooterMain() {
           <div className={Style.FooterMain__wrapper}>
             <div className={Style.FooterMain__list}>
               <ul className={Style.FooterMain__ul}>
-                {footerContent.productLinks.map(
-                  (link: { name: string; href: string }) => (
-                    <li key={link.name} className={Style.FooterMain__item}>
-                      <a href={link.href}>{link.name} </a>
-                    </li>
-                  )
-                )}
+                {isFooterSuccess
+                  ? footerContent.productLinks.map(
+                      (link: { name: string; href: string }) => (
+                        <li key={link.name} className={Style.FooterMain__item}>
+                          <a href={link.href}>{link.name} </a>
+                        </li>
+                      )
+                    )
+                  : null}
+                {isFooterLoading ? <li>Загрузка...</li> : null}
+                {isFooterError ? (
+                  <li>Ошибка загрузки: {JSON.stringify(footerError)}</li>
+                ) : null}
               </ul>
               <Logo width={"214px"} height={"24px"} />
-              <div className={Style.FooterMain__copyright}>
-                © 2020 ggpromarket.ru
-              </div>
+              <div className={Style.FooterMain__copyright}>© 2025 MadeX1X</div>
             </div>
             <div className={Style.FooterMain__list}>
               <ul className={Style.FooterMain__ul}>
-                {footerContent.infoLinks.map(
-                  (link: { name: string; href: string }) => (
-                    <li key={link.name} className={Style.FooterMain__li}>
-                      <a href={link.href}>{link.name}</a>
-                    </li>
-                  )
-                )}
+                {isFooterSuccess
+                  ? footerContent.infoLinks.map(
+                      (link: { name: string; href: string }) => (
+                        <li key={link.name} className={Style.FooterMain__li}>
+                          <a href={link.href}>{link.name}</a>
+                        </li>
+                      )
+                    )
+                  : null}
+                {isFooterLoading ? <li>Загрузка...</li> : null}
+                {isFooterError ? (
+                  <li>Ошибка загрузки: {JSON.stringify(footerError)}</li>
+                ) : null}
               </ul>
             </div>
             <div className={Style.FooterMain__contacts}>
-              <PhoneNumber number={Number(number)} />
-              <a
-                href={`tel:${number}`}
-                className={Style.FooterMain__callButton}
-              >
-                Заказать звонок
-              </a>
-              <ul className={Style.FooterMain__workHours}>
-                <li className={Style.FooterMain__workHours__item}>
-                  Пн-Пт: 10:00 — 20:00
-                </li>
-                <li className={Style.FooterMain__workHours__item}>
-                  Сб: 10:00 — 18:00
-                </li>
-                <li className={Style.FooterMain__workHours__item}>
-                  Вс: выходной
-                </li>
-              </ul>
-              <div className={Style.FooterMain__socialMedia}>
-                {footerContentOffline.socialMediaLinks.map(
-                  (item: { name: string; href: string; img: string }) => {
-                    return (
-                      <a
-                        key={item.name}
-                        className={Style.FooterMain__socialMedia__item}
-                        href={item.href}
-                      >
-                        <img src={import.meta.env.BASE_URL + item.img} />
-                      </a>
-                    );
-                  }
-                )}
-              </div>
+              {isHeaderSuccess ? (
+                <>
+                  <PhoneNumber number={Number(number)} />
+                  <a
+                    href={`tel:${number}`}
+                    className={Style.FooterMain__callButton}
+                  >
+                    Заказать звонок
+                  </a>{" "}
+                </>
+              ) : null}
+
+              {isFooterSuccess ? (
+                <>
+                  <ul className={Style.FooterMain__workHours}>
+                    <li className={Style.FooterMain__workHours__item}>
+                      Пн-Пт: 10:00 — 20:00
+                    </li>
+                    <li className={Style.FooterMain__workHours__item}>
+                      Сб: 10:00 — 18:00
+                    </li>
+                    <li className={Style.FooterMain__workHours__item}>
+                      Вс: выходной
+                    </li>
+                  </ul>
+                  <div className={Style.FooterMain__socialMedia}>
+                    {footerContent.socialMediaLinks.map(
+                      (item: { name: string; href: string; img: string }) => {
+                        return (
+                          <a
+                            key={item.name}
+                            className={Style.FooterMain__socialMedia__item}
+                            href={item.href}
+                          >
+                            <img src={item.img} />
+                          </a>
+                        );
+                      }
+                    )}
+                  </div>
+                </>
+              ) : null}
             </div>
             <div className={Style.FooterMain__adress}>
-              <p className={Style.FooterMain__adress__text}>Склад:</p>
-              <p className={Style.FooterMain__adress}>{footerContent.adress}</p>
-              <a
-                href={`mailto:${footerContent.email}`}
-                className={Style.FooterMain__email}
-              >
-                {footerContent.email}
-              </a>
-              <a
-                href={footerContent.rate.href}
-                className={Style.FooterMain__rate}
-              >
-                <img
-                  className={Style.FooterMain__rate__img}
-                  src={footerContent.rate.imgUrl}
-                  alt={footerContent.rate.alt}
-                />
-              </a>
+              {isFooterSuccess ? (
+                <>
+                  <p className={Style.FooterMain__adress__text}>Склад:</p>
+                  <p className={Style.FooterMain__adress}>
+                    {footerContent.adress}
+                  </p>
+                  <a
+                    href={`mailto:${footerContent.email}`}
+                    className={Style.FooterMain__email}
+                  >
+                    {footerContent.email}
+                  </a>
+                  <a
+                    href={footerContent.rate.href}
+                    className={Style.FooterMain__rate}
+                  >
+                    <img
+                      className={Style.FooterMain__rate__img}
+                      src={footerContent.rate.imgUrl}
+                      alt={footerContent.rate.alt}
+                    />
+                  </a>
+                </>
+              ) : null}
+              {isFooterLoading ? <li>Загрузка...</li> : null}
+              {isFooterError ? (
+                <div className={Style.Footer__error}>
+                  Ошибка загрузки: {JSON.stringify(footerError)}
+                </div>
+              ) : null}
             </div>
           </div>
         </Container>

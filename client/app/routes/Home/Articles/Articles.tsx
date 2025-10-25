@@ -10,60 +10,10 @@ type Article = {
   id: number;
 };
 
-const articles: Article[] = [
-  {
-    title: "Актуальные и необычные аксессуары для ванной комнаты",
-    imgUrl: "article/img1.png",
-    link: "/articles/1",
-    id: 1,
-  },
-  {
-    title: "Какой температуры должна быть горячая вода?",
-    imgUrl: "article/img1.png",
-    link: "/articles/1",
-    id: 2,
-  },
-  {
-    title: "Конденсат на бачке унитаза: причины появления и способы устранения",
-    imgUrl: "article/img1.png",
-    link: "/articles/1",
-    id: 3,
-  },
-  {
-    title: "Анаэробный герметик для резьбовых соединений",
-    imgUrl: "article/img1.png",
-    link: "/articles/1",
-    id: 4,
-  },
-  {
-    title: "Анаэробный герметик для резьбовых соединений",
-    imgUrl: "article/img1.png",
-    link: "/articles/1",
-    id: 5,
-  },
-  {
-    title: "Анаэробный герметик для резьбовых соединений",
-    imgUrl: "article/img1.png",
-    link: "/articles/1",
-    id: 6,
-  },
-  {
-    title: "Анаэробный герметик для резьбовых соединений",
-    imgUrl: "article/img1.png",
-    link: "/articles/1",
-    id: 7,
-  },
-  {
-    title: "Анаэробный герметик для резьбовых соединений",
-    imgUrl: "article/img1.png",
-    link: "/articles/1",
-    id: 8,
-  },
-];
-
 export default function Articles() {
-  const { data, isSuccess, isError, error } = useGetArticlesDataQuery(null);
-  const dataItems = isSuccess ? data : articles;
+  const { data, isSuccess, isError, error, isLoading } =
+    useGetArticlesDataQuery(null);
+  const dataItems = isSuccess ? data : null;
   const scrollEl = useRef<HTMLDivElement | null>(null);
 
   const scrollBy = (direction: "left" | "right") => {
@@ -86,39 +36,50 @@ export default function Articles() {
   return (
     <>
       <Title description="Статьи" />
-      <div className={Style.Articles}>
-        <div ref={scrollEl} className={Style.Articles__slider}>
-          {dataItems.map((item: Article) => {
-            return (
-              <ArticleCard key={item.id} item={item} scrollEl={scrollEl} />
-            );
-          })}
+      {isSuccess ? (
+        <div className={Style.Articles}>
+          <div ref={scrollEl} className={Style.Articles__slider}>
+            {dataItems.map((item: Article) => {
+              return (
+                <ArticleCard key={item.id} item={item} scrollEl={scrollEl} />
+              );
+            })}
+          </div>
+          <div className={Style.Articles__buttons}>
+            <button
+              type="button"
+              onClick={() => scrollBy("left")}
+              className={Style.Articles__buttonLeft}
+            >
+              <img
+                className={Style.Articles__buttonImg}
+                src={`${import.meta.env.BASE_URL}Goods/arrow.svg`}
+                alt="arrow"
+              />
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollBy("right")}
+              className={Style.Articles__buttonRight}
+            >
+              <img
+                className={Style.Articles__buttonImg}
+                src={`${import.meta.env.BASE_URL}Goods/arrow.svg`}
+                alt="arrow"
+              />
+            </button>
+          </div>
         </div>
-        <div className={Style.Articles__buttons}>
-          <button
-            type="button"
-            onClick={() => scrollBy("left")}
-            className={Style.Articles__buttonLeft}
-          >
-            <img
-              className={Style.Articles__buttonImg}
-              src={`${import.meta.env.BASE_URL}Goods/arrow.svg`}
-              alt="arrow"
-            />
-          </button>
-          <button
-            type="button"
-            onClick={() => scrollBy("right")}
-            className={Style.Articles__buttonRight}
-          >
-            <img
-              className={Style.Articles__buttonImg}
-              src={`${import.meta.env.BASE_URL}Goods/arrow.svg`}
-              alt="arrow"
-            />
-          </button>
+      ) : null}
+      {isLoading ? (
+        <div className={Style.Articles__loading}>Загрузка...</div>
+      ) : null}
+      {isError ? (
+        <div className={Style.Articles__error}>
+          Ошибка загрузки статей:{" "}
+          {error && "status" in error ? error.status : error.message}
         </div>
-      </div>
+      ) : null}
     </>
   );
 }

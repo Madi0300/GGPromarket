@@ -82,7 +82,8 @@ const dataCategories: CategoriesListData = {
 const signs: GoodsSliderSign[] = ["hit", "discount"];
 
 export default function Goods() {
-  const { isSuccess, isError, error, data } = useGetGoodsDataQuery(null);
+  const { isSuccess, isError, error, data, isLoading } =
+    useGetGoodsDataQuery(null);
   const itemData = isSuccess ? data : "loading";
   const itemError = isError ? error : null;
   const categoriesList = dataCategories;
@@ -98,7 +99,13 @@ export default function Goods() {
             sign={signs[0]}
           />
         ) : null}
-        {isError ? JSON.stringify(itemError) : null}
+        {isLoading ? (
+          <div className={Style.Goods__loading}>Загрузка...</div>
+        ) : null}
+        {isError ? (
+          <div className={Style.Goods__error}>{JSON.stringify(error)}</div>
+        ) : null}
+
         <Title description="Акции" />
         {isSuccess ? (
           <GoodsSlider
@@ -107,7 +114,12 @@ export default function Goods() {
             sign={signs[1]}
           />
         ) : null}
-        {isError ? JSON.stringify(itemError) : null}
+        {isLoading ? (
+          <div className={Style.Goods__loading}>Загрузка...</div>
+        ) : null}
+        {isError ? (
+          <div className={Style.Goods__error}>{JSON.stringify(error)}</div>
+        ) : null}
       </div>
     </>
   );
@@ -194,39 +206,47 @@ function GoodsSlider({ data, categories, sign }: GoodsSliderProps) {
             );
           })}
         </div>
-        <div className={Style.GoodsSlider__items}>
-          <div ref={scrollEl} className={Style.GoodsSlider__items__wrapper}>
-            {items.map((item) => (
-              <GoodsItemCard key={item.name} props={item} scrollEl={scrollEl} />
-            ))}
+        {items.length > 0 ? (
+          <div className={Style.GoodsSlider__items}>
+            <div ref={scrollEl} className={Style.GoodsSlider__items__wrapper}>
+              {items.map((item) => (
+                <GoodsItemCard
+                  key={item.name}
+                  props={item}
+                  scrollEl={scrollEl}
+                />
+              ))}
+            </div>
+            <div className={Style.GoodsSlider__items__buttons}>
+              <button
+                onClick={() =>
+                  scrollBy("left", scrollEl.current as HTMLElement | null)
+                }
+                className={Style.GoodsSlider__items__buttonLeft}
+              >
+                <img
+                  className={Style.GoodsSlider__items__button__img}
+                  src={`${import.meta.env.BASE_URL}Goods/arrow.svg`}
+                  alt="arrow"
+                />
+              </button>
+              <button
+                onClick={() =>
+                  scrollBy("right", scrollEl.current as HTMLElement | null)
+                }
+                className={Style.GoodsSlider__items__buttonRight}
+              >
+                <img
+                  className={Style.GoodsSlider__items__button__img}
+                  src={`${import.meta.env.BASE_URL}Goods/arrow.svg`}
+                  alt="arrow"
+                />
+              </button>
+            </div>
           </div>
-          <div className={Style.GoodsSlider__items__buttons}>
-            <button
-              onClick={() =>
-                scrollBy("left", scrollEl.current as HTMLElement | null)
-              }
-              className={Style.GoodsSlider__items__buttonLeft}
-            >
-              <img
-                className={Style.GoodsSlider__items__button__img}
-                src={`${import.meta.env.BASE_URL}Goods/arrow.svg`}
-                alt="arrow"
-              />
-            </button>
-            <button
-              onClick={() =>
-                scrollBy("right", scrollEl.current as HTMLElement | null)
-              }
-              className={Style.GoodsSlider__items__buttonRight}
-            >
-              <img
-                className={Style.GoodsSlider__items__button__img}
-                src={`${import.meta.env.BASE_URL}Goods/arrow.svg`}
-                alt="arrow"
-              />
-            </button>
-          </div>
-        </div>
+        ) : (
+          <div className={Style.GoodsSlider__noItems}>Товары не найдены</div>
+        )}
       </div>
     </>
   );
