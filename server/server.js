@@ -18,7 +18,7 @@ app.use(
   express.static(path.join(__dirname, "public", "images", "footer", "socialMedia"))
 );
 
-app.use(express.static(path.join(__dirname, "public")));
+app.use('/images', express.static(path.join(__dirname, 'public/images')));
 
 app.use("/api", apiRoutes);
 
