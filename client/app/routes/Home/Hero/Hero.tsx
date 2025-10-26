@@ -45,6 +45,10 @@ export default function Hero() {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    setIsSliderImgDefault(false);
+  }, [currentItem]);
+
   if (items && items.length === 0) return null;
 
   function handleButtonClick(direction: "left" | "right") {
@@ -65,6 +69,7 @@ export default function Hero() {
             <div className={Style.Hero__slider__imageWrapper}>
               {isVisible && (
                 <img
+                  key={currentSliderImg}
                   className={Style.Hero__slider__img}
                   src={!isSliderImgDefault ? currentSliderImg : defaultImageUrl}
                   alt={items[currentItem].title}
