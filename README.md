@@ -2,7 +2,7 @@
 
 > Single-page e-commerce showcase for a bathroom and sanitaryware marketplace.
 
-<h2><a href='https://madi0300.github.io/GGPromarket/'></a></h2>
+<h2><a href='https://madi0300.github.io/GGPromarket/'>Deploy</a></h2>
 
 GGPromarket is a portfolio project that demonstrates a modern React Router 7 single-page application backed by a Node/Express API that serves data from local fixtures. The UI recreates a retail landing page with product carousels, lazy image loading, a modal product detail flow, and header and footer content served from the API.
 
