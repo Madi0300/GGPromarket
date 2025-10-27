@@ -176,7 +176,7 @@ function GoodsSlider({ data, categories, sign }: GoodsSliderProps) {
     <>
       <div className={Style.GoodsSlider}>
         <div className={Style.GoodsSlider__categories}>
-          <div
+          <button
             onClick={() => {
               setSelectedCategory("All");
             }}
@@ -187,7 +187,7 @@ function GoodsSlider({ data, categories, sign }: GoodsSliderProps) {
             }
           >
             Любые товары
-          </div>
+          </button>
           {categories.map((item) => {
             return (
               <div
@@ -380,7 +380,7 @@ const GoodsItemCard = React.memo(({ props, scrollEl }: GoodsItemProps) => {
           src={
             !isDefaultImg
               ? props.imgUrl
-              : `${import.meta.env.BASE_URL}Goods/default.png`
+              : `${import.meta.env.BASE_URL}Goods/default.webp`
           }
           alt=""
           onError={() => {

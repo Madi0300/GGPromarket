@@ -28,6 +28,7 @@
     background-color: #fff;
     border-radius: 4px;
     text-wrap: nowrap;
+    white-space: nowrap;
   }
   &__category.selected {
     background-color: rgba(59, 185, 184, 1);

@@ -37,17 +37,17 @@ node server.js
 
 ## Добавление изображений
 
-Все изображения доступны по пути `/images/...`. Например, `http://localhost:3001/images/hero/1/image.png`.
+Все изображения доступны по пути `/images/...`. Например, `http://localhost:3001/images/hero/1/image.webp`.
 
 ### Индексированные изображения (Articles, Hero)
 
 Для таких секций, как `articles` и `hero`, изображения хранятся в папках с числовыми индексами.
-Чтобы добавить новое изображение для статьи, создайте новую папку в `server/public/images/articles/` с соответствующим номером (например, `9`) и положите в нее файл `image.png`.
+Чтобы добавить новое изображение для статьи, создайте новую папку в `server/public/images/articles/` с соответствующим номером (например, `9`) и положите в нее файл `image.webp`.
 
 ### Изображения товаров (Goods)
 
 Для товаров изображения хранятся в папках с числовыми индексами.
-Чтобы добавить новое изображение для товара, создайте новую папку в `server/public/images/goods/` с соответствующим номером (например, `31`) и положите в нее файл `image.png`.
+Чтобы добавить новое изображение для товара, создайте новую папку в `server/public/images/goods/` с соответствующим номером (например, `31`) и положите в нее файл `image.webp`.
 
 ### Изображения брендов
 
@@ -70,7 +70,7 @@ node server.js
   {
     "id": 1,
     "title": "...",
-    "imgUrl": "/images/articles/1/image.png",
+    "imgUrl": "/images/articles/1/image.webp",
     "link": "/articles/1"
   }
 ]
@@ -95,7 +95,7 @@ node server.js
   "main": {
     "title": "Сияние",
     "autor": "Kerama Marazzi",
-    "imgSrc": "/images/collections/main.png"
+    "imgSrc": "/images/collections/main.webp"
   },
   "second": { ... }
 }
@@ -135,14 +135,14 @@ node server.js
       "title": "...",
       "subtitle": "...",
       "link": "...",
-      "imgUrl": "/images/hero/1/image.png"
+      "imgUrl": "/images/hero/1/image.webp"
     }
   ],
   "heroSidebarItems": [
     {
       "title": "...",
       "link": "...",
-      "imgUrl": "/images/hero/sidebar/1.png"
+      "imgUrl": "/images/hero/sidebar/1.webp"
     }
   ]
 }
@@ -166,7 +166,7 @@ node server.js
 {
   "title": "...",
   "text": "...",
-  "imgUrl": "/images/seo/seo.png"
+  "imgUrl": "/images/seo/seo.webp"
 }
 ```
 
@@ -180,7 +180,7 @@ node server.js
     "country": "Испания",
     "price": 2601,
     "discount": null,
-    "imgUrl": "/images/goods/1/image.png",
+    "imgUrl": "/images/goods/1/image.webp",
     "rate": 4.5,
     "commentsSum": 12,
     "isHit": true,

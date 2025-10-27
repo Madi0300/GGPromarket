@@ -90,7 +90,7 @@ function BrandsCard({
   scrollEl: React.RefObject<HTMLDivElement | null>;
 }) {
   const [isDefaultImg, setIsDefaultImg] = useState(false);
-  const defaultImg = `${import.meta.env.BASE_URL}Brands/defaultImg.png`;
+  const defaultImg = `${import.meta.env.BASE_URL}Brands/defaultImg.webp`;
   const [isVisible, setIsVisible] = useState(false);
   const intersectingElem = useRef<HTMLAnchorElement | null>(null);
 

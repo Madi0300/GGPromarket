@@ -94,7 +94,7 @@ function ArticleCard({
   const intersectingElem = useRef<HTMLAnchorElement | null>(null);
   const [isIntersecting, setIsIntersecting] = useState(false);
   const [isDefaultImg, setIsDefaultImg] = useState(false);
-  const defaultImg = `${import.meta.env.BASE_URL}Articles/defaultImg.png`;
+  const defaultImg = `${import.meta.env.BASE_URL}Articles/defaultImg.webp`;
 
   useEffect(() => {
     if (isIntersecting) return;
