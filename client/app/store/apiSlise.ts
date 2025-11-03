@@ -9,9 +9,6 @@ export const apiSlice = createApi({
     getServerUrl: builder.query({
       query: () => "/server-url",
     }),
-    getHeroData: builder.query({
-      query: () => "/hero",
-    }),
     getHeaderData: builder.query({
       query: () => "/header",
     }),
@@ -41,7 +38,6 @@ export const apiSlice = createApi({
 
 export const {
   useGetServerUrlQuery,
-  useGetHeroDataQuery,
   useGetHeaderDataQuery,
   useGetCollectionsDataQuery,
   useGetGoodsDataQuery,
