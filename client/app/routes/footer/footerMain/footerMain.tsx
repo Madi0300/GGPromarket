@@ -22,7 +22,7 @@ const footerData = {
     {
       name: "whatsapp",
       href: "https://www.whatsapp.com",
-      img: "/Footer/socialMedia/whatsapp.svg",
+      img: "Footer/socialMedia/whatsapp.svg",
     },
     {
       name: "instagram",

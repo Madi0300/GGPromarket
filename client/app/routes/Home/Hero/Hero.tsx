@@ -7,21 +7,21 @@ const hero = {
       title: "СМЕСТИТЕЛИ\nGEMGREEN",
       subtitle: "уже в наличии",
       link: "#",
-      imgUrl: "/Hero/slider/1/image.webp",
+      imgUrl: "Hero/slider/1/image.webp",
       id: 1,
     },
     {
       title: "ТУАЛЕТЫ\nGEMGREEN",
       subtitle: "уже в наличии",
       link: "#",
-      imgUrl: "/Hero/slider/2/image.webp",
+      imgUrl: "Hero/slider/2/image.webp",
       id: 2,
     },
     {
       title: "РАКОВИНЫ\nGEMGREEN",
       subtitle: "уже в наличии",
       link: "#",
-      imgUrl: "/Hero/slider/3/image.webp",
+      imgUrl: "Hero/slider/3/image.webp",
       id: 3,
     },
   ],
@@ -29,12 +29,12 @@ const hero = {
     {
       title: "УНИТАЗЫ ДО 10 000 ₽",
       link: "#",
-      imgUrl: "/Hero/sidebar/1.webp",
+      imgUrl: "Hero/sidebar/1.webp",
     },
     {
       title: "ТОВАРЫ СО СКИДКОЙ",
       link: "#",
-      imgUrl: "/Hero/sidebar/2.webp",
+      imgUrl: "Hero/sidebar/2.webp",
     },
   ],
 };
@@ -67,7 +67,7 @@ export default function Hero() {
               loading="eager"
               key={currentItem}
               className={Style.Hero__slider__img}
-              src={sliderItems[currentItem].imgUrl}
+              src={baseUrl + sliderItems[currentItem].imgUrl}
               alt={sliderItems[currentItem].title}
             />
           </div>
@@ -115,7 +115,7 @@ export default function Hero() {
               <div className={Style.Hero__sidebar__imageWrapper}>
                 <img
                   className={Style.Hero__sidebar__img}
-                  src={sideBarItems[0].imgUrl}
+                  src={baseUrl + sideBarItems[0].imgUrl}
                   alt="#"
                 />
               </div>
@@ -137,7 +137,7 @@ export default function Hero() {
               <div className={Style.Hero__sidebar__imageWrapper}>
                 <img
                   className={Style.Hero__sidebar__img}
-                  src={sideBarItems[1].imgUrl}
+                  src={baseUrl + sideBarItems[1].imgUrl}
                   alt="#"
                 />
                 )
