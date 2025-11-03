@@ -3,14 +3,12 @@ import Style from "./TopBar.module.scss";
 import { useState, useRef, useEffect } from "react";
 import type { RootState } from "../../../store/store";
 import { Call } from "../../headerBoard/ui";
-import { useGetHeaderDataQuery } from "../../../store/apiSlise";
 import MobileNavigation from "@/header/MobileNavigation/MobileNavigation";
+import { headerData } from "../Header";
 
 export default function TopBar() {
-  const { data, error, isLoading, isSuccess } = useGetHeaderDataQuery(null);
-
-  const currentLocation = isSuccess ? data.currentLocation : "";
-  const callNumber = isSuccess ? data.callNumber : "";
+  const currentLocation = headerData.currentLocation;
+  const callNumber = headerData.callNumber;
 
   return (
     <>

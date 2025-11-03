@@ -3,7 +3,6 @@ import { useState, useRef, useEffect, useMemo } from "react";
 import { Dropdown } from "../../headerBoard/ui";
 import type { RootState } from "../../../store/store";
 import {
-  useGetHeaderDataQuery,
   useGetGoodDataByIdQuery,
   useGetGoodsDataQuery,
 } from "../../../store/apiSlise";
@@ -11,6 +10,7 @@ import { useAppSelector } from "#/hooks";
 import { toggleLike, toggleCart } from "#/clientStates";
 import { useAppDispatch } from "#/hooks";
 import { useNavigate } from "react-router";
+import { headerData } from "../Header";
 
 type ButtonsCords = {
   like: { X: number; Y: number };
@@ -82,10 +82,9 @@ export default function HeaderMiddle() {
 }
 
 function Categories() {
-  const { data, error, isLoading, isSuccess } = useGetHeaderDataQuery(null);
   const [isDropdownActive, setIsDropdownActive] = useState(false);
 
-  const productCatalog = isSuccess ? data.productCatalog : [];
+  const productCatalog = headerData.productCatalog;
 
   const [dropdownCords, setDropdownCords] = useState<{ X: number; Y: number }>({
     X: 0,
@@ -212,7 +211,6 @@ function ActionButtons({
   isLikesButtonTouched: boolean;
   isCartButtonTouched: boolean;
 }) {
-  const { data, isLoading, isSuccess, error } = useGetHeaderDataQuery(null);
   const dispatch = useAppDispatch();
   const likeElem = useRef<HTMLAnchorElement | null>(null);
   const cartElem = useRef<HTMLAnchorElement | null>(null);

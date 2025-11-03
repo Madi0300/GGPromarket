@@ -9,9 +9,6 @@ export const apiSlice = createApi({
     getServerUrl: builder.query({
       query: () => "/server-url",
     }),
-    getHeaderData: builder.query({
-      query: () => "/header",
-    }),
     getCollectionsData: builder.query({
       query: () => "/collections",
     }),
@@ -27,9 +24,6 @@ export const apiSlice = createApi({
     getSEOData: builder.query({
       query: () => "/seo",
     }),
-    getFooterData: builder.query({
-      query: () => "/footer",
-    }),
     getGoodDataById: builder.query({
       query: (id) => `/goods/${id}`,
     }),
@@ -38,12 +32,10 @@ export const apiSlice = createApi({
 
 export const {
   useGetServerUrlQuery,
-  useGetHeaderDataQuery,
   useGetCollectionsDataQuery,
   useGetGoodsDataQuery,
   useGetBrandsDataQuery,
   useGetArticlesDataQuery,
   useGetSEODataQuery,
-  useGetFooterDataQuery,
   useGetGoodDataByIdQuery,
 } = apiSlice;
