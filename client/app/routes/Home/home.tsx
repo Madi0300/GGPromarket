@@ -1,15 +1,16 @@
 import type { Route } from "./+types/home";
-import Hero from "./Hero/Hero";
-import Icons from "./Icons/Icons";
-import Collections from "./Collections/Collections";
 import { Container } from "../headerBoard/ui";
-import Goods from "./Goods/Goods";
-import Brands from "./Brands/Brands";
 import Style from "./home.module.scss";
-import Articles from "./Articles/Articles";
-import SEO from "./SEO/SEO";
 import { Outlet, useParams } from "react-router";
-import { useEffect } from "react";
+import { useEffect, lazy, Suspense } from "react";
+
+import Hero from "./Hero/Hero";
+const Icons = lazy(() => import("./Icons/Icons"));
+const Collections = lazy(() => import("./Collections/Collections"));
+const Goods = lazy(() => import("./Goods/Goods"));
+const Brands = lazy(() => import("./Brands/Brands"));
+const Articles = lazy(() => import("./Articles/Articles"));
+const SEO = lazy(() => import("./SEO/SEO"));
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -32,13 +33,15 @@ export default function Home() {
   return (
     <>
       <Container>
-        <Hero />
-        <Icons />
-        <Collections />
-        <Goods />
-        <Brands />
-        <Articles />
-        <SEO />
+        <Suspense fallback={<div>Загрузка...</div>}>
+          <Hero />
+          <Icons />
+          <Collections />
+          <Goods />
+          <Brands />
+          <Articles />
+          <SEO />
+        </Suspense>
         <Outlet />
       </Container>
     </>

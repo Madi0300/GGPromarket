@@ -63,6 +63,8 @@ export default function Hero() {
         <div className={Style.Hero__slider}>
           <div className={Style.Hero__slider__imageWrapper}>
             <img
+              fetchPriority="high"
+              loading="eager"
               key={currentItem}
               className={Style.Hero__slider__img}
               src={sliderItems[currentItem].imgUrl}
