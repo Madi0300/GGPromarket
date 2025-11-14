@@ -18,9 +18,17 @@ const formatPrice = (value: number) =>
 type GoodsCardProps = {
   item: GoodsItem;
   scrollContainer?: React.RefObject<HTMLDivElement | null>;
+  productRoutePrefix?: string;
+  locationSearch?: string;
 };
 
-const GoodsCard = memo(({ item, scrollContainer }: GoodsCardProps) => {
+const GoodsCard = memo(
+  ({
+    item,
+    scrollContainer,
+    productRoutePrefix = "",
+    locationSearch = "",
+  }: GoodsCardProps) => {
   const [isDefaultImg, setIsDefaultImg] = useState(false);
   const [isHover, setIsHover] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
@@ -99,7 +107,28 @@ const GoodsCard = memo(({ item, scrollContainer }: GoodsCardProps) => {
       return;
     }
 
-    navigate(`/product/${item.id}`, { preventScrollReset: true });
+    const basePath = productRoutePrefix.replace(/\/$/, "");
+    const normalizedBase = basePath || "";
+    const normalizedSearch = locationSearch
+      ? locationSearch.startsWith("?")
+        ? locationSearch
+        : `?${locationSearch}`
+      : "";
+    const targetSegment = normalizedBase
+      ? `${normalizedBase}/product/${item.id}`
+      : `/product/${item.id}`;
+    const targetWithSearch = `${targetSegment}${normalizedSearch}`;
+    const returnPath = normalizedBase
+      ? `${normalizedBase}${normalizedSearch}`
+      : "/";
+    const normalizedTarget = targetWithSearch.replace(/\/\/+/g, "/");
+    navigate(normalizedTarget, {
+      preventScrollReset: true,
+      state: {
+        returnTo: returnPath,
+        scrollY: window.scrollY,
+      },
+    });
   };
 
   return (

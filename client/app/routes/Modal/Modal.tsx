@@ -4,9 +4,15 @@ import { useAppDispatch, useAppSelector } from "#/hooks";
 
 import { useState, useEffect, type ReactEventHandler } from "react";
 import { Rate } from "@/headerBoard/ui";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { useParams } from "react-router";
 import { toggleCart } from "#/clientStates";
+
+type ModalLocationState = {
+  returnTo?: string;
+  scrollY?: number;
+};
+
 
 export default function Modal() {
   const params = useParams();
@@ -29,9 +35,21 @@ export default function Modal() {
   const dispatch = useAppDispatch();
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const modalState = (location.state ?? {}) as ModalLocationState;
+
 
   function close() {
-    navigate("/", { preventScrollReset: true });
+    const isCatalogRoute = location.pathname.startsWith("/catalog");
+    const fallback = isCatalogRoute ? `/catalog${location.search}` : "/";
+    const target = modalState.returnTo ?? fallback;
+    const scrollState =
+      modalState.scrollY != null ? { scrollTo: modalState.scrollY } : undefined;
+    navigate(target, {
+      preventScrollReset: true,
+      replace: true,
+      state: scrollState,
+    });
   }
 
   async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {

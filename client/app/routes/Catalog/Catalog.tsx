@@ -1,6 +1,6 @@
 import type { Route } from "./+types/Catalog";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "react-router";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Outlet, useLocation, useSearchParams } from "react-router";
 import { Container } from "@/headerBoard/ui";
 import GoodsCard from "@/Home/Goods/GoodsCard";
 import Style from "./Catalog.module.scss";
@@ -67,11 +67,20 @@ export default function Catalog() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
   const [isMobileLayout, setIsMobileLayout] = useState(false);
+  const location = useLocation();
   const parsedFilters = useMemo(() => parseFilters(searchParams), [searchParams]);
-  const queryArgs = useMemo(() => ({
-    ...parsedFilters,
-    limit: parsedFilters.limit ?? 12,
-  }), [parsedFilters]);
+  const [categoryPendingSelection, setCategoryPendingSelection] = useState<string[]>(
+    parsedFilters.categories ?? []
+  );
+  const pendingScrollRef = useRef<number | null>(null);
+  const categoryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const queryArgs = useMemo(
+    () => ({
+      ...parsedFilters,
+      limit: parsedFilters.limit ?? 12,
+    }),
+    [parsedFilters]
+  );
 
   const { data: catalogData, isFetching, isError, error } =
     useGetCatalogGoodsQuery(queryArgs);
@@ -98,6 +107,10 @@ export default function Catalog() {
   }, [parsedFilters.maxPrice]);
 
   useEffect(() => {
+    setCategoryPendingSelection(parsedFilters.categories ?? []);
+  }, [parsedFilters.categories]);
+
+  useEffect(() => {
     if (typeof window === "undefined") return;
     const handleResize = () => {
       setIsMobileLayout(window.innerWidth <= 722);
@@ -115,6 +128,37 @@ export default function Catalog() {
     }
   }, [isMobileLayout]);
 
+  useEffect(() => {
+    return () => {
+      if (categoryTimerRef.current) {
+        clearTimeout(categoryTimerRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    if (pendingScrollRef.current != null) {
+      window.scrollTo({ top: pendingScrollRef.current, behavior: "auto" });
+      pendingScrollRef.current = null;
+      return;
+    }
+
+    const scrollTo = location.state?.scrollTo ?? location.state?.scrollY;
+    if (typeof scrollTo === "number") {
+      window.scrollTo({ top: scrollTo, behavior: "auto" });
+      const nextState = { ...location.state };
+      delete nextState.scrollTo;
+      delete nextState.scrollY;
+      window.history.replaceState(
+        nextState,
+        "",
+        window.location.pathname + window.location.search
+      );
+    }
+  }, [location.key, location.pathname, location.search, location.state]);
+
   const updateParams = useCallback(
     (updates: Record<string, string | number | null | undefined>) => {
       const next = new URLSearchParams(searchParams);
@@ -128,6 +172,25 @@ export default function Catalog() {
       setSearchParams(next);
     },
     [searchParams, setSearchParams]
+  );
+
+  const scheduleCategoryUpdate = useCallback(
+    (nextCategories: string[]) => {
+      if (categoryTimerRef.current) {
+        clearTimeout(categoryTimerRef.current);
+      }
+      categoryTimerRef.current = setTimeout(() => {
+        if (typeof window !== "undefined") {
+          pendingScrollRef.current = window.scrollY;
+        }
+        updateParams({
+          categories: nextCategories.length > 0 ? nextCategories.join(",") : null,
+          page: 1,
+        });
+        categoryTimerRef.current = null;
+      }, 2000);
+    },
+    [updateParams]
   );
 
   const handleSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -148,6 +211,9 @@ export default function Catalog() {
       [minValue, maxValue] = [maxValue, minValue];
     }
 
+    if (typeof window !== "undefined") {
+      pendingScrollRef.current = window.scrollY;
+    }
     updateParams({
       minPrice: typeof minValue === "number" ? minValue : null,
       maxPrice: typeof maxValue === "number" ? maxValue : null,
@@ -156,15 +222,13 @@ export default function Catalog() {
   };
 
   const toggleCategory = (category: string) => {
-    const current = parsedFilters.categories ?? [];
+    const current = categoryPendingSelection;
     const exists = current.includes(category);
     const nextCategories = exists
       ? current.filter((item) => item !== category)
       : [...current, category];
-    updateParams({
-      categories: nextCategories.length > 0 ? nextCategories.join(",") : null,
-      page: 1,
-    });
+    setCategoryPendingSelection(nextCategories);
+    scheduleCategoryUpdate(nextCategories);
   };
 
   const toggleFlag = (flag: "sale" | "hit", checked: boolean) => {
@@ -191,7 +255,7 @@ export default function Catalog() {
   const startItem = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
   const endItem = totalItems === 0 ? 0 : Math.min(startItem + pageSize - 1, totalItems);
 
-  const activeCategories = parsedFilters.categories ?? [];
+  const activeCategories = categoryPendingSelection;
   const isSaleActive = Boolean(parsedFilters.sale);
   const isHitActive = Boolean(parsedFilters.hit);
 
@@ -334,7 +398,12 @@ export default function Catalog() {
 
             <div className={Style.cardsGrid}>
               {items.map((item) => (
-                <GoodsCard key={item.id} item={item} />
+                <GoodsCard
+                  key={item.id}
+                  item={item}
+                  productRoutePrefix="/catalog"
+                  locationSearch={location.search}
+                />
               ))}
             </div>
 
@@ -348,6 +417,7 @@ export default function Catalog() {
           </section>
         </div>
       </Container>
+      <Outlet />
     </div>
   );
 }
