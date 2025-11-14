@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
 import Style from "./Admin.module.scss";
 import {
   useGetArticlesDataQuery,
@@ -46,6 +46,10 @@ export default function Admin() {
     state: "idle" | "uploading" | "success" | "error";
     message: string;
   }>({ section: null, state: "idle", message: "" });
+  const [customSidebarText, setCustomSidebarText] = useState("");
+  const [customSidebarImage, setCustomSidebarImage] = useState<string | null>(
+    null
+  );
 
   const serverUrlQuery = useGetServerUrlQuery(null);
   const serverUrl = serverUrlQuery.data?.serverUrl ?? "";
@@ -102,6 +106,15 @@ export default function Admin() {
       setSelectedArticleId(null);
     }
   }, [selectedArticleId, articles]);
+
+  useEffect(() => {
+    if (seoQuery.data?.text) {
+      setCustomSidebarText(seoQuery.data.text);
+    }
+    if (seoQuery.data?.imgUrl && !customSidebarImage) {
+      setCustomSidebarImage(seoQuery.data.imgUrl);
+    }
+  }, [seoQuery.data, customSidebarImage]);
 
   const statCards = useMemo(
     () => [
@@ -208,6 +221,10 @@ export default function Admin() {
         setGoodForm(prev => ({ ...prev, imgUrl: remotePath }));
       } else {
         setArticleForm(prev => ({ ...prev, imgUrl: remotePath }));
+      }
+
+      if (target === "goods" && !customSidebarImage) {
+        setCustomSidebarImage(remotePath);
       }
 
       setImageUploadState({
@@ -329,6 +346,23 @@ export default function Admin() {
   const clearArticleForm = () => {
     setSelectedArticleId(null);
     setArticleForm(initialArticleForm);
+  };
+
+  const handleSidebarTextChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    setCustomSidebarText(event.target.value);
+  };
+
+  const handleSidebarImageUpload = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const result = reader.result;
+      if (typeof result === "string") {
+        setCustomSidebarImage(result);
+      }
+    };
+    reader.readAsDataURL(file);
   };
 
   const renderGoodsList = () => {
@@ -472,25 +506,6 @@ export default function Admin() {
             </div>
 
             <div className={Style.Admin__workspaceBody}>
-              <aside className={Style.Admin__sidebar}>
-                <p className={Style.Admin__sidebarTitle}>Действия</p>
-                <button
-                  type="button"
-                  className={Style.Admin__secondaryButton}
-                  onClick={activeSection === "goods" ? clearGoodForm : clearArticleForm}
-                >
-                  + Создать новую запись
-                </button>
-                <div className={Style.Admin__sidebarDivider}></div>
-                <div className={Style.Admin__metaBlock}>
-                  <p className={Style.Admin__metaLabel}>SEO-текст</p>
-                  <p className={Style.Admin__metaValue}>
-                    {seoQuery.data?.text?.slice(0, 120) || "Описание пока не загружено"}
-                    …
-                  </p>
-                </div>
-              </aside>
-
               <div className={Style.Admin__panel}>
                 {operationStatus ? (
                   <div
@@ -504,7 +519,7 @@ export default function Admin() {
                   </div>
                 ) : null}
 
-                {activeSection === "goods" ? (
+              {activeSection === "goods" ? (
                   <>
                     <h2 className={Style.Admin__sectionTitle}>Каталог товаров</h2>
                     <div className={Style.Admin__panelGrid}>
@@ -777,6 +792,51 @@ export default function Admin() {
                 )}
               </div>
             </div>
+            </div>
+            <aside className={Style.Admin__sidebar}>
+              <div className={Style.Admin__sidebarBlock}>
+                <p className={Style.Admin__sidebarLabel}>Изменяемый блок</p>
+                <label className={Style.Admin__sidebarLabel}>Текст блока</label>
+                <textarea
+                  className={Style.Admin__sidebarTextarea}
+                  value={customSidebarText}
+                  onChange={handleSidebarTextChange}
+                />
+                <label className={Style.Admin__sidebarLabel}>Фон-изображение</label>
+                <input
+                  className={Style.Admin__sidebarImageInput}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleSidebarImageUpload}
+                />
+                {customSidebarImage ? (
+                  <div className={Style.Admin__sidebarImagePreview}>
+                    <img
+                      src={customSidebarImage}
+                      alt="Превью блока"
+                      className={Style.Admin__sidebarImage}
+                    />
+                  </div>
+                ) : null}
+              </div>
+              <div className={Style.Admin__sidebarDivider}></div>
+              <p className={Style.Admin__sidebarTitle}>Действия</p>
+              <button
+                type="button"
+                className={Style.Admin__secondaryButton}
+                onClick={activeSection === "goods" ? clearGoodForm : clearArticleForm}
+              >
+                + Создать новую запись
+              </button>
+              <div className={Style.Admin__sidebarDivider}></div>
+              <div className={Style.Admin__metaBlock}>
+                <p className={Style.Admin__metaLabel}>SEO-текст</p>
+                <p className={Style.Admin__metaValue}>
+                  {seoQuery.data?.text?.slice(0, 120) || "Описание пока не загружено"}
+                  …
+                </p>
+              </div>
+            </aside>
           </section>
         )}
       </div>
