@@ -1,7 +1,6 @@
 import Style from "./Collections.module.scss";
 import { Title } from "../home";
 import { useState, useEffect, useRef } from "react";
-import { useGetCollectionsDataQuery } from "#/apiSlise";
 
 type CollectionItem = {
   title: string;
@@ -18,43 +17,41 @@ type CollectionsMap = {
   fifth: CollectionItem;
 };
 
-const defaultCollections: CollectionsMap = {
+const collectionsData = {
   main: {
-    title: "Error",
+    title: "Сияние",
     autor: "Kerama Marazzi",
-    imgSrc: "/collections/main.png",
+    imgSrc: "collections/main.webp",
     href: "/collections/1",
   },
   second: {
-    title: "Error ",
+    title: "Вестанвинд ",
     autor: "LB-Ceramics",
-    imgSrc: "/collections/second.png",
+    imgSrc: "collections/second.webp",
     href: "/collections/2",
   },
   third: {
-    title: "Error",
+    title: "Rotterdam",
     autor: "Gracia Ceramica",
-    imgSrc: "/collections/third.png",
+    imgSrc: "collections/third.webp",
     href: "/collections/3",
   },
   fourth: {
-    title: "Error",
+    title: "Rane",
     autor: "Alma Ceramica",
-    imgSrc: "/collections/fourth.png",
+    imgSrc: "collections/fourth.webp",
     href: "/collections/4",
   },
   fifth: {
-    title: "Error",
+    title: "Гинардо",
     autor: "Kerama Marazzi",
-    imgSrc: "/collections/fifth.png",
+    imgSrc: "collections/fifth.webp",
     href: "/collections/5",
   },
 };
 
 export default function Collections() {
-  const { data, isSuccess, isError, error, isLoading } =
-    useGetCollectionsDataQuery(null);
-  const items = isSuccess ? data : defaultCollections;
+  const items = collectionsData as CollectionsMap;
   const [isVisible, setIsVisible] = useState<Boolean>(false);
   const mainRef = useRef<HTMLAnchorElement | null>(null);
   useEffect(() => {
@@ -84,117 +81,89 @@ export default function Collections() {
   return (
     <>
       <Title description="Коллекции плитки" />
-      {isSuccess ? (
-        <div className={Style.Collections}>
-          <a
-            href={items.main.href}
-            ref={mainRef}
-            className={`${Style.Collections__main} ${Style.Collections__item}`}
-          >
-            {isVisible ? (
-              <img
-                className={Style.Collections__img}
-                src={items.main.imgSrc}
-                alt={items.main.title}
-              />
-            ) : null}
-            <div className={Style.Collections__content}>
-              <div className={Style.Collections__title}>{items.main.title}</div>
-              <div className={Style.Collections__autor}>{items.main.autor}</div>
-            </div>
-          </a>
-          <a
-            href={items.second.href}
-            className={`${Style.Collections__second} ${Style.Collections__item}`}
-          >
-            {isVisible ? (
-              <img
-                className={Style.Collections__img}
-                src={items.second.imgSrc}
-                alt={items.second.title}
-              />
-            ) : null}
-            <div className={Style.Collections__content}>
-              <div className={Style.Collections__title}>
-                {items.second.title}
-              </div>
-              <div className={Style.Collections__autor}>
-                {items.second.autor}
-              </div>
-            </div>
-          </a>
-          <a
-            href={items.third.href}
-            className={`${Style.Collections__third} ${Style.Collections__item}`}
-          >
-            {isVisible ? (
-              <img
-                className={Style.Collections__img}
-                src={items.third.imgSrc}
-                alt={items.third.title}
-              />
-            ) : null}
-            <div className={Style.Collections__content}>
-              <div className={Style.Collections__title}>
-                {items.third.title}
-              </div>
-              <div className={Style.Collections__autor}>
-                {items.third.autor}
-              </div>
-            </div>
-          </a>
-          <a
-            href={items.fourth.href}
-            className={`${Style.Collections__fourth} ${Style.Collections__item}`}
-          >
-            {isVisible ? (
-              <img
-                className={Style.Collections__img}
-                src={items.fourth.imgSrc}
-                alt={items.fourth.title}
-              />
-            ) : null}
-            <div className={Style.Collections__content}>
-              <div className={Style.Collections__title}>
-                {items.fourth.title}
-              </div>
-              <div className={Style.Collections__autor}>
-                {items.fourth.autor}
-              </div>
-            </div>
-          </a>
-          <a
-            href={items.fifth.href}
-            className={`${Style.Collections__fifth} ${Style.Collections__item}`}
-          >
-            {isVisible ? (
-              <img
-                className={Style.Collections__img}
-                src={items.fifth.imgSrc}
-                alt={items.fifth.title}
-              />
-            ) : null}
-            <div className={Style.Collections__content}>
-              <div className={Style.Collections__title}>
-                {items.fifth.title}
-              </div>
-              <div className={Style.Collections__autor}>
-                {items.fifth.autor}
-              </div>
-            </div>
-          </a>
-        </div>
-      ) : null}
-      {isLoading ? (
-        <div className={Style.Collections__locading}>
-          Идет загрузка данных...
-        </div>
-      ) : null}
-      {isError ? (
-        <div className={Style.Collections__error}>
-          Ошбика загрузки данных:{JSON.stringify(error)}
-        </div>
-      ) : null}
+      <div className={Style.Collections}>
+        <a
+          href={items.main.href}
+          ref={mainRef}
+          className={`${Style.Collections__main} ${Style.Collections__item}`}
+        >
+          {isVisible ? (
+            <img
+              className={Style.Collections__img}
+              src={items.main.imgSrc}
+              alt={items.main.title}
+            />
+          ) : null}
+          <div className={Style.Collections__content}>
+            <div className={Style.Collections__title}>{items.main.title}</div>
+            <div className={Style.Collections__autor}>{items.main.autor}</div>
+          </div>
+        </a>
+        <a
+          href={items.second.href}
+          className={`${Style.Collections__second} ${Style.Collections__item}`}
+        >
+          {isVisible ? (
+            <img
+              className={Style.Collections__img}
+              src={items.second.imgSrc}
+              alt={items.second.title}
+            />
+          ) : null}
+          <div className={Style.Collections__content}>
+            <div className={Style.Collections__title}>{items.second.title}</div>
+            <div className={Style.Collections__autor}>{items.second.autor}</div>
+          </div>
+        </a>
+        <a
+          href={items.third.href}
+          className={`${Style.Collections__third} ${Style.Collections__item}`}
+        >
+          {isVisible ? (
+            <img
+              className={Style.Collections__img}
+              src={items.third.imgSrc}
+              alt={items.third.title}
+            />
+          ) : null}
+          <div className={Style.Collections__content}>
+            <div className={Style.Collections__title}>{items.third.title}</div>
+            <div className={Style.Collections__autor}>{items.third.autor}</div>
+          </div>
+        </a>
+        <a
+          href={items.fourth.href}
+          className={`${Style.Collections__fourth} ${Style.Collections__item}`}
+        >
+          {isVisible ? (
+            <img
+              className={Style.Collections__img}
+              src={items.fourth.imgSrc}
+              alt={items.fourth.title}
+            />
+          ) : null}
+          <div className={Style.Collections__content}>
+            <div className={Style.Collections__title}>{items.fourth.title}</div>
+            <div className={Style.Collections__autor}>{items.fourth.autor}</div>
+          </div>
+        </a>
+        <a
+          href={items.fifth.href}
+          className={`${Style.Collections__fifth} ${Style.Collections__item}`}
+        >
+          {isVisible ? (
+            <img
+              className={Style.Collections__img}
+              src={items.fifth.imgSrc}
+              alt={items.fifth.title}
+            />
+          ) : null}
+          <div className={Style.Collections__content}>
+            <div className={Style.Collections__title}>{items.fifth.title}</div>
+            <div className={Style.Collections__autor}>{items.fifth.autor}</div>
+          </div>
+        </a>
+      </div>
     </>
   );
 }

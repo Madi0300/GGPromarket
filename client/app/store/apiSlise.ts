@@ -9,9 +9,6 @@ export const apiSlice = createApi({
     getServerUrl: builder.query({
       query: () => "/server-url",
     }),
-    getCollectionsData: builder.query({
-      query: () => "/collections",
-    }),
     getGoodsData: builder.query({
       query: () => "/goods",
     }),
@@ -32,7 +29,6 @@ export const apiSlice = createApi({
 
 export const {
   useGetServerUrlQuery,
-  useGetCollectionsDataQuery,
   useGetGoodsDataQuery,
   useGetBrandsDataQuery,
   useGetArticlesDataQuery,
