@@ -1,4 +1,5 @@
-import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
+import { type ChangeEvent, type FormEvent, useEffect, useMemo, useState } from "react";
+import type { GoodsItem } from "@/types/goods";
 import Style from "./Admin.module.scss";
 import {
   useGetArticlesDataQuery,
@@ -30,6 +31,13 @@ const initialArticleForm = {
   link: "#",
 };
 
+type ArticleItem = {
+  id: number;
+  title: string;
+  imgUrl: string;
+  link: string;
+};
+
 export default function Admin() {
   const [code, setCode] = useState("");
   const [adminCode, setAdminCode] = useState("");
@@ -58,8 +66,8 @@ export default function Admin() {
   const brandsQuery = useGetBrandsDataQuery(null, { skip: !isUnlocked });
   const seoQuery = useGetSEODataQuery(null, { skip: !isUnlocked });
 
-  const goods = goodsQuery.data ?? [];
-  const articles = articlesQuery.data ?? [];
+  const goods: GoodsItem[] = goodsQuery.data ?? [];
+  const articles: ArticleItem[] = articlesQuery.data ?? [];
 
   useEffect(() => {
     if (selectedGoodId != null && goods.length) {
@@ -75,8 +83,8 @@ export default function Admin() {
           imgUrl: found.imgUrl,
           rate: found.rate.toString(),
           commentsSum: found.commentsSum.toString(),
-          description: found.description,
-          isHit: found.isHit,
+          description: found.description ?? "",
+          isHit: Boolean(found.isHit),
         });
         return;
       }
@@ -299,7 +307,9 @@ export default function Admin() {
         setSelectedGoodId(Number(payload.id));
       }
     } catch (requestError) {
-      setOperationStatus({ type: "error", message: requestError.message });
+      const message =
+        requestError instanceof Error ? requestError.message : "Не удалось сохранить товар.";
+      setOperationStatus({ type: "error", message });
     }
   };
 
@@ -316,7 +326,9 @@ export default function Admin() {
       setOperationStatus({ type: "success", message });
       articlesQuery.refetch();
     } catch (requestError) {
-      setOperationStatus({ type: "error", message: requestError.message });
+      const message =
+        requestError instanceof Error ? requestError.message : "Не удалось сохранить статью.";
+      setOperationStatus({ type: "error", message });
     }
   };
 
@@ -370,7 +382,7 @@ export default function Admin() {
       return <p className={Style.Admin__listHint}>Загружаем товары...</p>;
     }
 
-    return goods.map(item => (
+    return goods.map((item: GoodsItem) => (
       <button
         type="button"
         key={item.id}
@@ -401,7 +413,7 @@ export default function Admin() {
       return <p className={Style.Admin__listHint}>Загружаем статьи...</p>;
     }
 
-    return articles.map(item => (
+    return articles.map((item: ArticleItem) => (
       <button
         type="button"
         key={item.id}
@@ -791,7 +803,6 @@ export default function Admin() {
                   </>
                 )}
               </div>
-            </div>
             </div>
             <aside className={Style.Admin__sidebar}>
               <div className={Style.Admin__sidebarBlock}>

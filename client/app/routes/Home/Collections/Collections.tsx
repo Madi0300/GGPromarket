@@ -1,6 +1,7 @@
 import Style from "./Collections.module.scss";
 import { Title } from "../home";
 import { useState, useEffect, useRef } from "react";
+import { Link } from "react-router";
 
 type CollectionItem = {
   title: string;
@@ -82,8 +83,8 @@ export default function Collections() {
     <>
       <Title description="Коллекции плитки" />
       <div className={Style.Collections}>
-        <a
-          href={items.main.href}
+        <Link
+          to={items.main.href}
           ref={mainRef}
           className={`${Style.Collections__main} ${Style.Collections__item}`}
         >
@@ -98,9 +99,9 @@ export default function Collections() {
             <div className={Style.Collections__title}>{items.main.title}</div>
             <div className={Style.Collections__autor}>{items.main.autor}</div>
           </div>
-        </a>
-        <a
-          href={items.second.href}
+        </Link>
+        <Link
+          to={items.second.href}
           className={`${Style.Collections__second} ${Style.Collections__item}`}
         >
           {isVisible ? (
@@ -114,9 +115,9 @@ export default function Collections() {
             <div className={Style.Collections__title}>{items.second.title}</div>
             <div className={Style.Collections__autor}>{items.second.autor}</div>
           </div>
-        </a>
-        <a
-          href={items.third.href}
+        </Link>
+        <Link
+          to={items.third.href}
           className={`${Style.Collections__third} ${Style.Collections__item}`}
         >
           {isVisible ? (
@@ -130,9 +131,9 @@ export default function Collections() {
             <div className={Style.Collections__title}>{items.third.title}</div>
             <div className={Style.Collections__autor}>{items.third.autor}</div>
           </div>
-        </a>
-        <a
-          href={items.fourth.href}
+        </Link>
+        <Link
+          to={items.fourth.href}
           className={`${Style.Collections__fourth} ${Style.Collections__item}`}
         >
           {isVisible ? (
@@ -146,9 +147,9 @@ export default function Collections() {
             <div className={Style.Collections__title}>{items.fourth.title}</div>
             <div className={Style.Collections__autor}>{items.fourth.autor}</div>
           </div>
-        </a>
-        <a
-          href={items.fifth.href}
+        </Link>
+        <Link
+          to={items.fifth.href}
           className={`${Style.Collections__fifth} ${Style.Collections__item}`}
         >
           {isVisible ? (
@@ -162,7 +163,7 @@ export default function Collections() {
             <div className={Style.Collections__title}>{items.fifth.title}</div>
             <div className={Style.Collections__autor}>{items.fifth.autor}</div>
           </div>
-        </a>
+        </Link>
       </div>
     </>
   );

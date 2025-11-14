@@ -1,6 +1,7 @@
 import { Title } from "../home";
 import Style from "./Brands.module.scss";
 import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router";
 import { useGetBrandsDataQuery } from "#/apiSlise";
 
 type Brand = {
@@ -122,9 +123,9 @@ function BrandsCard({
 
   return (
     <>
-      <a
+      <Link
         ref={intersectingElem}
-        href={item.link}
+        to={item.link}
         key={item.name}
         className={Style.BrandsCard}
       >
@@ -139,7 +140,7 @@ function BrandsCard({
             }}
           />
         ) : null}
-      </a>
+      </Link>
     </>
   );
 }

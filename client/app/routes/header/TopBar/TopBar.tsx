@@ -5,6 +5,7 @@ import type { RootState } from "../../../store/store";
 import { Call } from "../../headerBoard/ui";
 import MobileNavigation from "@/header/MobileNavigation/MobileNavigation";
 import { headerData } from "../Header";
+import { Link } from "react-router";
 
 export default function TopBar() {
   const currentLocation = headerData.currentLocation;
@@ -76,13 +77,13 @@ function Navigation() {
       <div className={Style.Navigation__Nav}>
         {navLinks.map((item) => {
           return (
-            <a
-              href={item.href}
+            <Link
+              to={item.href}
               key={item.name}
               className={Style.Navigation__item}
             >
               {item.name}
-            </a>
+            </Link>
           );
         })}
       </div>

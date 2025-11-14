@@ -1,6 +1,7 @@
 import Style from "./ui.module.scss";
 import type { ReactNode } from "react";
 import { useState, useRef, useEffect, forwardRef } from "react";
+import { Link } from "react-router";
 
 export function Logo({
   width = "296px",
@@ -12,12 +13,12 @@ export function Logo({
   return (
     <>
       <div className={Style.Logo} style={{ width: width, height: height }}>
-        <a href="/">
+        <Link to="/">
           <img
             className={Style.Logo_img}
             src={`${import.meta.env.BASE_URL}headerBoard/logo.svg`}
           />
-        </a>
+        </Link>
       </div>
     </>
   );
@@ -127,7 +128,7 @@ export const Dropdown = forwardRef<HTMLDivElement, Props>(function Dropdown(
         <ul className={Style.Dropdown__ul}>
           {items.map((item) => (
             <li key={item.name} className={Style.Dropdown__li}>
-              <a href={item.href}>{item.name}</a>
+              <Link to={item.href}>{item.name}</Link>
             </li>
           ))}
         </ul>

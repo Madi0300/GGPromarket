@@ -1,6 +1,7 @@
 import { Title } from "../home";
 import Style from "./Articles.module.scss";
 import { useState, useRef, useEffect } from "react";
+import { Link } from "react-router";
 import { useGetArticlesDataQuery } from "#/apiSlise";
 
 type Article = {
@@ -122,7 +123,7 @@ function ArticleCard({
 
   return (
     <>
-      <a ref={intersectingElem} href={item.link} className={Style.ArticleCard}>
+      <Link ref={intersectingElem} to={item.link} className={Style.ArticleCard}>
         {isIntersecting ? (
           <img
             className={Style.ArticleCard__img}
@@ -136,7 +137,7 @@ function ArticleCard({
           />
         ) : null}
         <h4 className={Style.ArticleCard__title}>{item.title}</h4>
-      </a>
+      </Link>
     </>
   );
 }

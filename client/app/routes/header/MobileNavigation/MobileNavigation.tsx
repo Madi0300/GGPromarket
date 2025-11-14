@@ -1,4 +1,5 @@
 import Style from "./MobileNavigation.module.scss";
+import { Link } from "react-router";
 
 export default function Navigation({
   navItems,
@@ -13,13 +14,12 @@ export default function Navigation({
         <ul className={Style.Navigation__ul}>
           {navItems.map((item) => (
             <li className={Style.Navigation__li} key={item.name}>
-              <a
+              <Link
                 className={Style.Navigation__link}
-                key={item.name}
-                href={item.href}
+                to={item.href}
               >
                 {item.name}
-              </a>
+              </Link>
             </li>
           ))}
         </ul>

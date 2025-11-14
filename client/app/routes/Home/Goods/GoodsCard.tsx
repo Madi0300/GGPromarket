@@ -1,5 +1,5 @@
 import { memo, useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import Style from "./Goods.module.scss";
 import { Rate } from "@/headerBoard/ui";
 import { useAppDispatch, useAppSelector } from "#/hooks";
@@ -37,6 +37,20 @@ const GoodsCard = memo(
   const cartElem = useRef<HTMLButtonElement | null>(null);
 
   const navigate = useNavigate();
+
+  const basePath = productRoutePrefix.replace(/\/$/, "");
+  const normalizedBase = basePath || "";
+  const normalizedSearch = locationSearch
+    ? locationSearch.startsWith("?")
+      ? locationSearch
+      : `?${locationSearch}`
+    : "";
+  const targetSegment = normalizedBase
+    ? `${normalizedBase}/product/${item.id}`
+    : `/product/${item.id}`;
+  const targetWithSearch = `${targetSegment}${normalizedSearch}`;
+  const normalizedTarget = targetWithSearch.replace(/\/\/+/g, "/");
+  const returnPath = normalizedBase ? `${normalizedBase}${normalizedSearch}` : "/";
   const dispatch = useAppDispatch();
 
   const isLiked = useAppSelector((state) => state.clientState.likedItems).includes(
@@ -107,21 +121,6 @@ const GoodsCard = memo(
       return;
     }
 
-    const basePath = productRoutePrefix.replace(/\/$/, "");
-    const normalizedBase = basePath || "";
-    const normalizedSearch = locationSearch
-      ? locationSearch.startsWith("?")
-        ? locationSearch
-        : `?${locationSearch}`
-      : "";
-    const targetSegment = normalizedBase
-      ? `${normalizedBase}/product/${item.id}`
-      : `/product/${item.id}`;
-    const targetWithSearch = `${targetSegment}${normalizedSearch}`;
-    const returnPath = normalizedBase
-      ? `${normalizedBase}${normalizedSearch}`
-      : "/";
-    const normalizedTarget = targetWithSearch.replace(/\/\/+/g, "/");
     navigate(normalizedTarget, {
       preventScrollReset: true,
       state: {
@@ -132,9 +131,9 @@ const GoodsCard = memo(
   };
 
   return (
-    <a
+    <Link
       ref={elem}
-      href={item.href}
+      to={normalizedTarget}
       onMouseLeave={() => setIsHover(false)}
       onMouseEnter={() => setIsHover(true)}
       onClick={handleClickCard}
@@ -180,7 +179,7 @@ const GoodsCard = memo(
         className={Style.GoodsItem__like}
       />
       {isDiscount || item.isHit ? goodItemSigns : null}
-    </a>
+    </Link>
   );
 });
 

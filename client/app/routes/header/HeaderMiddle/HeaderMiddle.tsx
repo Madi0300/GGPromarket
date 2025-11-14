@@ -9,7 +9,7 @@ import {
 import { useAppSelector } from "#/hooks";
 import { toggleLike, toggleCart } from "#/clientStates";
 import { useAppDispatch } from "#/hooks";
-import { useLocation, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { headerData } from "../Header";
 
 type ButtonsCords = {
@@ -159,11 +159,11 @@ function Categories() {
           <p
             className={`${Style.Categories__one__name} ${Style.Categories__title}`}
           >
-            <a href="#">Каталог товаров</a>
+            <Link to="/catalog">Каталог товаров</Link>
           </p>
         </div>
         <div className={`${Style.Categories__two} ${Style.Categories__title}`}>
-          <a href="/catalog?page=1&sale=1">Акции</a>
+          <Link to="/catalog?page=1&sale=1">Акции</Link>
         </div>
         <div
           className={`${Style.Categories__three} ${Style.Categories__title}`}
@@ -335,26 +335,22 @@ function ActionButtons({
 
 function GetItem({ id }: { id: number }) {
   const { data, isSuccess } = useGetGoodDataByIdQuery(id);
-  const navigate = useNavigate();
 
   if (!isSuccess) {
     return null;
   }
 
-  function handleLinkClick(e: React.MouseEvent) {
-    e.preventDefault();
-    navigate(`/product/${id}`, { preventScrollReset: true });
-  }
+  const target = `/product/${id}`;
 
   return (
     <li className={Style.LikedGoods__item}>
-      <a
+      <Link
         className={Style.LikedGoods__item__link}
-        href={data.href}
-        onClick={handleLinkClick}
+        to={target}
+        preventScrollReset
       >
         {data.name}
-      </a>
+      </Link>
     </li>
   );
 }
