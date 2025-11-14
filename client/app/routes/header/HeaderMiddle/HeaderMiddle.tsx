@@ -9,7 +9,7 @@ import {
 import { useAppSelector } from "#/hooks";
 import { toggleLike, toggleCart } from "#/clientStates";
 import { useAppDispatch } from "#/hooks";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { headerData } from "../Header";
 
 type ButtonsCords = {
@@ -176,25 +176,47 @@ function Categories() {
 }
 
 function Search() {
+  const [value, setValue] = useState("");
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    setValue(params.get("search") ?? "");
+  }, [location.search]);
+
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const nextValue = value.trim();
+    const params = new URLSearchParams();
+
+    if (nextValue) {
+      params.set("search", nextValue);
+    }
+
+    const search = params.toString();
+    navigate(search ? `/catalog?${search}` : "/catalog");
+  }
+
   return (
-    <>
-      <div className={Style.Search}>
-        <form className={Style.Search__form} action="#/" method="get">
-          <input
-            type="text"
-            name="search-text"
-            className={Style.Search__input}
-            placeholder="Поиск по сайту"
+    <div className={Style.Search}>
+      <form className={Style.Search__form} onSubmit={handleSubmit}>
+        <input
+          type="text"
+          name="search-text"
+          className={Style.Search__input}
+          placeholder="Поиск по сайту"
+          value={value}
+          onChange={(event) => setValue(event.target.value)}
+        />
+        <button type="submit" className={Style.Search__button}>
+          <img
+            src={`${import.meta.env.BASE_URL}header/search-icon.svg`}
+            alt=""
           />
-          <button type="submit" className={Style.Search__button}>
-            <img
-              src={`${import.meta.env.BASE_URL}header/search-icon.svg`}
-              alt=""
-            />
-          </button>
-        </form>
-      </div>
-    </>
+        </button>
+      </form>
+    </div>
   );
 }
 

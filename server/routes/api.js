@@ -15,6 +15,8 @@ const {
   getSeo,
   getGoodsOverview,
   getGoodById,
+  getGoodsCatalog,
+  getGoodsFiltersMeta,
   createGood,
   updateGood,
   createArticle,
@@ -71,6 +73,40 @@ const sendWithAbsolute = getPayload => (req, res, next) => {
   }
 };
 
+const parseNumberParam = (rawValue, fallback = undefined) => {
+  if (rawValue === undefined || rawValue === null || rawValue === '') {
+    return fallback;
+  }
+
+  const parsed = Number(rawValue);
+  return Number.isFinite(parsed) ? parsed : fallback;
+};
+
+const parseBooleanParam = value => {
+  if (value === undefined || value === null) {
+    return false;
+  }
+
+  if (Array.isArray(value)) {
+    return value.some(item => parseBooleanParam(item));
+  }
+
+  const normalized = value.toString().trim().toLowerCase();
+  return normalized === '1' || normalized === 'true' || normalized === 'on';
+};
+
+const parseCategoriesParam = value => {
+  if (value === undefined || value === null || value === '') {
+    return [];
+  }
+
+  const rawCategories = Array.isArray(value) ? value : value.split(',');
+
+  return rawCategories
+    .map(item => (item ?? '').toString().trim())
+    .filter(Boolean);
+};
+
 router.get('/articles', sendWithAbsolute(() => getArticles()));
 
 router.get('/brands', sendWithAbsolute(() => getBrands()));
@@ -99,6 +135,45 @@ router.get('/goods/:id', (req, res, next) => {
 
     const baseUrl = resolveBaseUrl(req);
     res.json(toAbsolute(good, baseUrl));
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get('/catalog/meta', (req, res, next) => {
+  try {
+    res.json(getGoodsFiltersMeta());
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get('/catalog/goods', (req, res, next) => {
+  try {
+    const filters = {
+      search: typeof req.query.search === 'string' ? req.query.search.trim() : '',
+      categories: parseCategoriesParam(req.query.categories),
+      minPrice: parseNumberParam(req.query.minPrice),
+      maxPrice: parseNumberParam(req.query.maxPrice),
+      isSale: parseBooleanParam(req.query.sale),
+      isHit: parseBooleanParam(req.query.hit),
+      page: parseNumberParam(req.query.page, 1),
+      limit: parseNumberParam(req.query.limit, 12),
+    };
+
+    const catalog = getGoodsCatalog(filters);
+    const totalPages = catalog.limit > 0 ? Math.max(1, Math.ceil(catalog.total / catalog.limit)) : 1;
+
+    const baseUrl = resolveBaseUrl(req);
+    res.json({
+      items: toAbsolute(catalog.items, baseUrl),
+      pagination: {
+        page: catalog.page,
+        limit: catalog.limit,
+        total: catalog.total,
+        totalPages,
+      },
+    });
   } catch (error) {
     next(error);
   }

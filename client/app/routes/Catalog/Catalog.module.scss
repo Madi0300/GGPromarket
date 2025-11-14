@@ -1,0 +1,300 @@
+.catalogPage {
+  background: rgba(243, 249, 255, 1);
+  font-family: "Montserrat", sans-serif;
+  color: rgb(0, 0, 0);
+  padding: 48px 0 64px;
+  min-height: 100vh;
+}
+
+.catalogHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.catalogEyebrow {
+  font-size: 12px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: rgba(43, 123, 198, 1);
+  margin-bottom: 8px;
+}
+
+.catalogTitle {
+  margin: 0;
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: 700;
+  color: rgba(15, 67, 112, 1);
+}
+
+.catalogStats {
+  font-weight: 600;
+  color: rgba(83, 96, 103, 1);
+}
+
+.catalogLayout {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+.filtersPanel {
+  width: 100%;
+  max-width: 320px;
+  background: #fff;
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 30px 60px rgba(15, 102, 171, 0.08);
+  border: 1px solid rgba(15, 102, 171, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  position: sticky;
+  top: 24px;
+}
+
+.filtersPanelVisible {
+  display: flex;
+}
+
+.filtersToggleWrapper {
+  display: none;
+  justify-content: flex-end;
+}
+
+.filtersToggleButton {
+  border: none;
+  border-radius: 16px;
+  background: linear-gradient(
+    90deg,
+    rgba(15, 102, 171, 1),
+    rgba(43, 123, 198, 1)
+  );
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 10px 24px;
+}
+
+.searchForm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  label {
+    font-weight: 600;
+    color: rgba(15, 67, 112, 1);
+  }
+}
+
+.searchControl {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  input,
+  button {
+    width: 100%;
+  }
+
+  input {
+    border-radius: 16px;
+    border: 1px solid rgba(83, 96, 103, 0.2);
+    padding: 12px 16px;
+    background: rgba(243, 249, 255, 1);
+    font-family: inherit;
+  }
+
+  button {
+    border: none;
+    border-radius: 16px;
+    padding: 10px 24px;
+    background: linear-gradient(90deg, rgba(15, 102, 171, 1), rgba(43, 123, 198, 1));
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+  }
+}
+
+.priceForm {
+  display: flex;
+  flex-direction: column;
+}
+
+.priceFormLabel {
+  font-size: 12px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(83, 96, 103, 0.7);
+  margin-bottom: 6px;
+}
+
+.sectionHeader {
+  font-weight: 700;
+  font-size: 16px;
+  color: rgba(15, 67, 112, 1);
+  margin-bottom: 12px;
+}
+
+.priceInputs {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  input {
+    width: 100%;
+    border-radius: 16px;
+    border: 1px solid rgba(83, 96, 103, 0.2);
+    padding: 10px 14px;
+    background: rgba(248, 251, 255, 1);
+    font-family: inherit;
+  }
+}
+
+.priceDivider {
+  color: rgba(83, 96, 103, 0.8);
+}
+
+.applyButton {
+  margin-top: 12px;
+  border: none;
+  border-radius: 16px;
+  padding: 12px;
+  background: rgba(15, 102, 171, 1);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.categoriesList {
+  max-height: 280px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-right: 6px;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: rgba(83, 96, 103, 1);
+  cursor: pointer;
+
+  input {
+    width: 16px;
+    height: 16px;
+    accent-color: rgba(15, 102, 171, 1);
+    cursor: pointer;
+  }
+}
+
+.resetButton {
+  border-radius: 16px;
+  border: 1px solid rgba(15, 102, 171, 0.3);
+  padding: 12px;
+  background: transparent;
+  font-weight: 600;
+  color: rgba(15, 102, 171, 1);
+  cursor: pointer;
+}
+
+.resultsPanel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.stateBanner {
+  padding: 16px 24px;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 20px 50px rgba(15, 102, 171, 0.06);
+  color: rgba(15, 67, 112, 1);
+}
+
+.cardsGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px 5px;
+  justify-content: space-around;
+}
+
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  align-items: center;
+
+  button {
+    border: 1px solid rgba(15, 102, 171, 0.3);
+    border-radius: 12px;
+    padding: 8px 14px;
+    background: #fff;
+    color: rgba(15, 67, 112, 1);
+    font-weight: 600;
+    cursor: pointer;
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.paginationActive {
+  background: rgba(15, 102, 171, 1) !important;
+  color: #fff !important;
+  border-color: rgba(15, 102, 171, 1) !important;
+}
+
+.paginationDots {
+  color: rgba(83, 96, 103, 0.8);
+}
+
+@media (max-width: 1000px) {
+  .filtersPanel {
+    position: static;
+  }
+}
+
+@media (max-width: 722px) {
+  .catalogLayout {
+    flex-direction: column;
+  }
+
+  .filtersPanel {
+    width: 100%;
+    max-width: none;
+    display: none;
+    position: static;
+  }
+
+  .filtersPanelVisible {
+    display: flex;
+  }
+
+  .filtersToggleWrapper {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 16px;
+  }
+}
+
+@media (max-width: 500px) {
+  .catalogLayout {
+    flex-direction: column;
+  }
+}

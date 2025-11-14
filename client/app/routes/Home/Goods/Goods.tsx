@@ -1,53 +1,16 @@
 ﻿import Style from "./Goods.module.scss";
-import { useState, useEffect, useRef, type ReactNode } from "react";
-import { useNavigate } from "react-router";
+import { useState, useRef, type ReactNode } from "react";
 import { Title } from "../home";
 import { useGetGoodsDataQuery } from "#/apiSlise";
-import { Rate } from "@/headerBoard/ui";
-import { useAppDispatch, useAppSelector } from "#/hooks";
-import { toggleLike, toggleCart } from "#/clientStates";
-import React, { useMemo } from "react";
-
-type Category =
-  | "Sinks"
-  | "Baths"
-  | "Toilets"
-  | "Shower systems"
-  | "Faucets"
-  | "Mirrors"
-  | "Shower cabins"
-  | "Washing machines"
-  | "Towel dryers"
-  | "Bidets"
-  | "Heaters"
-  | "Dishwashers";
+import GoodsCard from "./GoodsCard";
+import type { GoodsCategory, GoodsItem } from "@/types/goods";
 
 type GoodsSliderSign = "hit" | "discount";
 
-type GoodsItem = {
-  name: string;
-  href: string;
-  country: string;
-  price: number;
-  discount?: number | null;
-  imgUrl: string;
-  rate: number;
-  commentsSum: number;
-  isHit?: boolean;
-  category: Category;
-  id: number;
-};
-
-type FilterCategory = Category | "All";
-
-type GoodsProps = {
-  data?: GoodsItem[];
-  categoriesList?: CategoriesListData;
-  sliderSigns?: GoodsSliderSign[];
-};
+type FilterCategory = GoodsCategory | "All";
 
 type CategoryItem = {
-  tag: Category;
+  tag: GoodsCategory;
   text: string;
 };
 
@@ -210,10 +173,10 @@ function GoodsSlider({ data, categories, sign }: GoodsSliderProps) {
           <div className={Style.GoodsSlider__items}>
             <div ref={scrollEl} className={Style.GoodsSlider__items__wrapper}>
               {items.map((item) => (
-                <GoodsItemCard
-                  key={item.name}
-                  props={item}
-                  scrollEl={scrollEl}
+                <GoodsCard
+                  key={item.id}
+                  item={item}
+                  scrollContainer={scrollEl}
                 />
               ))}
             </div>
@@ -252,168 +215,3 @@ function GoodsSlider({ data, categories, sign }: GoodsSliderProps) {
   );
 }
 
-type GoodsItemProps = {
-  props: GoodsItem;
-  scrollEl: React.RefObject<HTMLDivElement | null>;
-};
-
-const GoodsItemCard = React.memo(({ props, scrollEl }: GoodsItemProps) => {
-  const [isDefaultImg, setIsDefaultImg] = useState(false);
-  const [isHover, setIsHover] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
-  const elem = useRef<HTMLAnchorElement | null>(null);
-
-  const navigate = useNavigate();
-
-  const price = props.price
-    .toString()
-    .split("")
-    .reverse()
-    .map((item, index) => {
-      if ((index + 1) % 3 === 0 && index !== 0) return " " + item;
-      else return item;
-    })
-    .reverse()
-    .join("");
-
-  const discount = props.discount
-    ? props.discount
-        .toString()
-        .split("")
-        .reverse()
-        .map((item, index) => {
-          if ((index + 1) % 3 === 0 && index !== 0) return " " + item;
-          else return item;
-        })
-        .reverse()
-        .join("")
-    : null;
-
-  const isDiscount =
-    props.discount != null &&
-    Number.isFinite(props.discount) &&
-    props.price > 0;
-
-  const discountItem = (
-    <p className={Style.GoodsItem__discount}>
-      {discount != null && discount > price ? discount : price + " ₽"}
-    </p>
-  );
-  const nullItem = <div className={Style.GoodsItem__nullItem}></div>;
-  const discountSign = (
-    <div className={Style.GoodsItem__discountSign}>АКЦИЯ</div>
-  );
-  const hitSign = <div className={Style.GoodsItem__hitSign}>ХИТ</div>;
-
-  const goodItemSigns = (
-    <div className={Style.GoodsItem__signs}>
-      {props.isHit ? hitSign : null}
-      {isDiscount ? discountSign : null}
-    </div>
-  );
-
-  useEffect(() => {
-    if (!elem.current) return;
-    if (isVisible) return;
-    const element = elem.current;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const [entry] = entries;
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.unobserve(element);
-        }
-      },
-      {
-        root: scrollEl.current,
-        rootMargin: "300px",
-        threshold: 0.1,
-      }
-    );
-    observer.observe(element);
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [isVisible, scrollEl]);
-
-  const likeElem = useRef<HTMLImageElement | null>(null);
-  const cartElem = useRef<HTMLButtonElement | null>(null);
-
-  const isLiked = useAppSelector(
-    (state) => state.clientState.likedItems
-  ).includes(props.id);
-  const isInCart = useAppSelector(
-    (state) => state.clientState.cartItems
-  ).includes(props.id);
-  const dispatch = useAppDispatch();
-
-  function handleClickCard(e: React.MouseEvent, id: number) {
-    if (likeElem.current && e.target === likeElem.current) {
-      dispatch(toggleLike(id));
-    } else if (cartElem.current && e.target === cartElem.current) {
-      dispatch(toggleCart(id));
-    } else {
-      navigate(`/product/${id}`, { preventScrollReset: true });
-    }
-  }
-  return (
-    <a
-      ref={elem}
-      href={props.href}
-      onMouseLeave={() => {
-        setIsHover(false);
-      }}
-      onMouseEnter={() => {
-        setIsHover(true);
-      }}
-      onClick={(e) => {
-        e.preventDefault();
-        handleClickCard(e, props.id);
-      }}
-      className={Style.GoodsItem + " " + (isHover ? Style.active : "")}
-    >
-      {isVisible ? (
-        <img
-          className={Style.GoodsItem__image}
-          src={
-            !isDefaultImg
-              ? props.imgUrl
-              : `${import.meta.env.BASE_URL}Goods/default.webp`
-          }
-          alt=""
-          onError={() => {
-            setIsDefaultImg(true);
-          }}
-        />
-      ) : null}
-      <div className={Style.GoodsItem__content}>
-        <Rate rateSum={props.rate} commentsSum={props.commentsSum} />
-        <h4 className={Style.GoodsItem__title}>{props.name}</h4>
-        <p className={Style.GoodsItem__country}>{props.country}</p>
-        <div className={Style.GoodsItem__info}>
-          <p className={Style.GoodsItem__price}>
-            {discount != null && discount < price ? discount : price + " ₽"}
-          </p>
-          <button ref={cartElem} className={Style.GoodsItem__button}>
-            {isInCart ? "В корзине" : "В корзину"}
-          </button>
-          {Number.isFinite(props.discount) ? discountItem : nullItem}
-        </div>
-      </div>
-      <div className={Style.GoodsItem__hoverBanner}>Быстрый просмотр</div>
-      <img
-        ref={likeElem}
-        src={
-          isLiked
-            ? `${import.meta.env.BASE_URL}Goods/liked.png`
-            : `${import.meta.env.BASE_URL}Goods/like.svg`
-        }
-        alt="like"
-        className={Style.GoodsItem__like}
-      />
-      {isDiscount || props.isHit ? goodItemSigns : null}
-    </a>
-  );
-});

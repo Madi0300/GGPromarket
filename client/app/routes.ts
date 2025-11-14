@@ -12,6 +12,7 @@ export default [
         id: "product-detail",
       }),
     ]),
+    route("/catalog", "routes/Catalog/Catalog.tsx"),
   ]),
   route("admin", "routes/Admin/Admin.tsx"),
   route("*", "routes/NotFound/NotFound.tsx"),

@@ -1,5 +1,10 @@
 const db = require('./database');
 
+const EFFECTIVE_PRICE_SQL = `CASE
+  WHEN discount IS NOT NULL AND discount < price THEN discount
+  ELSE price
+END`;
+
 const getArticles = () =>
   db
     .prepare('SELECT id, title, img_url AS imgUrl, link FROM articles ORDER BY id')
@@ -202,6 +207,104 @@ const updateGood = (id, raw) => {
   return info.changes ? getGoodById(id) : null;
 };
 
+const buildGoodsCatalogClause = filters => {
+  const conditions = [];
+  const params = {};
+
+  if (filters.search) {
+    conditions.push('LOWER(name) LIKE @search');
+    params.search = `%${filters.search.toLowerCase()}%`;
+  }
+
+  if (Array.isArray(filters.categories) && filters.categories.length > 0) {
+    const placeholders = filters.categories.map((_, index) => `@category${index}`);
+    conditions.push(`category IN (${placeholders.join(', ')})`);
+    filters.categories.forEach((category, index) => {
+      params[`category${index}`] = category;
+    });
+  }
+
+  if (typeof filters.minPrice === 'number') {
+    conditions.push(`${EFFECTIVE_PRICE_SQL} >= @minPrice`);
+    params.minPrice = filters.minPrice;
+  }
+
+  if (typeof filters.maxPrice === 'number') {
+    conditions.push(`${EFFECTIVE_PRICE_SQL} <= @maxPrice`);
+    params.maxPrice = filters.maxPrice;
+  }
+
+  if (filters.isSale) {
+    conditions.push('discount IS NOT NULL AND discount < price');
+  }
+
+  if (filters.isHit) {
+    conditions.push('is_hit = 1');
+  }
+
+  const clause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+
+  return { clause, params };
+};
+
+const getGoodsCatalog = filters => {
+  const normalizedLimit = Number.isFinite(filters.limit) ? filters.limit : 12;
+  const normalizedPage = Number.isFinite(filters.page) ? filters.page : 1;
+
+  const limit = Math.max(1, Math.min(Math.floor(normalizedLimit), 60));
+  const page = Math.max(Math.floor(normalizedPage), 1);
+  const offset = (page - 1) * limit;
+
+  const { clause, params } = buildGoodsCatalogClause(filters);
+
+  const selectStmt = db.prepare(
+    `SELECT id, name, href, country, price, discount, img_url AS imgUrl, rate, comments_sum AS commentsSum, is_hit AS isHit, category
+     FROM goods ${clause}
+     ORDER BY id
+     LIMIT @limit OFFSET @offset`
+  );
+
+  const totalStmt = db.prepare(`SELECT COUNT(*) AS total FROM goods ${clause}`);
+
+  const items = selectStmt
+    .all({ ...params, limit, offset })
+    .map(item => ({ ...item, isHit: Boolean(item.isHit) }));
+
+  const { total = 0 } = totalStmt.get(params) ?? {};
+
+  return {
+    items,
+    total,
+    page,
+    limit,
+  };
+};
+
+const getGoodsFiltersMeta = () => {
+  const categories = db
+    .prepare('SELECT DISTINCT category FROM goods ORDER BY category COLLATE NOCASE')
+    .all()
+    .map(row => row.category);
+
+  const range =
+    db
+      .prepare(
+        `SELECT
+           MIN(${EFFECTIVE_PRICE_SQL}) AS minPrice,
+           MAX(${EFFECTIVE_PRICE_SQL}) AS maxPrice
+         FROM goods`
+      )
+      .get() || {};
+
+  return {
+    categories,
+    priceRange: {
+      min: Number.isFinite(range.minPrice) ? range.minPrice : 0,
+      max: Number.isFinite(range.maxPrice) ? range.maxPrice : 0,
+    },
+  };
+};
+
 const createArticle = raw => {
   const payload = normalizeArticleData(raw);
   const stmt = db.prepare(
@@ -234,6 +337,8 @@ module.exports = {
   getSeo,
   getGoodsOverview,
   getGoodById,
+  getGoodsCatalog,
+  getGoodsFiltersMeta,
   getArticleById,
   createGood,
   updateGood,
