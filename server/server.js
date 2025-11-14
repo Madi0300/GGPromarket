@@ -23,6 +23,7 @@ app.use(
 );
 
 app.use('/images', express.static(path.join(__dirname, 'public/images')));
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
 app.use("/api", apiRoutes);
 

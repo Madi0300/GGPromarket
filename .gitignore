@@ -8,3 +8,11 @@ node_modules/
 
 client/build/
 client/.env.local
+
+# Database files
+*.db
+*.db3
+*.sqlite
+*.sqlite3
+*.sql
+*.dump

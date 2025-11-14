@@ -1,4 +1,7 @@
-﻿const express = require('express');
+﻿const fs = require('fs');
+const path = require('path');
+const multer = require('multer');
+const express = require('express');
 const router = express.Router();
 const { toAbsolute, resolveBaseUrl } = require('../utils/urlUtils');
 const {
@@ -17,6 +20,46 @@ const {
   createArticle,
   updateArticle,
 } = require('../db/queries');
+
+const uploadsDir = path.join(__dirname, '../public/uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+const storage = multer.diskStorage({
+  destination: uploadsDir,
+  filename: (_, file, cb) => {
+    const extension = path.extname(file.originalname) || '.webp';
+    const safeName = `${Date.now()}-${Math.round(Math.random() * 1e9)}${extension}`;
+    cb(null, safeName);
+  },
+});
+
+const upload = multer({ storage });
+
+const ADMIN_HEADER = 'x-admin-code';
+
+const requireAdmin = (req, res, next) => {
+  const adminCode = process.env.VITE_ADMIN_CODE?.trim();
+
+  if (!adminCode) {
+    return res
+      .status(500)
+      .json({ message: 'Секретный код администратора не настроен.' });
+  }
+
+  const providedCode = (req.headers[ADMIN_HEADER] ?? '').toString().trim();
+
+  if (!providedCode) {
+    return res.status(401).json({ message: 'Нет кода администратора.' });
+  }
+
+  if (providedCode !== adminCode) {
+    return res.status(401).json({ message: 'Неверный код администратора.' });
+  }
+
+  next();
+};
 
 const sendWithAbsolute = getPayload => (req, res, next) => {
   try {
@@ -79,6 +122,62 @@ router.post('/admin/check-code', (req, res) => {
   return res
     .status(401)
     .json({ valid: false, message: 'Неверный секретный код.' });
+});
+
+router.post('/admin/goods', requireAdmin, (req, res) => {
+  const good = createGood(req.body || {});
+
+  if (!good) {
+    return res.status(500).json({ message: 'Не удалось создать товар.' });
+  }
+
+  const baseUrl = resolveBaseUrl(req);
+  res.status(201).json(toAbsolute(good, baseUrl));
+});
+
+router.put('/admin/goods/:id', requireAdmin, (req, res) => {
+  const goodId = Number(req.params.id);
+  const updatedGood = updateGood(goodId, req.body || {});
+
+  if (!updatedGood) {
+    return res.status(404).json({ message: 'Товар не найден.' });
+  }
+
+  const baseUrl = resolveBaseUrl(req);
+  res.json(toAbsolute(updatedGood, baseUrl));
+});
+
+router.post('/admin/articles', requireAdmin, (req, res) => {
+  const article = createArticle(req.body || {});
+
+  if (!article) {
+    return res.status(500).json({ message: 'Не удалось создать статью.' });
+  }
+
+  const baseUrl = resolveBaseUrl(req);
+  res.status(201).json(toAbsolute(article, baseUrl));
+});
+
+router.put('/admin/articles/:id', requireAdmin, (req, res) => {
+  const articleId = Number(req.params.id);
+  const updatedArticle = updateArticle(articleId, req.body || {});
+
+  if (!updatedArticle) {
+    return res.status(404).json({ message: 'Статья не найдена.' });
+  }
+
+  const baseUrl = resolveBaseUrl(req);
+  res.json(toAbsolute(updatedArticle, baseUrl));
+});
+
+router.post('/admin/upload', requireAdmin, upload.single('image'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ message: 'Файл не был загружен.' });
+  }
+
+  const relativePath = `/uploads/${req.file.filename}`;
+  const baseUrl = resolveBaseUrl(req);
+  res.status(201).json(toAbsolute({ path: relativePath }, baseUrl));
 });
 
 router.get('/server-url', (req, res) => {

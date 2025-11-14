@@ -13,5 +13,6 @@ export default [
       }),
     ]),
   ]),
+  route("admin", "routes/Admin/Admin.tsx"),
   route("*", "routes/NotFound/NotFound.tsx"),
 ] satisfies RouteConfig;
