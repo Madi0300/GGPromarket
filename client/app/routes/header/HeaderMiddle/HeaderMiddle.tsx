@@ -335,12 +335,16 @@ function ActionButtons({
 
 function GetItem({ id }: { id: number }) {
   const { data, isSuccess } = useGetGoodDataByIdQuery(id);
+  const location = useLocation();
 
   if (!isSuccess) {
     return null;
   }
 
-  const target = `/product/${id}`;
+  const basePath = location.pathname.startsWith("/catalog")
+    ? "/catalog"
+    : "";
+  const target = `${basePath}/product/${id}`;
 
   return (
     <li className={Style.LikedGoods__item}>
