@@ -9,21 +9,7 @@ import {
   useGetCatalogMetaQuery,
 } from "#/apiSlise";
 import type { CatalogFilters } from "@/types/goods";
-
-const CATEGORY_LABELS: Record<string, string> = {
-  Sinks: "Раковины",
-  Baths: "Ванны",
-  Toilets: "Унитазы",
-  "Shower systems": "Душевые системы",
-  Faucets: "Смесители",
-  Mirrors: "Зеркала",
-  "Shower cabins": "Душевые кабины",
-  "Washing machines": "Стиральные машины",
-  "Towel dryers": "Полотенцесушители",
-  Bidets: "Биде",
-  Heaters: "Обогреватели",
-  Dishwashers: "Посудомоечные машины",
-};
+import { catalogCategoryLabels } from "./catalogCategories";
 
 const parseNumberParam = (value: string | null): number | undefined => {
   if (!value) return undefined;
@@ -297,7 +283,7 @@ export default function Catalog() {
                         checked={activeCategories.includes(category)}
                         onChange={() => toggleCategory(category)}
                       />
-                      <span>{CATEGORY_LABELS[category] ?? category}</span>
+                    <span>{catalogCategoryLabels[category] ?? category}</span>
                     </label>
                   ))}
                 </div>

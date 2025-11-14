@@ -163,7 +163,7 @@ function Categories() {
           </p>
         </div>
         <div className={`${Style.Categories__two} ${Style.Categories__title}`}>
-          <a href="#">Акции</a>
+          <a href="/catalog?page=1&sale=1">Акции</a>
         </div>
         <div
           className={`${Style.Categories__three} ${Style.Categories__title}`}
