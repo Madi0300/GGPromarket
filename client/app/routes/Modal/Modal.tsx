@@ -18,7 +18,7 @@ export default function Modal() {
     useGetServerUrlQuery(null);
   const serverUrl = isServerUrlSuccess ? serverUrlData.serverUrl : "";
 
-  const defaultImg = import.meta.env.BASE_URL + "Goods/default.png";
+  const defaultImg = import.meta.env.BASE_URL + "Goods/default.webp";
 
   const { data, isSuccess, isError, error } = useGetGoodDataByIdQuery(`${id}`);
 
