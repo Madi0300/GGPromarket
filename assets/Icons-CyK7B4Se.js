@@ -1,4 +1,4 @@
-import{p as n,R as i}from"./chunk-UH6JLGW7-BuU8Z2XH.js";const _="_Icons_1d0jc_1",r="_Icons__item_1d0jc_15",a="_Icons__content_1d0jc_40",s={Icons:_,Icons__item:r,Icons__content:a},l=[{key:"truck",icon:"Icons/truck.svg",text:`Быстрая доставка
+import{p as n,R as i}from"./chunk-UH6JLGW7-xtm7V6Md.js";const _="_Icons_1d0jc_1",r="_Icons__item_1d0jc_15",a="_Icons__content_1d0jc_40",s={Icons:_,Icons__item:r,Icons__content:a},l=[{key:"truck",icon:"Icons/truck.svg",text:`Быстрая доставка
 по Москве и в любой
 регион России`},{key:"shield",icon:"Icons/shield.svg",text:`Все товары имеют
 официальную гарантию
