@@ -46,7 +46,7 @@ const signs: GoodsSliderSign[] = ["hit", "discount"];
 
 export default function Goods() {
   const { isSuccess, isError, error, data, isLoading } =
-    useGetGoodsDataQuery(null);
+    useGetGoodsDataQuery(undefined);
   const itemData = isSuccess ? data : "loading";
   const itemError = isError ? error : null;
   const categoriesList = dataCategories;

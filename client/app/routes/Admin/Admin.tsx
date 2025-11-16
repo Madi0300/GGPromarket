@@ -61,7 +61,7 @@ export default function Admin() {
 
   const serverUrlQuery = useGetServerUrlQuery(null);
   const serverUrl = serverUrlQuery.data?.serverUrl ?? "";
-  const goodsQuery = useGetGoodsDataQuery(null, { skip: !isUnlocked });
+  const goodsQuery = useGetGoodsDataQuery(undefined, { skip: !isUnlocked });
   const articlesQuery = useGetArticlesDataQuery(null, { skip: !isUnlocked });
   const brandsQuery = useGetBrandsDataQuery(null, { skip: !isUnlocked });
   const seoQuery = useGetSEODataQuery(null, { skip: !isUnlocked });

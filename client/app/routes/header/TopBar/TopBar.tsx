@@ -73,10 +73,14 @@ function City({
   city = "Москва",
   onHover,
   onLeave,
+  onFocus,
+  onBlur,
 }: {
   city?: string;
-  onHover?: (event: MouseEvent<HTMLAnchorElement>) => void;
+  onHover?: (event: AnchorTriggerEvent) => void;
   onLeave?: () => void;
+  onFocus?: (event: AnchorTriggerEvent) => void;
+  onBlur?: () => void;
 }) {
   return (
     <>
@@ -85,8 +89,8 @@ function City({
         href="#"
         onMouseEnter={onHover}
         onMouseLeave={onLeave}
-        onFocus={onHover}
-        onBlur={onLeave}
+        onFocus={onFocus ?? onHover}
+        onBlur={onBlur ?? onLeave}
       >
         <img
           className={Style.City__icon}
@@ -143,22 +147,23 @@ function Navigation({
       ) : null}
       <div className={Style.Navigation__Nav}>
         {navLinks.map((item) => {
+          const isUnavailable = item.href.includes("#");
           return (
             <Link
               to={item.href}
               key={item.name}
               className={Style.Navigation__item}
-              onMouseEnter={
-                item.href.includes("#") ? onUnavailableHover : undefined
-              }
-              onMouseLeave={
-                item.href.includes("#") ? onUnavailableLeave : undefined
-              }
+              onMouseEnter={isUnavailable ? onUnavailableHover : undefined}
+              onMouseLeave={isUnavailable ? onUnavailableLeave : undefined}
               onFocus={
-                item.href.includes("#") ? onUnavailableHover : undefined
+                isUnavailable
+                  ? (event) => onUnavailableHover?.(event)
+                  : undefined
               }
               onBlur={
-                item.href.includes("#") ? onUnavailableLeave : undefined
+                isUnavailable
+                  ? () => onUnavailableLeave?.()
+                  : undefined
               }
             >
               {item.name}

@@ -4,8 +4,8 @@ import {
   useMemo,
   useRef,
   useState,
-  type MouseEvent,
   type FocusEvent,
+  type MouseEvent as ReactMouseEvent,
 } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
 import { Dropdown, InfoDropdown } from "../../headerBoard/ui";
@@ -22,7 +22,7 @@ type ButtonsCords = {
 };
 
 type AnchorTriggerEvent =
-  | MouseEvent<HTMLAnchorElement>
+  | ReactMouseEvent<HTMLAnchorElement>
   | FocusEvent<HTMLAnchorElement>;
 
 const DEFAULT_GOOD_IMAGE = `${import.meta.env.BASE_URL}Goods/default.webp`;
@@ -76,10 +76,10 @@ export default function HeaderMiddle() {
     cart: { X: 0, Y: 0 },
   });
 
-  const { data: goodsData } = useGetGoodsDataQuery(null);
+  const { data: goodsData } = useGetGoodsDataQuery(undefined);
   const itemsSum = useMemo(() => {
     if (!goodsData) return 0;
-    return cardItemsId.reduce((sum, itemId) => {
+    return cardItemsId.reduce<number>((sum, itemId) => {
       const item = goodsData.find((good) => good.id === itemId);
       if (!item) {
         return sum;
@@ -175,7 +175,7 @@ function Categories({
   useEffect(() => {
     if (!isDropdownActive) return;
 
-    function handleOutsideClick(event: MouseEvent) {
+    function handleOutsideClick(event: globalThis.MouseEvent) {
       const target = event.target as Node;
 
       if (
@@ -195,7 +195,7 @@ function Categories({
     };
   }, [isDropdownActive]);
 
-  function handleClickBurger(e: React.MouseEvent) {
+  function handleClickBurger(e: ReactMouseEvent) {
     e.preventDefault();
     if (!burgerRef.current) return;
 
@@ -345,7 +345,7 @@ function ActionButtons({
     );
   }
 
-  function handleLikeClick(e: React.MouseEvent) {
+  function handleLikeClick(e: ReactMouseEvent) {
     e.preventDefault();
     if (!likeElem.current) return;
     const likeCords = likeElem.current?.getBoundingClientRect();
@@ -364,7 +364,7 @@ function ActionButtons({
     }
     setIsLikesButtonTouched(nextState);
   }
-  function handleCartClick(e: React.MouseEvent) {
+  function handleCartClick(e: ReactMouseEvent) {
     e.preventDefault();
     if (!cartElem.current) return;
     const cartCords = cartElem.current?.getBoundingClientRect();

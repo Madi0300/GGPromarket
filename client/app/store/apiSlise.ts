@@ -70,7 +70,7 @@ export const apiSlice = createApi({
     getServerUrl: builder.query({
       query: () => "/server-url",
     }),
-    getGoodsData: builder.query({
+    getGoodsData: builder.query<GoodsItem[], void>({
       query: () => "/goods",
     }),
     getBrandsData: builder.query({
