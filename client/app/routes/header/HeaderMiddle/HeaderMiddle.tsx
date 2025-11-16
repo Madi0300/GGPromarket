@@ -1,15 +1,19 @@
 import Style from "./HeaderMiddle.module.scss";
-import { useState, useRef, useEffect, useMemo } from "react";
-import { Dropdown } from "../../headerBoard/ui";
-import type { RootState } from "../../../store/store";
 import {
-  useGetGoodDataByIdQuery,
-  useGetGoodsDataQuery,
-} from "../../../store/apiSlise";
-import { useAppSelector } from "#/hooks";
-import { toggleLike, toggleCart } from "#/clientStates";
-import { useAppDispatch } from "#/hooks";
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type MouseEvent,
+  type FocusEvent,
+} from "react";
 import { Link, useLocation, useNavigate } from "react-router";
+import { Dropdown, InfoDropdown } from "../../headerBoard/ui";
+import type { GoodsItem } from "@/types/goods";
+import type { RootState } from "../../../store/store";
+import { useGetGoodsDataQuery } from "../../../store/apiSlise";
+import { useAppSelector, useAppDispatch } from "#/hooks";
+import { toggleLike, toggleCart } from "#/clientStates";
 import { headerData } from "../Header";
 
 type ButtonsCords = {
@@ -17,10 +21,46 @@ type ButtonsCords = {
   cart: { X: number; Y: number };
 };
 
-type GoodsPricePreview = {
-  id: number;
-  price: number;
-};
+type AnchorTriggerEvent =
+  | MouseEvent<HTMLAnchorElement>
+  | FocusEvent<HTMLAnchorElement>;
+
+const DEFAULT_GOOD_IMAGE = `${import.meta.env.BASE_URL}Goods/default.webp`;
+const LIKED_ICON = `${import.meta.env.BASE_URL}Goods/liked.png`;
+
+const formatPrice = (value: number) =>
+  value
+    .toString()
+    .split("")
+    .reverse()
+    .map((item, index) =>
+      (index + 1) % 3 === 0 && index !== 0 ? " " + item : item
+    )
+    .reverse()
+    .join("");
+
+function useIsNarrowScreen(maxWidth: number) {
+  const [isNarrow, setIsNarrow] = useState(() =>
+    typeof window !== "undefined" ? window.innerWidth <= maxWidth : false
+  );
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    function update() {
+      setIsNarrow(window.innerWidth <= maxWidth);
+    }
+
+    window.addEventListener("resize", update);
+    return () => {
+      window.removeEventListener("resize", update);
+    };
+  }, [maxWidth]);
+
+  return isNarrow;
+}
 
 export default function HeaderMiddle() {
   const likedItemsId = useAppSelector(
@@ -39,17 +79,51 @@ export default function HeaderMiddle() {
   const { data: goodsData } = useGetGoodsDataQuery(null);
   const itemsSum = useMemo(() => {
     if (!goodsData) return 0;
-    const goodsList = goodsData as GoodsPricePreview[];
-    return cardItemsId.reduce((sum: number, itemId: number) => {
-      const item = goodsList.find((good) => good.id === itemId);
-      return item ? sum + item.price : sum;
+    return cardItemsId.reduce((sum, itemId) => {
+      const item = goodsData.find((good) => good.id === itemId);
+      if (!item) {
+        return sum;
+      }
+      const effectivePrice =
+        typeof item.discount === "number" && item.discount < item.price
+          ? item.discount
+          : item.price;
+      return sum + effectivePrice;
     }, 0);
   }, [cardItemsId, goodsData]);
+
+  const [infoPopup, setInfoPopup] = useState({
+    isOpen: false,
+    message: "",
+    cords: { X: 0, Y: 0 },
+  });
+  const infoMessage =
+    "Данная функциональность на этом pet-проекте пока не реализована.";
+  const showInfo = (event: AnchorTriggerEvent) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    setInfoPopup({
+      isOpen: true,
+      message: infoMessage,
+      cords: {
+        X: rect.left + rect.width / 2,
+        Y: rect.bottom + 10,
+      },
+    });
+  };
+
+  const hideInfo = () => {
+    setInfoPopup((prev) => (prev.isOpen ? { ...prev, isOpen: false } : prev));
+  };
 
   return (
     <>
       <div className={Style.HeaderMiddle}>
-        <Categories />
+        <InfoDropdown
+          cords={infoPopup.cords}
+          message={infoPopup.message}
+          isOpen={infoPopup.isOpen}
+        />
+        <Categories onLinkHover={showInfo} onLinkLeave={hideInfo} />
         <Search />
         <ActionButtons
           setButtonCords={setButtonsCords}
@@ -59,29 +133,34 @@ export default function HeaderMiddle() {
           isCartButtonTouched={isCartButtonTouched}
         />
         {isLikesButtonTouched ? (
-          <GetGoodsListById cords={ButtonsCords.like} itemsId={likedItemsId} />
+          <LikeDropdown
+            cords={ButtonsCords.like}
+            itemsId={likedItemsId}
+            goodsData={goodsData}
+            onClose={() => setIsLikesButtonTouched(false)}
+          />
         ) : null}
         {isCartButtonTouched ? (
-          <>
-            <GetGoodsListById cords={ButtonsCords.cart} itemsId={cardItemsId} />
-            <div
-              className={Style.HeaderMiddle__cartSum}
-              style={{
-                position: "absolute",
-                left: `${ButtonsCords.cart.X - 300}px`,
-                top: `${ButtonsCords.cart.Y - 40}px`,
-              }}
-            >
-              Общий счет: {itemsSum}₽
-            </div>
-          </>
+          <CartDropdown
+            cords={ButtonsCords.cart}
+            itemsId={cardItemsId}
+            goodsData={goodsData}
+            total={itemsSum}
+            onClose={() => setIsCartButtonTouched(false)}
+          />
         ) : null}
       </div>
     </>
   );
 }
 
-function Categories() {
+function Categories({
+  onLinkHover,
+  onLinkLeave,
+}: {
+  onLinkHover?: (event: AnchorTriggerEvent) => void;
+  onLinkLeave?: () => void;
+}) {
   const [isDropdownActive, setIsDropdownActive] = useState(false);
 
   const productCatalog = headerData.productCatalog;
@@ -168,7 +247,15 @@ function Categories() {
         <div
           className={`${Style.Categories__three} ${Style.Categories__title}`}
         >
-          <a href="#">Магазины</a>
+          <a
+            href="#"
+            onMouseEnter={onLinkHover}
+            onMouseLeave={onLinkLeave}
+            onFocus={onLinkHover}
+            onBlur={onLinkLeave}
+          >
+            Магазины
+          </a>
         </div>
       </div>
     </>
@@ -271,7 +358,11 @@ function ActionButtons({
         Y: likeCords.bottom + window.scrollY,
       },
     }));
-    setIsLikesButtonTouched(!isLikesButtonTouched);
+    const nextState = !isLikesButtonTouched;
+    if (nextState) {
+      setIsCartButtonTouched(false);
+    }
+    setIsLikesButtonTouched(nextState);
   }
   function handleCartClick(e: React.MouseEvent) {
     e.preventDefault();
@@ -286,7 +377,11 @@ function ActionButtons({
         Y: cartCords.bottom + window.scrollY,
       },
     }));
-    setIsCartButtonTouched(!isCartButtonTouched);
+    const nextState = !isCartButtonTouched;
+    if (nextState) {
+      setIsLikesButtonTouched(false);
+    }
+    setIsCartButtonTouched(nextState);
   }
 
   return (
@@ -333,67 +428,281 @@ function ActionButtons({
   );
 }
 
-function GetItem({ id }: { id: number }) {
-  const { data, isSuccess } = useGetGoodDataByIdQuery(id);
-  const location = useLocation();
-
-  if (!isSuccess) {
-    return null;
-  }
-
-  const basePath = location.pathname.startsWith("/catalog")
-    ? "/catalog"
-    : "";
-  const target = `${basePath}/product/${id}`;
-
-  return (
-    <li className={Style.LikedGoods__item}>
-      <Link
-        className={Style.LikedGoods__item__link}
-        to={target}
-        preventScrollReset
-      >
-        {data.name}
-      </Link>
-    </li>
-  );
-}
-
-function GetGoodsListById({
-  itemsId,
-  cords,
-}: {
+type CartDropdownProps = {
   itemsId: number[];
   cords: { X: number; Y: number };
-}) {
-  const hasItems = itemsId && itemsId.length > 0;
-  const likedGoodsElem = useRef<HTMLDivElement | null>(null);
+  goodsData?: GoodsItem[];
+  total: number;
+  onClose: () => void;
+};
 
-  const elemCords = {
-    top: cords.Y,
-    left: cords.X - 320,
-  };
+function CartDropdown({
+  itemsId,
+  cords,
+  goodsData,
+  total,
+  onClose,
+}: CartDropdownProps) {
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const dispatch = useAppDispatch();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isSmallScreen = useIsNarrowScreen(426);
+
+  const baseProductPath = location.pathname.startsWith("/catalog")
+    ? "/catalog"
+    : "";
+  const getProductPath = (id: number) =>
+    `${baseProductPath}/product/${id}`.replace(/\/+/g, "/");
+
+  const goodsInCart = useMemo(() => {
+    if (!goodsData) return [];
+    return itemsId
+      .map((id) => goodsData.find((good) => good.id === id))
+      .filter((item): item is GoodsItem => Boolean(item));
+  }, [goodsData, itemsId]);
+
+  const hasCartItems = itemsId.length > 0;
+  const isLoading = hasCartItems && !goodsData;
+  const hasLoadedItems = goodsInCart.length > 0;
 
   useEffect(() => {
-    if (!likedGoodsElem.current) return;
-    const leftX = likedGoodsElem.current.getBoundingClientRect().left;
+    if (!dropdownRef.current) return;
+    const leftX = dropdownRef.current.getBoundingClientRect().left;
 
     if (leftX < 0) {
-      likedGoodsElem.current.style.left = "0px";
+      dropdownRef.current.style.left = "0px";
     }
   });
 
+  const elemCords = isSmallScreen
+    ? { top: 0, left: 0 }
+    : { top: cords.Y, left: cords.X - 320 };
+
+  const content = !hasCartItems ? (
+    <p className={Style.CartDropdown__empty}>Корзина пуста.</p>
+  ) : isLoading ? (
+    <p className={Style.CartDropdown__empty}>Загружаем корзину…</p>
+  ) : hasLoadedItems ? (
+    <div className={Style.CartDropdown__items}>
+      {goodsInCart.map((item) => {
+        const discountValue =
+          typeof item.discount === "number" ? item.discount : null;
+        const hasDiscount = discountValue != null && discountValue < item.price;
+        const displayPrice = hasDiscount ? discountValue : item.price;
+
+        return (
+          <article key={item.id} className={Style.CartDropdown__item}>
+            <img
+              className={Style.CartDropdown__itemImage}
+              src={item.imgUrl}
+              alt={item.name}
+              onError={(event) => {
+                event.currentTarget.src = DEFAULT_GOOD_IMAGE;
+                event.currentTarget.onerror = null;
+              }}
+            />
+            <div className={Style.CartDropdown__itemInfo}>
+              <p className={Style.CartDropdown__itemTitle}>{item.name}</p>
+              <div className={Style.CartDropdown__itemPriceRow}>
+                <span className={Style.CartDropdown__priceCurrent}>
+                  {formatPrice(displayPrice)} ₽
+                </span>
+                {hasDiscount ? (
+                  <span className={Style.CartDropdown__priceOriginal}>
+                    {formatPrice(item.price)} ₽
+                  </span>
+                ) : null}
+              </div>
+            </div>
+            <div className={Style.CartDropdown__itemActions}>
+              <button
+                type="button"
+                className={Style.CartDropdown__removeButton}
+                aria-label={`Удалить ${item.name} из корзины`}
+                onClick={() => dispatch(toggleCart(item.id))}
+              >
+                ×
+              </button>
+              <button
+                type="button"
+                className={Style.CartDropdown__buyButton}
+                onClick={() => navigate(getProductPath(item.id))}
+              >
+                Открыть
+              </button>
+            </div>
+          </article>
+        );
+      })}
+    </div>
+  ) : (
+    <p className={Style.CartDropdown__empty}>
+      Не удалось загрузить выбранные товары.
+    </p>
+  );
+
   return (
-    <div ref={likedGoodsElem} style={elemCords} className={Style.LikedGoods}>
-      {hasItems ? (
-        <ul className={Style.LikedGoods__list}>
-          {itemsId.map((id) => (
-            <GetItem key={id} id={id} />
-          ))}
-        </ul>
-      ) : (
-        <p>Список понравившихся товаров пуст.</p>
-      )}
+    <div ref={dropdownRef} style={elemCords} className={Style.CartDropdown}>
+      <button
+        type="button"
+        className={Style.CartDropdown__closeButton}
+        onClick={onClose}
+        aria-label="Закрыть корзину"
+      >
+        ×
+      </button>
+      <div className={Style.CartDropdown__header}>
+        <h3 className={Style.CartDropdown__title}>Корзина</h3>
+      </div>
+      {content}
+      {hasLoadedItems ? (
+        <div className={Style.CartDropdown__footer}>
+          <div className={Style.CartDropdown__footerSummary}>
+            <span className={Style.CartDropdown__footerLabel}>Сумма</span>
+            <span className={Style.CartDropdown__footerAmount}>
+              {formatPrice(total)} ₽
+            </span>
+          </div>
+          <button type="button" className={Style.CartDropdown__footerButton}>
+            Купить все
+          </button>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+type LikeDropdownProps = {
+  itemsId: number[];
+  cords: { X: number; Y: number };
+  goodsData?: GoodsItem[];
+  onClose: () => void;
+};
+
+function LikeDropdown({
+  itemsId,
+  cords,
+  goodsData,
+  onClose,
+}: LikeDropdownProps) {
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isSmallScreen = useIsNarrowScreen(426);
+
+  const baseProductPath = location.pathname.startsWith("/catalog")
+    ? "/catalog"
+    : "";
+  const getProductPath = (id: number) =>
+    `${baseProductPath}/product/${id}`.replace(/\/+/g, "/");
+
+  const likedGoods = useMemo(() => {
+    if (!goodsData) return [];
+    return itemsId
+      .map((id) => goodsData.find((good) => good.id === id))
+      .filter((item): item is GoodsItem => Boolean(item));
+  }, [goodsData, itemsId]);
+
+  const hasItems = itemsId.length > 0;
+  const isLoading = hasItems && !goodsData;
+  const hasLoadedItems = likedGoods.length > 0;
+
+  useEffect(() => {
+    if (!dropdownRef.current) return;
+    const leftX = dropdownRef.current.getBoundingClientRect().left;
+
+    if (leftX < 0) {
+      dropdownRef.current.style.left = "0px";
+    }
+  });
+
+  const elemCords = isSmallScreen
+    ? { top: 0, left: 0 }
+    : { top: cords.Y, left: cords.X - 320 };
+
+  const content = !hasItems ? (
+    <p className={Style.CartDropdown__empty}>Избранное пусто.</p>
+  ) : isLoading ? (
+    <p className={Style.CartDropdown__empty}>Загружаем избранное…</p>
+  ) : hasLoadedItems ? (
+    <div className={Style.CartDropdown__items}>
+      {likedGoods.map((item) => {
+        const discountValue =
+          typeof item.discount === "number" ? item.discount : null;
+        const hasDiscount = discountValue != null && discountValue < item.price;
+        const displayPrice = hasDiscount ? discountValue : item.price;
+
+        return (
+          <article key={item.id} className={Style.CartDropdown__item}>
+            <img
+              className={Style.CartDropdown__itemImage}
+              src={item.imgUrl}
+              alt={item.name}
+              onError={(event) => {
+                event.currentTarget.src = DEFAULT_GOOD_IMAGE;
+                event.currentTarget.onerror = null;
+              }}
+            />
+            <div className={Style.CartDropdown__itemInfo}>
+              <p className={Style.CartDropdown__itemTitle}>{item.name}</p>
+              <div className={Style.CartDropdown__itemPriceRow}>
+                <span className={Style.CartDropdown__priceCurrent}>
+                  {formatPrice(displayPrice)} ₽
+                </span>
+                {hasDiscount ? (
+                  <span className={Style.CartDropdown__priceOriginal}>
+                    {formatPrice(item.price)} ₽
+                  </span>
+                ) : null}
+              </div>
+            </div>
+            <div className={Style.CartDropdown__itemActions}>
+              <button
+                type="button"
+                className={Style.CartDropdown__removeButton}
+                aria-label={`Убрать ${item.name} из избранного`}
+                onClick={() => dispatch(toggleLike(item.id))}
+              >
+                <img
+                  className={Style.CartDropdown__likedIcon}
+                  src={LIKED_ICON}
+                  alt=""
+                />
+              </button>
+              <button
+                type="button"
+                className={Style.CartDropdown__buyButton}
+                onClick={() => navigate(getProductPath(item.id))}
+              >
+                Купить
+              </button>
+            </div>
+          </article>
+        );
+      })}
+    </div>
+  ) : (
+    <p className={Style.CartDropdown__empty}>
+      Не удалось загрузить понравившиеся товары.
+    </p>
+  );
+
+  return (
+    <div ref={dropdownRef} style={elemCords} className={Style.CartDropdown}>
+      <button
+        type="button"
+        className={Style.CartDropdown__closeButton}
+        onClick={onClose}
+        aria-label="Закрыть избранное"
+      >
+        ×
+      </button>
+      <div className={Style.CartDropdown__header}>
+        <h3 className={Style.CartDropdown__title}>Избранное</h3>
+      </div>
+      {content}
     </div>
   );
 }

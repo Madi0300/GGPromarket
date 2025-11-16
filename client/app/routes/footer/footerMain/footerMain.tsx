@@ -1,15 +1,31 @@
 ﻿import Style from "./footerMain.module.scss";
-import { Logo, PhoneNumber } from "../../headerBoard/ui";
+import { Logo, PhoneNumber, InfoDropdown } from "../../headerBoard/ui";
 import { Container } from "../../headerBoard/ui";
 import { headerData } from "@/header/Header";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type MouseEvent,
+  type FocusEvent,
+} from "react";
 
+type AnchorTriggerEvent =
+  | MouseEvent<HTMLAnchorElement>
+  | FocusEvent<HTMLAnchorElement>;
 const footerData = {
   productLinks: [
-    { name: "Плитка", href: "#" },
-    { name: "Мебель для ванной", href: "#" },
-    { name: "Электроника и бытовая техника", href: "#" },
-    { name: "Отопление", href: "#" },
-    { name: "Напольное покрытие", href: "#" },
+    {
+      name: "Посудомоечные машины",
+      href: "/catalog?page=1&categories=Dishwashers",
+    },
+    { name: "Смесители", href: "/catalog?page=1&categories=Faucets" },
+    { name: "Обогреватели", href: "/catalog?page=1&categories=Heaters" },
+    { name: "Зеркала", href: "/catalog?page=1&categories=Mirrors" },
+    {
+      name: "Душевые кабины",
+      href: "/catalog?page=1&categories=Shower+cabins",
+    },
   ],
   infoLinks: [
     { name: "Оплата", href: "#" },
@@ -46,9 +62,61 @@ const footerData = {
 
 export default function FooterMain() {
   const number = headerData.callNumber;
+  const [infoPopup, setInfoPopup] = useState({
+    isOpen: false,
+    message: "",
+    cords: { X: 0, Y: 0 },
+  });
+  const infoMessage =
+    "Данная функциональность на этом pet-проекте пока не реализована.";
+  const hideTimer = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (hideTimer.current) {
+        window.clearTimeout(hideTimer.current);
+      }
+    };
+  }, []);
+
+  const showInfo = (event: AnchorTriggerEvent) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+
+    if (hideTimer.current) {
+      window.clearTimeout(hideTimer.current);
+      hideTimer.current = null;
+    }
+
+    setInfoPopup({
+      isOpen: true,
+      message: infoMessage,
+      cords: {
+        X: rect.left + rect.width / 2,
+        Y: rect.bottom + 10,
+      },
+    });
+  };
+
+  const hideInfo = () => {
+    if (hideTimer.current) {
+      window.clearTimeout(hideTimer.current);
+    }
+
+    hideTimer.current = window.setTimeout(() => {
+      setInfoPopup((prev) =>
+        prev.isOpen ? { ...prev, isOpen: false } : prev
+      );
+      hideTimer.current = null;
+    }, 250);
+  };
   return (
     <>
       <div className={Style.FooterMain}>
+        <InfoDropdown
+          cords={infoPopup.cords}
+          message={infoPopup.message}
+          isOpen={infoPopup.isOpen}
+        />
         <Container>
           <div className={Style.FooterMain__wrapper}>
             <div className={Style.FooterMain__list}>
@@ -69,7 +137,23 @@ export default function FooterMain() {
                 {footerData.infoLinks.map(
                   (link: { name: string; href: string }) => (
                     <li key={link.name} className={Style.FooterMain__li}>
-                      <a href={link.href}>{link.name}</a>
+                      <a
+                        href={link.href}
+                        onMouseEnter={link.href === "#" ? showInfo : undefined}
+                        onMouseLeave={link.href === "#" ? hideInfo : undefined}
+                        onFocus={link.href === "#" ? showInfo : undefined}
+                        onBlur={link.href === "#" ? hideInfo : undefined}
+                        onClick={
+                          link.href === "#"
+                            ? (event) => {
+                                event.preventDefault();
+                                showInfo(event);
+                              }
+                            : undefined
+                        }
+                      >
+                        {link.name}
+                      </a>
                     </li>
                   )
                 )}

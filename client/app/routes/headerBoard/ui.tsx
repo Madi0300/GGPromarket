@@ -139,6 +139,24 @@ export const Dropdown = forwardRef<HTMLDivElement, Props>(function Dropdown(
   );
 });
 
+type InfoDropdownProps = {
+  cords: DropdownCoordinates;
+  message: string;
+  isOpen: boolean;
+};
+
+export function InfoDropdown({ cords, message, isOpen }: InfoDropdownProps) {
+  if (!isOpen) {
+    return null;
+  }
+
+  return (
+    <div className={Style.InfoDropdown} style={{ top: cords.Y, left: cords.X }}>
+      <p className={Style.InfoDropdown__text}>{message}</p>
+    </div>
+  );
+}
+
 export function Call({ number }: { number?: number }) {
   const stringedNumber = `${number}`;
   return (
