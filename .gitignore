@@ -11,6 +11,8 @@ client/.env.local
 
 # Database files
 *.db
+*.db-shm
+*.db-wal
 *.db3
 *.sqlite
 *.sqlite3
