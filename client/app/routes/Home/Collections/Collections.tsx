@@ -22,31 +22,31 @@ const collectionsData = {
   main: {
     title: "Сияние",
     autor: "Kerama Marazzi",
-    imgSrc: "collections/main.webp",
+    imgSrc: `${import.meta.env.BASE_URL}collections/main.webp`,
     href: "/collections/1",
   },
   second: {
     title: "Вестанвинд ",
     autor: "LB-Ceramics",
-    imgSrc: "collections/second.webp",
+    imgSrc: `${import.meta.env.BASE_URL}collections/second.webp`,
     href: "/collections/2",
   },
   third: {
     title: "Rotterdam",
     autor: "Gracia Ceramica",
-    imgSrc: "collections/third.webp",
+    imgSrc: `${import.meta.env.BASE_URL}collections/third.webp`,
     href: "/collections/3",
   },
   fourth: {
     title: "Rane",
     autor: "Alma Ceramica",
-    imgSrc: "collections/fourth.webp",
+    imgSrc: `${import.meta.env.BASE_URL}collections/fourth.webp`,
     href: "/collections/4",
   },
   fifth: {
     title: "Гинардо",
     autor: "Kerama Marazzi",
-    imgSrc: "collections/fifth.webp",
+    imgSrc: `${import.meta.env.BASE_URL}collections/fifth.webp`,
     href: "/collections/5",
   },
 };

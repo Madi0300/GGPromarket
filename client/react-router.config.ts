@@ -5,6 +5,6 @@ const isProd = process.env.NODE_ENV === "production";
 export default {
   // Config options...
   // Server-side render by default, to enable SPA mode set this to `false`
-  basename: isProd ? "/GGPromarket" : "/",
+  basename: isProd ? "/GGPromarket/" : "/",
   ssr: false,
 } satisfies Config;
