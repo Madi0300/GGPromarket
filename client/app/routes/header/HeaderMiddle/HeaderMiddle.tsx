@@ -16,7 +16,7 @@ import {
   useBuyGoodsMutation,
 } from "../../../store/apiSlise";
 import { useAppSelector, useAppDispatch } from "#/hooks";
-import { toggleLike, toggleCart } from "#/clientStates";
+import { toggleLike, toggleCart, clearCart } from "#/clientStates";
 import { headerData } from "../Header";
 
 type ButtonsCords = {
@@ -495,6 +495,7 @@ function CartDropdown({
         search: `?ids=${itemsId.join(",")}`,
       });
       onClose();
+      dispatch(clearCart());
     } catch (error) {
       console.error(`Ошибка при покупке товара ${error}`);
     }

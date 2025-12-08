@@ -111,7 +111,11 @@
     border: none;
     border-radius: 16px;
     padding: 10px 24px;
-    background: linear-gradient(90deg, rgba(15, 102, 171, 1), rgba(43, 123, 198, 1));
+    background: linear-gradient(
+      90deg,
+      rgba(15, 102, 171, 1),
+      rgba(43, 123, 198, 1)
+    );
     color: #fff;
     font-weight: 600;
     cursor: pointer;
@@ -214,6 +218,9 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
+  @media (max-width: 1000px) {
+    margin: 0 auto;
+  }
 }
 
 .stateBanner {
@@ -225,10 +232,21 @@
 }
 
 .cardsGrid {
-  display: flex;
+  display: grid;
   flex-wrap: wrap;
   gap: 24px 5px;
-  justify-content: space-around;
+  grid-template-columns: repeat(4, 1fr);
+  @media (max-width: 1550px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  @media (max-width: 1300px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media (max-width: 1000px) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 }
 
 .pagination {

@@ -58,8 +58,14 @@ const clientState = createSlice({
         localStorage.setItem("cart", JSON.stringify(state.cartItems));
       }
     },
+    clearCart: (state) => {
+      state.cartItems = [];
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("cart");
+      }
+    },
   },
 });
 
-export const { toggleLike, toggleCart } = clientState.actions;
+export const { toggleLike, toggleCart, clearCart } = clientState.actions;
 export default clientState.reducer;
