@@ -67,6 +67,7 @@ export default function Modal() {
   async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
     if (!serverUrl || !data) return;
+    if (isBuying) return;
 
     try {
       await buyGoods([numericId]).unwrap();
@@ -152,7 +153,11 @@ export default function Modal() {
                         Style.Modal__form__button__buy
                       }
                     >
-                      Купить сейчас
+                      {isBuying
+                        ? "Покупка..."
+                        : isBuyingError
+                          ? "Ошибка"
+                          : "Купить сейчас"}
                     </button>
                     <button
                       onClick={toggleItemToCart}

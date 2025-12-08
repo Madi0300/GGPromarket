@@ -486,6 +486,7 @@ function CartDropdown({
 
   async function handleBuyAllClick(e: React.MouseEvent) {
     e.preventDefault();
+    if (isBuying) return;
     console.log("Buying items:", itemsId);
     if (itemsId.length === 0) return;
     try {
@@ -600,7 +601,7 @@ function CartDropdown({
             type="button"
             className={Style.CartDropdown__footerButton}
           >
-            Купить все
+            {isBuying ? "Покупка..." : buyingError ? "Ошибка" : "Купить все"}
           </button>
         </div>
       ) : null}

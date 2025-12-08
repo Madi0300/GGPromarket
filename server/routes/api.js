@@ -178,7 +178,10 @@ router.post('/buy', (req, res) => {
     return res.status(400).json({ success: false, message: 'Список товаров пуст.' });
   }
 
-  res.json({ success: true, message: 'Заказ оформлен.', processedIds: ids });
+  // Simulate a small processing delay so the client can show a loader
+  setTimeout(() => {
+    res.json({ success: true, message: 'Заказ оформлен.', processedIds: ids });
+  }, 1000);
 });
 
 router.get('/catalog/meta', (req, res, next) => {
