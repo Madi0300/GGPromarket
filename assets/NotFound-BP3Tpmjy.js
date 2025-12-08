@@ -1,0 +1,1 @@
+import{w as o,j as t}from"./chunk-UH6JLGW7-_-gPfxXv.js";const r=o(function(){return t.jsx(t.Fragment,{children:"Ожидаемая страница не существует. Возможно страница не предусмотрена в этом Пет проекте"})});export{r as default};
