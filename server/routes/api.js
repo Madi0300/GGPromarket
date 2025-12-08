@@ -14,6 +14,7 @@ const {
   getIcons,
   getSeo,
   getGoodsOverview,
+  getGoodsByIds,
   getGoodById,
   getGoodsCatalog,
   getGoodsFiltersMeta,
@@ -107,6 +108,17 @@ const parseCategoriesParam = value => {
     .filter(Boolean);
 };
 
+const parseIdsParam = value => {
+  if (value === undefined || value === null || value === '') {
+    return [];
+  }
+
+  const rawIds = Array.isArray(value) ? value : value.toString().split(',');
+  return rawIds
+    .map(item => Number(item))
+    .filter(Number.isFinite);
+};
+
 router.get('/articles', sendWithAbsolute(() => getArticles()));
 
 router.get('/brands', sendWithAbsolute(() => getBrands()));
@@ -125,6 +137,25 @@ router.get('/seo', sendWithAbsolute(() => getSeo()));
 
 router.get('/goods', sendWithAbsolute(() => getGoodsOverview()));
 
+router.get('/goods/list-by-ids', (req, res, next) => {
+  try {
+    const ids = parseIdsParam(req.query.ids);
+
+    if (!ids.length) {
+      return res.status(400).json({ message: 'Не указаны идентификаторы товаров.' });
+    }
+
+    const goods = getGoodsByIds(ids);
+    if (!goods.length) {
+      return res.status(404).json({ message: 'Товар не найден.' });
+    }
+    const baseUrl = resolveBaseUrl(req);
+    res.json(toAbsolute(goods, baseUrl));
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.get('/goods/:id', (req, res, next) => {
   try {
     const good = getGoodById(Number(req.params.id));
@@ -138,6 +169,16 @@ router.get('/goods/:id', (req, res, next) => {
   } catch (error) {
     next(error);
   }
+});
+
+router.post('/buy', (req, res) => {
+  const ids = Array.isArray(req.body?.ids) ? req.body.ids : [];
+
+  if (!ids.length) {
+    return res.status(400).json({ success: false, message: 'Список товаров пуст.' });
+  }
+
+  res.json({ success: true, message: 'Заказ оформлен.', processedIds: ids });
 });
 
 router.get('/catalog/meta', (req, res, next) => {

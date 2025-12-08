@@ -1,0 +1,26 @@
+.SuccessBuy__goodList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px 0;
+  @media (min-width: 768px) {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.GoodCard {
+  background: #fff;
+  border-radius: 8px;
+  display: flex;
+  box-sizing: border-box;
+  padding: 16px;
+
+  &__img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-right: 16px;
+  }
+}

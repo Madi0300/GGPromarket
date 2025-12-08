@@ -35,12 +35,13 @@ type Props = {
   cords: DropdownCoordinates;
   items: Item[];
   isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
   position?: "left" | "right";
   emptyPlaceholder?: ReactNode;
 };
 
 export const Dropdown = forwardRef<HTMLDivElement, Props>(function Dropdown(
-  { cords, items, isOpen, position = "left", emptyPlaceholder },
+  { cords, items, isOpen, setIsOpen, position = "left", emptyPlaceholder },
   forwardedRef
 ) {
   const localRef = useRef<HTMLDivElement | null>(null);
@@ -128,7 +129,14 @@ export const Dropdown = forwardRef<HTMLDivElement, Props>(function Dropdown(
         <ul className={Style.Dropdown__ul}>
           {items.map((item) => (
             <li key={item.name} className={Style.Dropdown__li}>
-              <Link to={item.href}>{item.name}</Link>
+              <Link
+                onClick={() => {
+                  setIsOpen(false);
+                }}
+                to={item.href}
+              >
+                {item.name}
+              </Link>
             </li>
           ))}
         </ul>

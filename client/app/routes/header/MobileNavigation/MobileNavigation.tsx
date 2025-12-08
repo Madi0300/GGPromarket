@@ -15,6 +15,7 @@ export default function Navigation({
           {navItems.map((item) => (
             <li className={Style.Navigation__li} key={item.name}>
               <Link
+                onClick={toggleIsdropdownOpen}
                 className={Style.Navigation__link}
                 to={item.href}
               >

@@ -88,11 +88,25 @@ export const apiSlice = createApi({
     getCatalogMeta: builder.query<CatalogMeta, void>({
       query: () => "/catalog/meta",
     }),
-    getCatalogGoods: builder.query<CatalogResponse, CatalogFilters | undefined>({
-      query: (filters) => ({
-        url: "/catalog/goods",
-        params: buildCatalogQueryParams(filters),
+    getCatalogGoods: builder.query<CatalogResponse, CatalogFilters | undefined>(
+      {
+        query: (filters) => ({
+          url: "/catalog/goods",
+          params: buildCatalogQueryParams(filters),
+        }),
+      }
+    ),
+    buyGoods: builder.mutation({
+      query: (idsArray: number[]) => ({
+        url: "/buy",
+        method: "POST",
+        body: { ids: idsArray },
       }),
+    }),
+    getGoodListByIds: builder.query({
+      query: (idsArray: number[]) => {
+        return `goods/list-by-ids?ids=${idsArray.join(",")}`;
+      },
     }),
   }),
 });
@@ -106,4 +120,6 @@ export const {
   useGetGoodDataByIdQuery,
   useGetCatalogMetaQuery,
   useGetCatalogGoodsQuery,
+  useBuyGoodsMutation,
+  useGetGoodListByIdsQuery,
 } = apiSlice;

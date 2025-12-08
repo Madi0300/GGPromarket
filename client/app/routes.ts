@@ -17,6 +17,7 @@ export default [
         id: "catalog-product-detail",
       }),
     ]),
+    route("/successBuy", "routes/successBuy/successBuy.tsx"),
   ]),
   route("admin", "routes/Admin/Admin.tsx"),
   route("*", "routes/NotFound/NotFound.tsx"),

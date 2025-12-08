@@ -110,14 +110,47 @@ const getIcons = () =>
 const getSeo = () =>
   db.prepare('SELECT title, text, img_url AS imgUrl FROM seo_data WHERE id = 1').get();
 
+const mapGoodOverviewRow = row => ({ ...row, isHit: Boolean(row.isHit) });
+
+const GOODS_OVERVIEW_SELECT = `SELECT id, name, href, country, price, discount, img_url AS imgUrl, rate, comments_sum AS commentsSum, is_hit AS isHit, category FROM goods`;
+
 const getGoodsOverview = () =>
   db
-    .prepare(
-      `SELECT id, name, href, country, price, discount, img_url AS imgUrl, rate, comments_sum AS commentsSum, is_hit AS isHit, category
-       FROM goods ORDER BY id`
-    )
+    .prepare(`${GOODS_OVERVIEW_SELECT} ORDER BY id`)
     .all()
-    .map(item => ({ ...item, isHit: Boolean(item.isHit) }));
+    .map(mapGoodOverviewRow);
+
+const getGoodsByIds = ids => {
+  if (!Array.isArray(ids) || ids.length === 0) {
+    return [];
+  }
+
+  const normalizedIds = Array.from(
+    new Set(
+      ids
+        .map(id => Number(id))
+        .filter(Number.isFinite)
+    )
+  );
+
+  if (normalizedIds.length === 0) {
+    return [];
+  }
+
+  const placeholders = normalizedIds.map((_, index) => `@id${index}`);
+  const params = normalizedIds.reduce((acc, id, index) => {
+    acc[`id${index}`] = id;
+    return acc;
+  }, {});
+
+  const rows = db
+    .prepare(`${GOODS_OVERVIEW_SELECT} WHERE id IN (${placeholders.join(',')})`)
+    .all(params)
+    .map(mapGoodOverviewRow);
+
+  const rowsMap = new Map(rows.map(row => [row.id, row]));
+  return normalizedIds.map(id => rowsMap.get(id)).filter(Boolean);
+};
 
 const getGoodById = id => {
   const record = db
@@ -336,6 +369,7 @@ module.exports = {
   getIcons,
   getSeo,
   getGoodsOverview,
+  getGoodsByIds,
   getGoodById,
   getGoodsCatalog,
   getGoodsFiltersMeta,

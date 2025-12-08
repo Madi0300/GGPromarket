@@ -1,10 +1,6 @@
 import { Logo, InfoDropdown } from "../../headerBoard/ui";
 import Style from "./TopBar.module.scss";
-import {
-  useState,
-  type MouseEvent,
-  type FocusEvent,
-} from "react";
+import { useState, type MouseEvent, type FocusEvent } from "react";
 import type { RootState } from "../../../store/store";
 import { Call } from "../../headerBoard/ui";
 import MobileNavigation from "@/header/MobileNavigation/MobileNavigation";
@@ -160,11 +156,7 @@ function Navigation({
                   ? (event) => onUnavailableHover?.(event)
                   : undefined
               }
-              onBlur={
-                isUnavailable
-                  ? () => onUnavailableLeave?.()
-                  : undefined
-              }
+              onBlur={isUnavailable ? () => onUnavailableLeave?.() : undefined}
             >
               {item.name}
             </Link>

@@ -11,7 +11,10 @@ import { Link, useLocation, useNavigate } from "react-router";
 import { Dropdown, InfoDropdown } from "../../headerBoard/ui";
 import type { GoodsItem } from "@/types/goods";
 import type { RootState } from "../../../store/store";
-import { useGetGoodsDataQuery } from "../../../store/apiSlise";
+import {
+  useGetGoodsDataQuery,
+  useBuyGoodsMutation,
+} from "../../../store/apiSlise";
 import { useAppSelector, useAppDispatch } from "#/hooks";
 import { toggleLike, toggleCart } from "#/clientStates";
 import { headerData } from "../Header";
@@ -233,6 +236,7 @@ function Categories({
             items={productCatalog}
             cords={dropdownCords}
             isOpen={isDropdownActive}
+            setIsOpen={setIsDropdownActive}
             position="right"
           />
           <p
@@ -475,6 +479,27 @@ function CartDropdown({
     }
   });
 
+  const [
+    buyGoods,
+    { isLoading: isBuying, isError: buyingError, isSuccess: isBuyingSuccess },
+  ] = useBuyGoodsMutation();
+
+  async function handleBuyAllClick(e: React.MouseEvent) {
+    e.preventDefault();
+    console.log("Buying items:", itemsId);
+    if (itemsId.length === 0) return;
+    try {
+      await buyGoods(itemsId).unwrap();
+      navigate({
+        pathname: "/successBuy",
+        search: `?ids=${itemsId.join(",")}`,
+      });
+      onClose();
+    } catch (error) {
+      console.error(`Ошибка при покупке товара ${error}`);
+    }
+  }
+
   const elemCords = isSmallScreen
     ? { top: 0, left: 0 }
     : { top: cords.Y, left: cords.X - 320 };
@@ -527,7 +552,10 @@ function CartDropdown({
               <button
                 type="button"
                 className={Style.CartDropdown__buyButton}
-                onClick={() => navigate(getProductPath(item.id))}
+                onClick={() => {
+                  navigate(getProductPath(item.id));
+                  onClose();
+                }}
               >
                 Открыть
               </button>
@@ -564,7 +592,13 @@ function CartDropdown({
               {formatPrice(total)} ₽
             </span>
           </div>
-          <button type="button" className={Style.CartDropdown__footerButton}>
+          <button
+            onClick={(e) => {
+              handleBuyAllClick(e);
+            }}
+            type="button"
+            className={Style.CartDropdown__footerButton}
+          >
             Купить все
           </button>
         </div>
@@ -674,7 +708,10 @@ function LikeDropdown({
               <button
                 type="button"
                 className={Style.CartDropdown__buyButton}
-                onClick={() => navigate(getProductPath(item.id))}
+                onClick={() => {
+                  navigate(getProductPath(item.id));
+                  onClose();
+                }}
               >
                 Купить
               </button>

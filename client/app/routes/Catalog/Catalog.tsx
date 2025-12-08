@@ -4,12 +4,10 @@ import { Outlet, useLocation, useSearchParams } from "react-router";
 import { Container } from "@/headerBoard/ui";
 import GoodsCard from "@/Home/Goods/GoodsCard";
 import Style from "./Catalog.module.scss";
-import {
-  useGetCatalogGoodsQuery,
-  useGetCatalogMetaQuery,
-} from "#/apiSlise";
+import { useGetCatalogGoodsQuery, useGetCatalogMetaQuery } from "#/apiSlise";
 import type { CatalogFilters } from "@/types/goods";
 import { catalogCategoryLabels } from "./catalogCategories";
+import { useParams } from "react-router";
 
 const parseNumberParam = (value: string | null): number | undefined => {
   if (!value) return undefined;
@@ -64,14 +62,31 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Catalog() {
+  const params = useParams();
+  const { productId } = params;
+
+  useEffect(() => {
+    if (typeof productId == "string") {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  });
   const [searchParams, setSearchParams] = useSearchParams();
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
   const [isMobileLayout, setIsMobileLayout] = useState(false);
   const location = useLocation();
-  const parsedFilters = useMemo(() => parseFilters(searchParams), [searchParams]);
-  const [categoryPendingSelection, setCategoryPendingSelection] = useState<string[]>(
-    parsedFilters.categories ?? []
+  const parsedFilters = useMemo(
+    () => parseFilters(searchParams),
+    [searchParams]
   );
+  const [categoryPendingSelection, setCategoryPendingSelection] = useState<
+    string[]
+  >(parsedFilters.categories ?? []);
   const pendingScrollRef = useRef<number | null>(null);
   const categoryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const queryArgs = useMemo(
@@ -82,8 +97,12 @@ export default function Catalog() {
     [parsedFilters]
   );
 
-  const { data: catalogData, isFetching, isError, error } =
-    useGetCatalogGoodsQuery(queryArgs);
+  const {
+    data: catalogData,
+    isFetching,
+    isError,
+    error,
+  } = useGetCatalogGoodsQuery(queryArgs);
   const { data: filtersMeta } = useGetCatalogMetaQuery();
 
   const [searchValue, setSearchValue] = useState(parsedFilters.search ?? "");
@@ -99,11 +118,15 @@ export default function Catalog() {
   }, [parsedFilters.search]);
 
   useEffect(() => {
-    setMinInput(parsedFilters.minPrice != null ? String(parsedFilters.minPrice) : "");
+    setMinInput(
+      parsedFilters.minPrice != null ? String(parsedFilters.minPrice) : ""
+    );
   }, [parsedFilters.minPrice]);
 
   useEffect(() => {
-    setMaxInput(parsedFilters.maxPrice != null ? String(parsedFilters.maxPrice) : "");
+    setMaxInput(
+      parsedFilters.maxPrice != null ? String(parsedFilters.maxPrice) : ""
+    );
   }, [parsedFilters.maxPrice]);
 
   useEffect(() => {
@@ -184,7 +207,8 @@ export default function Catalog() {
           pendingScrollRef.current = window.scrollY;
         }
         updateParams({
-          categories: nextCategories.length > 0 ? nextCategories.join(",") : null,
+          categories:
+            nextCategories.length > 0 ? nextCategories.join(",") : null,
           page: 1,
         });
         categoryTimerRef.current = null;
@@ -253,7 +277,8 @@ export default function Catalog() {
   const totalItems = pagination?.total ?? items.length;
   const pageSize = pagination?.limit ?? queryArgs.limit ?? 12;
   const startItem = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
-  const endItem = totalItems === 0 ? 0 : Math.min(startItem + pageSize - 1, totalItems);
+  const endItem =
+    totalItems === 0 ? 0 : Math.min(startItem + pageSize - 1, totalItems);
 
   const activeCategories = categoryPendingSelection;
   const isSaleActive = Boolean(parsedFilters.sale);
@@ -347,7 +372,7 @@ export default function Catalog() {
                         checked={activeCategories.includes(category)}
                         onChange={() => toggleCategory(category)}
                       />
-                    <span>{catalogCategoryLabels[category] ?? category}</span>
+                      <span>{catalogCategoryLabels[category] ?? category}</span>
                     </label>
                   ))}
                 </div>
@@ -359,7 +384,9 @@ export default function Catalog() {
                   <input
                     type="checkbox"
                     checked={isSaleActive}
-                    onChange={(event) => toggleFlag("sale", event.target.checked)}
+                    onChange={(event) =>
+                      toggleFlag("sale", event.target.checked)
+                    }
                   />
                   <span>Показывать акции</span>
                 </label>
@@ -367,7 +394,9 @@ export default function Catalog() {
                   <input
                     type="checkbox"
                     checked={isHitActive}
-                    onChange={(event) => toggleFlag("hit", event.target.checked)}
+                    onChange={(event) =>
+                      toggleFlag("hit", event.target.checked)
+                    }
                   />
                   <span>Хиты продаж</span>
                 </label>
@@ -393,7 +422,9 @@ export default function Catalog() {
             ) : null}
 
             {!isFetching && !isError && items.length === 0 ? (
-              <div className={Style.stateBanner}>По выбранным фильтрам ничего не найдено.</div>
+              <div className={Style.stateBanner}>
+                По выбранным фильтрам ничего не найдено.
+              </div>
             ) : null}
 
             <div className={Style.cardsGrid}>

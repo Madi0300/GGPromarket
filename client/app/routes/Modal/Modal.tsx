@@ -1,5 +1,9 @@
 import Style from "./Modal.module.scss";
-import { useGetGoodDataByIdQuery, useGetServerUrlQuery } from "#/apiSlise";
+import {
+  useGetGoodDataByIdQuery,
+  useGetServerUrlQuery,
+  useBuyGoodsMutation,
+} from "#/apiSlise";
 import { useAppDispatch, useAppSelector } from "#/hooks";
 
 import { useState, useEffect, type ReactEventHandler } from "react";
@@ -13,7 +17,6 @@ type ModalLocationState = {
   scrollY?: number;
 };
 
-
 export default function Modal() {
   const params = useParams();
   const { productId: id } = params;
@@ -23,6 +26,16 @@ export default function Modal() {
   const { data: serverUrlData, isSuccess: isServerUrlSuccess } =
     useGetServerUrlQuery(null);
   const serverUrl = isServerUrlSuccess ? serverUrlData.serverUrl : "";
+
+  const [
+    buyGoods,
+    {
+      isLoading: isBuying,
+      isError: isBuyingError,
+      error: buyingError,
+      isSuccess: isBuyingSuccess,
+    },
+  ] = useBuyGoodsMutation();
 
   const defaultImg = import.meta.env.BASE_URL + "Goods/default.webp";
 
@@ -37,7 +50,6 @@ export default function Modal() {
   const navigate = useNavigate();
   const location = useLocation();
   const modalState = (location.state ?? {}) as ModalLocationState;
-
 
   function close() {
     const isCatalogRoute = location.pathname.startsWith("/catalog");
@@ -56,13 +68,16 @@ export default function Modal() {
     e.preventDefault();
     if (!serverUrl || !data) return;
 
-    const formData = new FormData();
-    formData.append("id", data.id.toString());
+    try {
+      await buyGoods([numericId]).unwrap();
 
-    await fetch(`${serverUrl}/api/purchase`, {
-      method: "POST",
-      body: formData,
-    });
+      navigate({
+        pathname: "/successBuy",
+        search: `?ids=${[numericId]}`,
+      });
+    } catch (error) {
+      console.error(`Ошибка при покупке товара ${error}`);
+    }
   }
   function toggleItemToCart(e: React.MouseEvent) {
     e.preventDefault();
